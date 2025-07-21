@@ -3,14 +3,14 @@ package hk.edu_20250717.day11;
 import java.util.Arrays;
 
 public class D3_MagicSquare {
-	public int[][] magicSquare;
+	public int[][] magic;
 	public int x,y; 
 	public int num;
 	public int max;
 	public int n;
 	
 	public D3_MagicSquare(int n) {
-		magicSquare = new int[n][n];
+		magic = new int[n][n];
 		this.n = n;
 		num = 1;
 		x = 0;
@@ -32,10 +32,10 @@ public class D3_MagicSquare {
 			y = n-1;
 		
 		//값이 있다면? 원래자리로 이동 -> x + 1
-		if (magicSquare[x][y] != 0) {
+		if (magic[x][y] != 0) {
 			x=preX;
 			y=preY;
-			while (x<n && y<n &&magicSquare[x][y] != 0) {
+			while (x<n && y<n &&magic[x][y] != 0) {
 				x+=1;
 			}
 		}
@@ -44,7 +44,7 @@ public class D3_MagicSquare {
 	
 	//마방진에 숫자 삽입
 	public void insert() {
-		magicSquare[x][y] = num;
+		magic[x][y] = num;
 		num++;
 	}
 	
@@ -61,8 +61,8 @@ public class D3_MagicSquare {
 	
 	//마방진 출력
 	public void draw() {
-		for (int i=0; i<magicSquare.length; i++) 
-			System.out.println(Arrays.toString(magicSquare[i]));
+		for (int i=0; i<magic.length; i++) 
+			System.out.println(Arrays.toString(magic[i]));
 		System.out.println();
 	}
 	
@@ -108,7 +108,7 @@ public class D3_MagicSquare {
 	public int sumRow(int j) {
 		int sum=0;
 		for (int i=0; i<n; i++) {
-			sum += magicSquare[i][j];
+			sum += magic[i][j];
 		}
 		
 		return sum;
@@ -117,7 +117,7 @@ public class D3_MagicSquare {
 	public int sumCol(int j) {
 		int sum=0;
 		for (int i=0; i<n; i++) {
-			sum += magicSquare[j][i];
+			sum += magic[j][i];
 		}
 		return sum;
 	}
@@ -125,7 +125,7 @@ public class D3_MagicSquare {
 	public int sumDia() {
 		int sum = 0;
 		for (int i=0; i<n; i++) 
-			sum+= magicSquare[i][i];
+			sum+= magic[i][i];
 		return sum;
 	}
 	//역대각선의 합
@@ -135,7 +135,7 @@ public class D3_MagicSquare {
 		int y=0;
 		
 		for (int i=0; i<n; i++) {
-			sum+=magicSquare[x][y];
+			sum+=magic[x][y];
 			x--;
 			y++;
 		}

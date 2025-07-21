@@ -8,11 +8,12 @@ public class D1_EvenMagicSquare_v2 {
 	public int[][] magic;
 	
 	public D1_EvenMagicSquare_v2() {
-		this.magic=new int[4][4];
+		this(4);
 	}
 	
 	public D1_EvenMagicSquare_v2(int n) {
 		this.magic=new int[n][n];
+		make();
 	}
 	
 	//배열에 순서대로 입력하는 메서드
@@ -52,16 +53,103 @@ public class D1_EvenMagicSquare_v2 {
 		}
 	}
 	
-	public static void main(String[] args) {
-		D1_EvenMagicSquare_v2 m = new D1_EvenMagicSquare_v2();
-		m.makeA();
-		m.makeB();
-		for (int i=0; i<m.magic.length; i++) {
-			for (int j=0; j<m.magic.length; j++) {
-				System.out.print(m.magic[i][j]+"\t");
+	//마방진 가로/세로/대각선 합 출력 -> 마방진 조건에 부합하는지 확인
+		public void sumPrint() {
+			int n = magic.length;
+			int[] sumU = new int[n+n+2];
+			//1. 가로/세로합 확인
+			for (int i=0; i<n; i++) {
+				sumU[i] = sumCol(i);
+				sumU[i+n] = sumRow(i);
+			}
+			//2. 대각선 확인
+			sumU[sumU.length-2] = sumDia();
+			sumU[sumU.length-1] = sumReverseDia();
+				
+			for (int i=0; i<sumU.length; i++) {
+				System.out.print(sumU[i] + "\t");
+					
+				if ((i+1) % n == 0)
+					System.out.println();
+			}
+			System.out.println();	
+			//마방진 조건확인
+			magicSquareCheck(sumU);	
+		}
+		
+		//마방진 조건 확인 -> 가로/세로/대각선의 합이 모두 같아야함
+		public void magicSquareCheck(int[] sum) {
+			boolean isM = true;
+			
+			for (int i=0; i<sum.length-1; i++) {
+				if (sum[i] != sum[i+1]) {
+					System.out.println("마방진 조건에 맞지 않습니다.");
+					isM = false;
+					break;
+				}
 			}
 			System.out.println();
+			if (isM == true) 
+				System.out.println("마방진 조건에 성립합니다.");
 		}
+		
+		//세로의 합
+		public int sumRow(int j) {
+			int sum=0;
+			int n = magic.length;
+			for (int i=0; i<n; i++) {
+				sum += magic[i][j];
+			}
+				
+			return sum;
+		}
+		//가로의 합
+		public int sumCol(int j) {
+			int sum=0;
+			int n = magic.length;
+			for (int i=0; i<n; i++) {
+				sum += magic[j][i];
+			}
+			return sum;
+		}
+		//대각선의 합
+		public int sumDia() {
+			int sum = 0;
+			int n = magic.length;
+			for (int i=0; i<n; i++) 
+				sum+= magic[i][i];
+			return sum;
+		}
+		//역대각선의 합
+		public int sumReverseDia() {
+			int sum=0;
+			int n = magic.length;
+			int x=n-1;
+			int y=0;
+				
+			for (int i=0; i<n; i++) {
+				sum+=magic[x][y];
+				x--;
+				y++;
+			}
+				
+			return sum;
+		}
+	
+	//makeA(),makeB() 실행시키자
+	//templete 메서드: 절차적으로 기능을 실행시키는 메서드
+	public void make() {
+		makeA();
+		makeB();
 	}
 	
+	public void magicSquarePrint() {
+		int n = magic.length;
+		for (int i=0; i<n; i++) {
+			for (int j=0; j<n; j++)
+				System.out.print(magic[i][j] + "\t");
+			System.out.println();
+		}
+		System.out.println();
+	}
 }

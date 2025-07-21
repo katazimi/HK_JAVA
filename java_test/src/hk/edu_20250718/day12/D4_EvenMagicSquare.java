@@ -1,11 +1,11 @@
 package hk.edu_20250718.day12;
 
 //짝수 4의 배수 마방진
-public class D4_MagicSquare_v2 {
+public class D4_EvenMagicSquare {
 	public int[][] magicSquare;
 	public int length;
 	
-	public D4_MagicSquare_v2(int n) {
+	public D4_EvenMagicSquare(int n) {
 		magicSquare = new int[n][n];
 		length = n;
 		int x=0;
@@ -28,7 +28,7 @@ public class D4_MagicSquare_v2 {
 		magicSquare[x2][y2] = temp;
 	}
 	
-	//0,3번째 행, 1,2번째 열의 위치 값을 역순으로 변경
+	//기능1: 0,3번째 행, 1,2번째 열의 위치 값을 역순으로 변경
 	public void function01() {
 		int x = 0;
 		int y = length/4;
@@ -43,7 +43,7 @@ public class D4_MagicSquare_v2 {
 		}
 	}
 	
-	// 1,2번째 행, 0,3번째 열의 위치 값을 역순으로 변경 
+	//기능2: 1,2번째 행, 0,3번째 열의 위치 값을 역순으로 변경 
 	public void function02() {
 		int x = length/4;
 		int y = 0;

@@ -12,8 +12,8 @@ public abstract class D1_Computer {
 		System.out.println("전원을 끕니다.");
 	}
 	
-	//display 기능
+	//display 기능 
 	public abstract void display();
-	//typing 기능
+	//typing 기능 
 	public abstract void typing();
 }

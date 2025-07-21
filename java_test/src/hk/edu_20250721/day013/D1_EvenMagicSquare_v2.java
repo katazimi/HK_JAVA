@@ -136,7 +136,7 @@ public class D1_EvenMagicSquare_v2 {
 			return sum;
 		}
 	
-	//makeA(),makeB() 실행시키자
+	//makeA(), makeB()
 	//templete 메서드: 절차적으로 기능을 실행시키는 메서드
 	public void make() {
 		makeA();

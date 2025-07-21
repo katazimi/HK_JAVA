@@ -1,7 +1,5 @@
 package hk.edu_20250721.day013;
 
-import hk.edu_20250718.day12.D4_EvenMagicSquare;
-
 public class D1_EvenMagicSquareMain_v2 {
 
 	public static void main(String[] args) {

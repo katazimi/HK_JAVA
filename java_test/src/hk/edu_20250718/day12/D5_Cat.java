@@ -4,7 +4,7 @@ public class D5_Cat implements D5_Soundable {
 
 	@Override
 	public String sound() {
-		
+
 		return "냐옹";
 	}
 

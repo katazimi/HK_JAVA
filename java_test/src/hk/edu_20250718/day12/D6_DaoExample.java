@@ -8,7 +8,7 @@ public class D6_DaoExample {
 		dao.update();
 		dao.delete();
 	}
-	
+
 	public static void main(String[] args) {
 		dbWork(new D6_OracleDao());
 		dbWork(new D6_MySqlDao());

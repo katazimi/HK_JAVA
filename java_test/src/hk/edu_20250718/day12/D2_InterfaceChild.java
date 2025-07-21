@@ -10,7 +10,7 @@ public class D2_InterfaceChild implements D2_InterfaceTest{
 
 	@Override
 	public int test2() {
-		
+
 		return 2;
 	}
 
@@ -19,7 +19,7 @@ public class D2_InterfaceChild implements D2_InterfaceTest{
 
 		return 3;
 	}
-	
+
 	public int test10() {
 		System.out.println("새로 추가된 기능");
 		return 4;

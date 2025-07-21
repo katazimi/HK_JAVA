@@ -11,5 +11,5 @@ public abstract class D1_NoteBook extends D1_Computer{
 	//--> 현재 클래스도 추상 클래스로 정의 해야함 상속강요
 	@Override
 	public abstract void typing();
-	
+
 }

@@ -5,11 +5,11 @@ public class D4_CalculatorD {
 	public int num1;
 	public int num2;
 	private int result;
-	
+
 	public D4_CalculatorD() {
 		this(10,5);
 	}
-	
+
 	public D4_CalculatorD(int num1, int num2) {
 		super();
 		this.num1 = num1;
@@ -19,7 +19,7 @@ public class D4_CalculatorD {
 	public int getResult() {
 		return result;
 	}
-	
+
 	public void a() {
 		result = num1/num2;
 	}

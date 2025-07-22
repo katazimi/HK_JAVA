@@ -2,14 +2,14 @@ package hk.edu_20250721.day013;
 
 import hk.edu_20250717.day11.D3_MagicSquare;
 
-public class D4_SixMagicSquare {
+public class D4_SixMagicSquare_v2 {
 	public int[][] magic;
 
-	public D4_SixMagicSquare() {
+	public D4_SixMagicSquare_v2() {
 		this(10);
 	}
 
-	public D4_SixMagicSquare(int n) {
+	public D4_SixMagicSquare_v2(int n) {
 		magic = new int[n][n];
 	}
 

@@ -24,7 +24,10 @@ public class D2_MagicSquareMain {
 		
 		D2_MagicFactory fac = D2_MagicFactory.getInstance();
 		D2_IMagic magic = fac.factory();
-		D2_MagicUtil.magicRun(magic);
+		if (magic == null)
+			System.out.println("다시 입력하세요");
+		else
+			D2_MagicUtil.magicRun(magic);
 		
 	}
 

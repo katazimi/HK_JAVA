@@ -29,6 +29,14 @@ public class D2_Card {
 		return card;
 	}
 	
+	public String getDECK() {
+		return card.substring(0);
+	}
+	
+	public String getSTECK() {
+		return card.substring(1);
+	}
+	
 	@Override
 	public String toString() {
 		return "["+card+"]";

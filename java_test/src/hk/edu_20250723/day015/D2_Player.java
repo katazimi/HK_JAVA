@@ -6,7 +6,7 @@ import java.util.List;
 public class D2_Player {
 	
 	//플레이어의 카드뭉치
-	private List<D2_Card> cardList;
+	public List<D2_Card> cardList;
 	
 	private int score;
 	

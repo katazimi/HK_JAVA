@@ -2,7 +2,7 @@ package hk.edu_20250723.day015;
 
 import java.util.Scanner;
 
-public class TexasHoldemMain {
+public class D2_TexasHoldemMain {
 	
 	public static D2_CardCase cardCase = new D2_CardCase();
 	public static D2_TexasHoldem th = new D2_TexasHoldem();

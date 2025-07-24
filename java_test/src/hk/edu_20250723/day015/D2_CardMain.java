@@ -18,6 +18,22 @@ public class D2_CardMain {
 				System.out.println();
 			}
 		}
+		System.out.println();
+		
+		D2_Player player1 = new D2_Player();
+		D2_Player player2 = new D2_Player();
+		D2_Player player3 = new D2_Player();
+		D2_Divide di = new D2_Divide();
+		
+		di.divide(cardCase,player1,5);
+		di.divide(cardCase,player2,5);
+		di.divide(cardCase,player3,5);
+		
+		System.out.println("=============================================================================");
+		System.out.println("user1: "+player1.getCardList());
+		System.out.println("user2: "+player2.getCardList());
+		System.out.println("user3: "+player3.getCardList());
+		System.out.println("=============================================================================");
 	}
 
 }

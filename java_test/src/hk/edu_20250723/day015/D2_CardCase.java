@@ -34,4 +34,13 @@ public class D2_CardCase {
 	public List<D2_Card> getCards() {
 		return cards;
 	}
+	
+	//카드뭉치의 맨 앞장을 리턴
+	public D2_Card getCard() {
+		return cards.get(0);
+	}
+	//카드뭉치의 맨 앞장을 제거
+	public void removeCard() {
+		cards.remove(0);
+	}
 }

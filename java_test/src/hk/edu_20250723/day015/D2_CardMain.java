@@ -34,6 +34,11 @@ public class D2_CardMain {
 		System.out.println("user2: "+player2.getCardList());
 		System.out.println("user3: "+player3.getCardList());
 		System.out.println("=============================================================================");
+		
+		D2_TexasHoldem texas = new D2_TexasHoldem();
+		texas.flop();
+		texas.turn();
+		texas.river();
 	}
 
 }

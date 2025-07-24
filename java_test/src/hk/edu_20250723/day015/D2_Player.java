@@ -8,10 +8,21 @@ public class D2_Player {
 	//플레이어의 카드뭉치
 	private List<D2_Card> cardList;
 	
+	private int score;
+	
 	public D2_Player() {
 		cardList = new ArrayList<D2_Card>();
+		score = 0;
 	}
 	
+	public int getScore() {
+		return score;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
+	}
+
 	public List<D2_Card> getCardList() {
 		return cardList;
 	}

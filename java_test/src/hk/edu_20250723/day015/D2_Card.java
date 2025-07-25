@@ -7,7 +7,7 @@ public class D2_Card {
 	//			--> 랜덤하게 만들어지도록 하자
 	public static final String[] DECK = {"♥︎", "♣︎", "♠︎", "♦︎"};
 	public static final String[] STECK = 
-			{"A","2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "k"};
+			{"A","2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K"};
 	
 	//카드 한장을 저장할 필드: 그림 + 숫자
 	private String card; //"♥︎3"
@@ -30,11 +30,21 @@ public class D2_Card {
 	}
 	
 	public String getDECK() {
-		return card.substring(0);
+		for (String suit : DECK) {
+            if (card.startsWith(suit)) {
+                return suit;
+            }
+        }
+        return card.substring(0, 1);
 	}
 	
 	public String getSTECK() {
-		return card.substring(1);
+		for (String suit : DECK) {
+            if (card.startsWith(suit)) {
+                return card.substring(suit.length());
+            }
+        }
+        return card.substring(1);
 	}
 	
 	@Override

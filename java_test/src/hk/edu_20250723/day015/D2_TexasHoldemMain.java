@@ -3,13 +3,15 @@ package hk.edu_20250723.day015;
 import java.util.Scanner;
 
 public class D2_TexasHoldemMain {
+	public static D2_TexasHoldem game;
+	
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         int round = 1;
-
+        game = new D2_TexasHoldem();
         while (true) {
+        	game.cards = new D2_CardCase();
             System.out.println("=== ROUND " + round + " ===");
-            D2_TexasHoldem game = new D2_TexasHoldem();
 
             D2_Player user = game.players.get(0);
             D2_Player bot = game.players.get(1);
@@ -119,6 +121,7 @@ public class D2_TexasHoldemMain {
     }
 
     private static void showScore(D2_Player user, D2_Player bot) {
+    	System.out.println("----------------------------");
         System.out.println("|현재 점수 - 사용자: " + user.getScore() + " / Bot: " + bot.getScore() + "|\n");
     }
 

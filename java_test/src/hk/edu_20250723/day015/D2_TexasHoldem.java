@@ -5,7 +5,7 @@ import java.util.List;
 
 public class D2_TexasHoldem {
     // 카드 뭉치와 카드 나누기 도구
-    private D2_CardCase cards = new D2_CardCase();
+    public D2_CardCase cards = new D2_CardCase();
     private D2_Divide divide = new D2_Divide();
 
     // 플레이어와 테이블(공용 카드 저장용)

@@ -82,8 +82,8 @@ public class D2_TexasHoldem {
         int rank1 = D2_PokerHandUtil.evaluate(p1Hand);
         int rank2 = D2_PokerHandUtil.evaluate(p2Hand);
 
-        System.out.println("플레이어1 족보: " + handName(rank1));
-        System.out.println("플레이어2 족보: " + handName(rank2));
+        System.out.println("당신의 족보: " + handName(rank1));
+        System.out.println("bot의 족보: " + handName(rank2));
 
         int winner;
         if (rank1 > rank2) {

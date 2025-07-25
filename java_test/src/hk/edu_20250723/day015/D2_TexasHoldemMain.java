@@ -102,6 +102,9 @@ public class D2_TexasHoldemMain {
                 continue;
             }
             // 모두 끝까지 살아남으면 match로 승부
+            System.out.println("[Table] " + game.table.getCardList());
+            System.out.println("[bot Cards] " + bot.getCardList());
+            System.out.println("[Your Cards] " + user.getCardList());
             game.match(user, bot);
             showScore(user, bot);
             if (isGameEnd(user, bot)) break;

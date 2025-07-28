@@ -30,4 +30,10 @@ public class D2_Player {
 	public void setCardList(List<D2_Card> cardList) {
 		this.cardList = cardList;
 	}
+	
+	//핸드 초기화
+	public void clearCards() {
+	    cardList.clear();
+	}
+
 }

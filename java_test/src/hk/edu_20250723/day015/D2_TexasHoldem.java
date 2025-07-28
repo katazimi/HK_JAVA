@@ -22,6 +22,7 @@ public class D2_TexasHoldem {
             players.add(new D2_Player());
         dealingCards();
     }
+    
 
     // 플레이어와 테이블에 카드 배분(플레이어: 2장씩, 테이블: 3장)
     public void dealingCards() {
@@ -114,10 +115,10 @@ public class D2_TexasHoldem {
         return winner;
     }
 
-    // die 기능: 현재 판 포기(점수 부여는 main에서 처리)
-    public void die() {
-        // 따로 로직 필요 없음. main에서 판별 후 점수 부여
-    }
+//    // die 기능: 현재 판 포기(점수 부여는 main에서 처리)
+//    public void die() {
+//        // 따로 로직 필요 없음. main에서 판별 후 점수 부여
+//    }
 
     // int 타입 족보 → 이름 변환
     public static String handName(int rank) {
@@ -143,4 +144,15 @@ public class D2_TexasHoldem {
         }
         return max;
     }
+    
+    //라운드 초기화
+    public void resetRound() {
+        cards = new D2_CardCase();
+        table.clearCards();
+        for (D2_Player p : players) {
+            p.clearCards();
+        }
+        dealingCards();
+    }
+
 }

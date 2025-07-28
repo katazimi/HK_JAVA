@@ -12,6 +12,7 @@ public class D2_TexasHoldemMain {
         while (true) {
         	game.cards = new D2_CardCase();
             System.out.println("=== ROUND " + round + " ===");
+            game.resetRound();
 
             D2_Player user = game.players.get(0);
             D2_Player bot = game.players.get(1);
@@ -71,10 +72,7 @@ public class D2_TexasHoldemMain {
                 user.setScore(user.getScore() + game.potScore);
                 System.out.println("Bot이 다이! 당신이 +" + game.potScore + "점 획득\n");
                 showScore(user, bot);
-                if (isGameEnd(user, bot)) {
-                	game.table.cardList.clear();
-                	break;
-                }
+                if (isGameEnd(user, bot)) break;
                 round++;
                 continue;
             }
@@ -91,10 +89,7 @@ public class D2_TexasHoldemMain {
                 bot.setScore(bot.getScore() + game.potScore);
                 System.out.println("당신이 다이! Bot이 +" + game.potScore + "점 획득\n");
                 showScore(user, bot);
-                if (isGameEnd(user, bot)) {
-                	game.table.cardList.clear();
-                	break;
-                }
+                if (isGameEnd(user, bot)) break;
                 round++;
                 continue;
             }
@@ -103,10 +98,7 @@ public class D2_TexasHoldemMain {
                 user.setScore(user.getScore() + game.potScore);
                 System.out.println("Bot이 다이! 당신이 +" + game.potScore + "점 획득\n");
                 showScore(user, bot);
-                if (isGameEnd(user, bot)) {
-                	game.table.cardList.clear();
-                	break;
-                }
+                if (isGameEnd(user, bot)) break;
                 round++;
                 continue;
             }
@@ -118,7 +110,6 @@ public class D2_TexasHoldemMain {
             showScore(user, bot);
             if (isGameEnd(user, bot)) break;
             round++;
-            game.table.cardList.clear();
         }
         sc.close();
     }

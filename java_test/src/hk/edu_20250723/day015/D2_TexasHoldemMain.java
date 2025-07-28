@@ -71,7 +71,10 @@ public class D2_TexasHoldemMain {
                 user.setScore(user.getScore() + game.potScore);
                 System.out.println("Bot이 다이! 당신이 +" + game.potScore + "점 획득\n");
                 showScore(user, bot);
-                if (isGameEnd(user, bot)) break;
+                if (isGameEnd(user, bot)) {
+                	game.table.cardList.clear();
+                	break;
+                }
                 round++;
                 continue;
             }
@@ -88,7 +91,10 @@ public class D2_TexasHoldemMain {
                 bot.setScore(bot.getScore() + game.potScore);
                 System.out.println("당신이 다이! Bot이 +" + game.potScore + "점 획득\n");
                 showScore(user, bot);
-                if (isGameEnd(user, bot)) break;
+                if (isGameEnd(user, bot)) {
+                	game.table.cardList.clear();
+                	break;
+                }
                 round++;
                 continue;
             }
@@ -97,7 +103,10 @@ public class D2_TexasHoldemMain {
                 user.setScore(user.getScore() + game.potScore);
                 System.out.println("Bot이 다이! 당신이 +" + game.potScore + "점 획득\n");
                 showScore(user, bot);
-                if (isGameEnd(user, bot)) break;
+                if (isGameEnd(user, bot)) {
+                	game.table.cardList.clear();
+                	break;
+                }
                 round++;
                 continue;
             }
@@ -109,6 +118,7 @@ public class D2_TexasHoldemMain {
             showScore(user, bot);
             if (isGameEnd(user, bot)) break;
             round++;
+            game.table.cardList.clear();
         }
         sc.close();
     }

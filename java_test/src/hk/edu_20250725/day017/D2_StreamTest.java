@@ -13,6 +13,7 @@ public class D2_StreamTest {
 		//List 객체 -> Stream 객체로 생성 -> 증강연산, 최종연산
 		List<String> list = Arrays.asList("홍길동", "임꺽정", "김홍도");
 //		list.add("이순신"); //기존 List와 다르게 add()사용이 불가
+		list.stream().forEach(name -> System.out.print(name));
 		
 		Stream<String> streamList = list.stream(); //Stream 생성
 		streamList.filter(s->s.contains("홍")).sorted().forEach(s->System.out.println(s));
@@ -38,10 +39,14 @@ public class D2_StreamTest {
 		List<String> list3 = List.of("A","B","C","D");
 		
 		//일반 스트림
+		System.out.println("---일반처리---");
 		list3.stream().forEach(s->{System.out.println(s+" - "+Thread.currentThread().getName());});
+		System.out.println("----------");
 		
 		//병렬 스트림
+		System.out.println("---병렬처리---");
 		list3.parallelStream().forEach(s->{System.out.println(s+" - "+Thread.currentThread().getName());});
+		System.out.println("----------");
 	}//main 종료
 	
 }

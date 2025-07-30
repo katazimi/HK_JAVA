@@ -16,7 +16,7 @@ public class D2_TCPClient {
 		
 		try {
 			//socket = new Socket("192.168.7.58",9595);
-			socket = new Socket("localhost",9595);
+			socket = new Socket("192.168.22.2",9595);
 			System.out.println("Client:Connection to server...");
 			out = new PrintWriter(socket.getOutputStream(),true);
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));

@@ -34,7 +34,7 @@ public class D2_TCPServer {
 				String inputLine;
 				while((inputLine=in.readLine())!=null) {
 					System.out.println("클라이언트로부터 전달받은 메세지: " + inputLine);
-					out.print("니가 보낸 메세지: " + inputLine);
+					out.println(inputLine);
 				}
 			}
 		} catch (IOException e) {

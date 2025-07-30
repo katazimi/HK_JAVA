@@ -15,8 +15,8 @@ public class D2_TCPClient {
 		BufferedReader userIn = null; //사용자가 키보드로 입력하는 메세지를 읽어들일 객체
 		
 		try {
-			socket = new Socket("192.168.7.58",9595);
-			//socket = new Socket("localhost",9595);
+			//socket = new Socket("192.168.7.58",9595);
+			socket = new Socket("localhost",9595);
 			System.out.println("Client:Connection to server...");
 			out = new PrintWriter(socket.getOutputStream(),true);
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));

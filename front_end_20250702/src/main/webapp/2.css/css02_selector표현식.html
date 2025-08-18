@@ -38,17 +38,23 @@
 	}
 	
 	/* 인접선택자 */
-	h1 + p{
+	#container1 h1 + p{
 		background-color: yellow;
 	}
-	
+	#container2 h1 ~ p{
+		background-color: blue;
+		color:white;
+	}
+	/* 속성선택자 */
+	span[title]{background-color: red;}
+	span[title='대통령']{background-color: blue;};
 </style>
 </head>
 <body>
 <div id="container1">
 	<h1>李대통령 지지율 51.1% <strong id="a">‘최저’</strong></h1>
 	<p>
-		<span>이재명 대통령</span>의 <strong>국정 지지율이 51.1%</strong>를 기록했다는 여론조사 결과가 18일 나왔다. 
+		<span title="대통령">이재명 대통령</span>의 <strong>국정 지지율이 51.1%</strong>를 기록했다는 여론조사 결과가 18일 나왔다. 
 		해당 기관 여론조사 기준 2주 연속 하락한 것으로 나타났다. 
 		이 대통령 취임 이후 최저치이기도 하다.
 	</p>

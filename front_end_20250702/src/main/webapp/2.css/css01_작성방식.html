@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>css01_작성방식</title>
+<link rel="stylesheet" href="css/test.css">
+<!-- 파일의 위치: 		url 또는 ./url : 현재위치에서 찾는다. 
+					/url : root경로부터 찾는다.
+
+-->
+<style type="text/css">	
+	@import url("scc/test.css");
+	body,p{
+		margin:0px; /* body,p 요소에 reset 적용 0px로 */
+	}
+	p{
+		color:red;
+		margin-top: 5px;
+	}
+</style>
+</head>
+<body>
+<p style="color:white; background-color: black;">in-line 방식</p>
+<strong>요소 내부에 작성한다.</strong>
+<p>내부 스타일 방식</p>
+<strong>head 태그 내부에 &lt;style&gt; 태그로 작성하는 방식</strong>
+<p>외부 스타일 방식</p>
+<strong>외부 CSS파일을 연결해서 사용하는 방식</strong>
+</body>
+</html>

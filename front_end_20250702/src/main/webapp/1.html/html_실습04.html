@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>실습04</title>
+</head>
+<body>
+	<form action="html_실습04.html" method="post" enctype="multipart/form-date">
+		<fieldset>
+			<p>
+				<label for="name">성명</label>
+				<input type="text" name="name"/>
+			</p>
+			<p>
+				<label>아이디</label>
+				<input type="text" name="id"/>
+			</p>
+			<p>
+				<label>사진</label>
+				<input type="file" name="img"/>
+			</p>
+			<p>
+				<label>패스워드</label>
+				<input type="text" name="pw"/>
+			</p>
+			<p>
+				<label>패스워드확인</label>
+				<input type="text" name="pwc"/>
+			</p>
+			<p>
+				<label>연락처</label>
+				<select name="phone1">
+					<option>010</option>
+					<option>011</option>
+				</select>
+				<label>-</label>
+				<input type="text" name="phone2"/>
+				<label>-</label>
+				<input type="text" name="phone3"/>
+				<button>휴대폰 인증</button>
+			</p>
+			<p>
+				<label>이메일</label>
+				<input type="email"/>
+				<label>이메일 수신동의</label>
+				<input id="y" name="radio" type="radio"/>
+				<label for="y">예</label>
+				<input id="n" name="radio" type="radio"/>
+				<label for="n">아니오</label>
+			</p>
+			<p>
+				<label>지역선택</label>
+				<select>
+					<option>서울</option>
+					<option>경기</option>
+					<option>인천</option>
+					<option>강원</option>
+					<option>충북</option>
+					<option>충남</option>
+					<option>경북</option>
+					<option>경남</option>
+					<option>전북</option>
+					<option>전남</option>
+					<option>제주</option>
+				</select>
+			</p>
+		</fieldset>
+		
+	</form>
+</body>
+</html>

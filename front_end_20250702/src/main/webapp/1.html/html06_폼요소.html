@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>html06_폼요소</title>
+<script type="text/javascript">
+	onload=function(){
+		// search는 주소에 파라미터 부분을 반환: 주소 ?이후의 값을 문자열로 반환
+		console.log(location.search);
+	}
+</script>
+</head>
+<body>
+	<h1>폼요소</h1>
+	<h2>POST 전송방식</h2>
+	<form action="html06_폼요소.html" method="post">
+		<!-- 전송데이터형식: key=value -> name=value -->
+		<input type="text" name="id"/>
+		<input type="text" name="name"/>
+		<input type="submit" value="전송"/>
+	</form>
+	<h2>GET 전송방식</h2>
+	<a href="html06_폼요소.html?id=hk&name=한경">전송</a>
+	<hr/>
+	<h2>폼 구성요소</h2>
+	<form action="html06_폼요소.html" method="post" enctype="multipart/form-date">
+		<h3>회원가입</h3>
+		<fieldset>
+			<legend>기본정보</legend>
+			<p>
+				<label for="LabelID">아이디:</label>
+				<input id="LabelID" type="text" name="id" placeholder="아이디는 영문으로 입력"
+						required="required" pattern="[a-z]{3}" autocomplete="off">
+			</p>
+			<p>
+				<label for="LabelPW">비밀번호</label>
+				<input type="password" id="LabelPW" name="pw" required="required">
+			</p>
+			<p>
+				<label for="LabelBirth">생년월일:</label>
+				<input type="date" name="birth" required="required">
+			</p>
+		</fieldset>
+		<fieldset>
+			<legend>메일 수신 여부</legend>
+			<p>
+				<label>수신여부</label>
+				<input type="radio" id="yes" name="receive" value="y"/>
+				<label for="yes">예</label>
+				<input type="radio" id="no" name="receive" value="n"/>
+				<label for="no">아니오</label>
+				<br/>
+				<small>
+					라디오 버튼은 하나만 체크되고 다시 취소되지 않는다.
+					데이터 전송시 체크된 요소만 값이 전송된다.
+				</small>
+			</p>
+		</fieldset>
+		<fieldset>
+			<legend>관심 분야</legend>
+			<p>
+				<input type="checkbox" id="h" name="chk" value="html"/>
+				<label for="h">HTML</label>
+				<input type="checkbox" id="c" name="chk" value="css"/>
+				<label for="c">CSS</label>
+				<br/>
+				<small>
+					체크박스는 여러개를 동시에 체크할 수 있다. 취소도 가능하다.
+					데이터 전송시 체크된 요소만 값이 전송된다.
+				</small>
+			</p>
+		</fieldset>
+		<fieldset>
+			<legend>파일 업로드</legend>
+			<p>
+				<label for="LabelID">파일유형:</label>
+				<select name="sel">
+					<option value="kk">공지게시판</option>
+					<option value="bb">자유게시판</option>
+					<option value="cc" selected="selected">회원전용</option>
+				</select>
+				<br/>
+				<small>
+					select 요소에 name 속성 정의, option 요소에 value 속성정의
+					데이터 전송시 선택된 값이 정의된다. (여러개를 선택할 수도 있긴함.. multiple 속성 사용)
+				</small>
+			</p>
+			<p>
+				<label>파일 업로드: </label>
+				<input type="file" name="fileupload"/>
+				<small>
+					form 요소에 enctype="multipart/form-date" 속성을 정의해야함
+				</small>
+			</p>
+		</fieldset>
+		<input type="submit" value="회원가입">
+	</form>
+</body>
+</html>

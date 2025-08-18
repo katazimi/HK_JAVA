@@ -13,7 +13,7 @@ public class D1_BaseballGameMain {
 			if (game.isStrike(game.bowler, game.batter) == 3) {
 				System.out.print("타자: ");
 				game.print(game.batter);
-				System.out.println("3S 모두 일치!! 타자 승리!!");
+				System.out.println("-> 3S 모두 일치!! 타자 승리!!");
 				break;
 			}
 			//아웃일 경우
@@ -29,6 +29,7 @@ public class D1_BaseballGameMain {
 			}
 			game.makeRandom(game.batter);
 		}
+		
 
 	}
 

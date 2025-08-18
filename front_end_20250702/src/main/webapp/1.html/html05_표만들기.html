@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>html05_표만들기</title>
+<style type="text/css">
+	table {
+		border-collapse: collapse;
+		width: 600px;
+	}
+	
+	th {
+		background-color: skyblue;
+	}
+	
+	#p_table{
+		width:500px;
+	}
+	
+	#c_table{
+		width:400px;
+	}
+	
+	td {
+		border-color: red
+	}
+	
+	.table, .tr, .td{
+		border:1px solid red;
+	}
+	/* div요소를 table요소로 변환 설정 */
+	.table{
+		display:table;
+		width:400px;
+	}
+	.tr{
+		display:table-row;
+	}
+	.td{
+		display:table-cell;
+	}
+	
+	/* 모바일 화면일 경우 */
+	@media screen and (max-width:600px){
+		.table{
+			display:block;
+			width:100%;
+		}
+		.tr{
+			display:block;
+		}
+		.td{
+			display:block;
+			background-color: orange;
+			color:white;
+			font-weight:bold;
+		}
+	}
+</style>
+</head>
+<body>
+	<h1>1. 기본 표 만들기</h1>
+	<table border="1">
+		<tr>
+			<th>번호</th>
+			<th>제목</th>
+			<th>작성일</th>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td>1</td>
+			<td>2025-07-02</td>
+		</tr>
+		<tr>
+			<td>2</td>
+			<td>1</td>
+			<td>2025-08-14</td>
+		</tr>
+	</table>
+	<h1>2. 표의 다양한 구성요소들 사용하기</h1>
+	<table border="1">
+		<caption>표의 제목</caption>
+		<col width="100px">
+		<col width="200px">
+		<col width="100px">
+		<thead>
+			<tr>
+				<th>번호</th>
+				<th>제목</th>
+				<th>작성일</th>
+			</tr>
+		<thead>
+		<tbody>
+			<tr>
+				<td>1</td>
+				<td>1</td>
+				<td>2025-07-02</td>
+			</tr>
+			<tr>
+				<td>1</td>
+				<td>1</td>
+				<td>2025-07-02</td>
+			</tr>
+		</tbody>
+		<tfoot>
+			<tr>
+				<td>2</td>
+				<td>1</td>
+				<td>2025-08-14</td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td>1</td>
+				<td>2025-08-14</td>
+			</tr>
+		</tfoot>
+	</table>
+	<h1>3. 셀 병합하기</h1>
+	<table border="1">
+		<tr><td rowspan="2">1</td><td colspan="2">2</td></tr>
+		<tr><td>2</td><td>3</td></tr>
+		<tr><td colspan="3">1</td></tr>
+	</table>
+	<h1>4. 표안에 표 작성하기</h1>
+	<table id="p_table" border="1">
+		<tr>
+			<th>번호</th>
+			<th>내용</th>
+			<th>작성일</th>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td>
+				<table id="c_table" border="1">
+					<tr><th>번호</th><th>내용목록</th></tr>
+					<tr><td>번호</td><td>내용목록</td></tr>
+					<tr><td>번호</td><td>내용목록</td></tr>
+				</table>
+			</td>
+			<td>2025-07-02</td>
+		</tr>
+		<tr>
+			<td>2</td>
+			<td>1</td>
+			<td>2025-08-14</td>
+		</tr>
+	</table>
+	<h1>5. div요소로 표만들기</h1>
+	<div class="table">
+		<div class="tr">
+			<div class="td">1</div>
+			<div class="td">2</div>
+			<div class="td">3</div>
+		</div>
+		<div class="tr">
+			<div class="td">1</div>
+			<div class="td">2</div>
+			<div class="td">3</div>
+		</div>
+		<div class="tr">
+			<div class="td">1</div>
+			<div class="td">2</div>
+			<div class="td">3</div>
+		</div>
+		<div class="tr">
+			<div class="td">1</div>
+			<div class="td">2</div>
+			<div class="td">3</div>
+		</div>
+	</div>
+	<br/>
+</body>
+</html>

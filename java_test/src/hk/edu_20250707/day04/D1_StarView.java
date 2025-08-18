@@ -152,9 +152,7 @@ public class D1_StarView {
 			}
 			System.out.println();
 		}
-
-
-
+		
 	}//main종료
 
 }

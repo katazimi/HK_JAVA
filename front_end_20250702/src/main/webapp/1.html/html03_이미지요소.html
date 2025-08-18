@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>이미지요소</title>
+</head>
+<body>
+	<h1>이미지요소</h1>
+	<p>이미지요소는 웹페이지에 이미지를 표현할 때 사용한다.</p>
+	<p>- 주의사항: 사이즈 조절을 할때 해상도를 고려해야한다.</p>
+	<p>
+		<img src="../img/dog.jpeg" alt="강아지입니다."/>
+	</p>
+	<a href="https://blog.naver.com/popopo1004ka/223849274569">
+		<img src="../img/dog.jpeg" alt="강아지입니다."/>
+	</a>
+	<hr/>
+	<h1>이미지맵 사용하기</h1>
+	<img usemap="#menu" src="../img/menu.jpeg" width="470px" height="666px"/>
+	<map name="menu">
+		<area alt="단짠단짠 치킨가라아게"
+			  href="http://search.naver.com/search.naver?query=가라아게"
+			  shape="rect"
+			  coords="56.8,92,180.8,205.6"
+			  target="_blank"
+		/>
+		<area alt="개살크림고로케"
+			  href="http://search.naver.com/search.naver?query=고로케"
+			  shape="rect"
+			  coords="56.8,222.4,178.4,347.2"
+			  target="_blank"
+		/>
+	</map>
+</body>
+</html>

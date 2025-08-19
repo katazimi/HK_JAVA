@@ -45,9 +45,44 @@
 		background-color: blue;
 		color:white;
 	}
+	
 	/* 속성선택자 */
 	span[title]{background-color: red;}
 	span[title='대통령']{background-color: blue;};
+	
+	/* 가상 선택자 */
+	#container2 a:link{
+		color:black;
+	}
+	#container2 a:visited{
+		color:red;
+	}
+	#container2 a:active{
+		color:yellow;
+		font-size:20px;
+		background-color: green;
+	}
+	#container2 h1:hover{
+		background-color: yellow;
+		cursor:pointer;
+	}
+	/* 수도클래스 */
+	#container2 p:first-letter {
+		font-size:40px;
+	}
+	#container2 p:first-child {
+		font-size:40px;
+	}
+	#container2 p:after {
+		/*content:"뒤에 가상의 요소를 생성한다.";*/
+		content:"";
+		display:block;
+		width:200px;
+		height:200px;
+		background-color: orange;
+		border: 3px solid red;
+		border-radius: 50px;
+	}
 </style>
 </head>
 <body>
@@ -70,6 +105,7 @@
 	</p>
 </div>
 <div id="container2">
+	<p>p:first-child</p>
 	<h1>李대통령 지지율 51.1% <strong id="a">‘최저’</strong></h1>
 	<p>
 		이재명 대통령의 <strong>국정 지지율이 51.1%</strong>를 기록했다는 여론조사 결과가 18일 나왔다. 
@@ -84,7 +120,7 @@
 	<p class="c">
 		이 대통령의 국정수행 지지도는 7월 5주차 63.3%에서 직전 조사(8월 1주차) 때 56.5%로 6.8%p 하락했는데, 
 		일주일 만에 또다시 5.4%p 하락한 것으로 집계됐다. 2주 연속 하락하면서 50%대 초반 수치를 기록했는데, 
-		이번 조사 수치는 이 대통령 취임 이후 리얼미터 기준 최저치이기도 하다.
+		이번 조사 수치는 이 대통령 취임 이후 <a href="http://www.realmeter.net">리얼미터</a> 기준 최저치이기도 하다.
 	</p>
 </div>
 </body>

@@ -1,0 +1,9 @@
+@charset "UTF-8";
+h1{
+	background-color: black;
+	color:white;	
+}
+p{
+	color:blue;
+	margin-left: 50px;
+}

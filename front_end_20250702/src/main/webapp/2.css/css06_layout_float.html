@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>css06_layout_float</title>
+<style type="text/css">
+	*{margin:0px;}
+	#box1,#box2,#box3{
+		width: 200px;
+		height: 100px;
+		background-color: blue;
+		color: white;
+		margin: 5px;
+	}
+	#container1{
+		border: 1px solid black;
+		width: 500px;
+		overflow: auto; 
+	}
+	#container1:after{
+		content:"";
+		display:block;
+		clear:both;
+	}
+	#box1{
+		float:left;
+	}
+	#box2{
+		float:right;
+	}
+	/* #box3{
+		clear:both;
+		width:98%;
+	} */
+</style>
+</head>
+<body>
+	<h1>레이아웃_float</h1>
+	<div id="container1">
+		<div id="box1">box1</div>
+		<div id="box2">box2</div>
+		<div id="box3">box3</div>
+	</div>
+</body>
+</html>

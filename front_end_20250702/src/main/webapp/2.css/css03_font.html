@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>css03_font</title>
+<style type="text/css">
+	.c{
+		font-size: 20px;
+		font-weight: bold;
+		font-style: italic;
+		font-variant: small-caps;
+		line-height: 30px;
+		font-family: "맑은 고딕", "Apple SD Gothic Neo";
+	}
+	.d{
+		font-variant: small-caps;	
+	}
+	h1{
+		background-color: yellow;
+		height: 100px;
+		text-align: center;
+		vertical-align:middle; /* td요소, img등 특정요소만 적용 */
+		line-height: 100px; /* 행이 하나일때 위아래 정렬효과 */
+	}
+	
+	/*
+		축약형 사용순서 규칙
+		1. font: [font-weight / font-style / font-variant]
+		2. font: [font-size / line-height]
+		3. font: [font-family]
+		font: 1-2-3순으로 작성해야함
+	*/
+	.d{
+		font:bold italic small-caps 20px/50px '맑은 고딕', "Apple SD Gothic Neo"
+	}
+</style>
+</head>
+<body>
+	<h1>폰트 관련 속성</h1>
+	<p class="c">
+		인공지능(AI)은 예약 없이 상담도 해주고, 특별한 프롬프트(prompt)를 넣지 않는 이상 
+		나를 힐난하지도 않는 관대한 상담사다. 그러나 이런 인공지능은 상담을 위해 
+		개발된 서비스가 아닌 만큼, 실제 사용에선 각별한 주의가 필요하다. 
+		생성형 인공지능의 특징을 고려했을 때 유용할 만한 팁을 몇 가지 소개한다.
+	</p>
+	<p class="d">
+		조철현 정신건강의학과 교수는 기본적으로 챗지피티를 상담용으로 쓸 순 없다는 전제하에 
+		“상담기법이라고 할 수 있는 것 중엔 ‘벤틸레이션(환기)’이라는 게 있다”며 
+		“자기가 생각이나 감정을 풀어놓는 것만으로도 의미가 있다”고 말했다. 
+		가벼운 수준의 고민, 특히 어떤 정보를 함께 찾아볼 때 사용하는 정도로는 사용해도 괜찮다. 
+		챗지피티(chat gpt) 등 대화형 인공지능도 인지행동치료(CBT) 등 다양한 이론을 간단한 수준에선 사용할 수 있기 때문이다.
+	</p>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>css_실습04</title>
+<style type="text/css">
+	p{
+		border: 1px solid black;
+	}
+	#container1, #container2{
+		border:1px solid black;
+		width:700px;
+		margin:50px;
+	}
+	#container1 > .t1, #container2 > .t1{
+		width:600px;
+		height:50px;
+		display: block;
+		margin-left: 50px;
+		margin-top: 10px;
+	}
+	#container1 > .t2{
+		width:290px;
+		height:150px;
+		float: left;
+		margin-left: 50px;
+		margin-top: 5px;
+	}
+	#container1 > .t3{
+		width:290px;
+		height:150px;
+		float: right;
+		margin-right: 50px;
+		margin-top: 5px;
+	}
+	#container1 > .t4, #container2 > .t5{
+		clear: both;
+		width:600px;
+		height:50px;
+		display: block;
+		margin-left: 50px;
+		margin-top: 10px;
+		margin-bottom: 10px;
+	}
+	
+	#container2 > .t2{
+		width: 80px;
+		height:150px;
+		float: left;
+		margin-left: 50px;
+		margin-top: 5px;
+		
+	}
+	#container2 > .t3{
+		width: 400px;
+		height:150px;
+		float: left;
+		margin-left: 18px;
+		margin-top: 5px;
+	}
+	#container2 > .t4{
+		width: 80px;
+		height:150px;
+		float : left;
+		margin-left: 18px;
+		margin-top: 5px;
+	}
+	
+</style>
+</head>
+<body>
+	<div id="container1">
+		<p class="t1">1</p>
+		<p class="t2">2</p>
+		<p class="t3">3</p>
+		<p class="t4">4</p>
+	</div>
+	
+	<div id="container2">
+		<p class="t1">1</p>
+		<p class="t2">2</p>
+		<p class="t3">3</p>
+		<p class="t4">4</p>
+		<p class="t5">5</p>
+	</div>
+</body>
+</html>

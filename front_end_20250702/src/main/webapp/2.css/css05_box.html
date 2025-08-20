@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>css05_box</title>
+<style type="text/css">
+	div{
+		background-color: rgb(100,150,100);
+	}
+	*{
+		margin:0px;
+		padding:0px;
+	}
+	
+	.box3{
+		width:480px;
+		/* margin-left: 50px;
+		margin-top : 100px; */
+		margin: 100px auto;
+		padding: 10px;
+		text-align: center;
+		border:2px solid black;
+	}
+	.box4{
+		width:500px;
+		margin-left: -100px;
+		text-align: center;
+		border:2px dotted black;
+	}
+	.box4:hover{
+		margin-left: 0px;
+	}
+	
+</style>
+</head>
+<body>
+	<div class="box3">
+		<div class="box1">너비 500px</div>
+		<div class="box2">너비 500px</div>
+	</div>
+	<div class="box4">너비 500px</div>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript" src="js/test.js">
+//	function aa(){} //link로 사용했는데 또 코드를 작성하면 안됨!!
+</script>
+<script type="text/javascript">
+	//함수선언: function 키워드 사용
+	function embeded() {
+		alert("작성합니다.");
+	}
+</script>
+</head>
+<body>
+	<h1>자바스크립트 구성</h1>
+	<dl>
+		<dt onclick="var txt='inline 방식입니다.'; alert(txt);">CORE</dt>
+		<dd>문법(변수,제어문,객체,프로토타입,클로저...)</dd>
+		<dd>내장 객체의 사용법:</dd>
+		<dd>Number/Sring/Array/Math/Date</dd>
+		<dt onclick="embeded();">BOM</dt>
+		<dd>window/location/navigator/history/screen</dd>
+		<dt onclick="test();">DOM</dt>
+		<dt>Document/Element/Attribute/Text/Node</dt>
+	</dl>
+	<script type="text/javascript">
+		//code작성
+	</script> 
+</body>
+</html>

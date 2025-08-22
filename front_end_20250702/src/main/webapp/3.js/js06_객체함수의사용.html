@@ -88,15 +88,83 @@
 		
 		//2.객체 생성자 함수 방식-------------------------------------------------
 		pArray[1].onclick=()=>{
-			
+			//new 예약어 사용해서 객체생성
+			const info=new Info("javascript");
+			console.log(`${info.subject},${info.credit},${info.printout()}`);
+			console.log(info.getTest());
 		}
 		
 		//생성자 함수
 		function Info(subject){
 			let test="일반 변수선언"; //외부에서 접근이 불가
+			
 			//변수(메서드) 선언할때 this예약어를 사용
 			this.subject=subject;
+			this.credit=2;
+			this.printout=function(){return `${subject},${this.credit}학점`};
+			
+			//외부에서 메서드를 통해 속성에 접근이 가능
+			this.getTest=function(){
+				return test;
+			}
 		}
+		
+		//3. 프로토타입 사용하기
+		//Info 객체에 추가적인 기능을 구현하고 싶을때(확장성)
+		//객체 간 기능을 공유해서 사용하고 싶을때 (메모리 효율, 재사용성)
+		//프로토타입을 안쓰는 경우: 객체 각각 따로 관리해야 하는 경우
+		pArray[2].onclick=()=>{
+			const infoA=new Info("javascript"); //기존에 사용하던 객체에도 사용
+			
+			Info.prototype.addFunc=function() {
+				console.log(`기능추가:${this.subject}`);
+			}
+			
+			const infoB=new Info("reactJS");//앞으로 사용할 객체에도 적용
+			
+			infoA.addFunc();//기존에 사용되던 객체도 실행
+			infoB.addFunc();//새로 사용되는 객체도 실행
+			// 기본 속성과 기능을 가지고 있는 객체를 만들었는데
+			// 이후에 모든 객체(기존 객체포함)들에게 공통적으로 사용할 기능을 추가하고 싶다면
+			// 프로토타입으로 정의
+			console.log(infoA.addFunc===infoB.addFunc);
+		}
+		
+		//4.클로저: 부모함수의 전달범위를 자식함수가 기억하는 상태
+		pArray[3].onclick=()=>{
+			//closuerTest1();
+			//closureTest2()();
+			
+			//closureTest2_2(); //자식함수만 실행
+			closureTest3();
+		}
+		let closureTest2_2=closureTest2();
+		
+		var count=0;
+		function closuerTest1(){
+			//var count=0; //지역변수: 함수내부에서 사용 -> 상태유지(X)
+			count++;
+			console.log(count);
+		}
+		
+		//클로저 구현하는 방법
+		function closureTest2() {
+			var count=0;
+			return function() { //익명함수를 리턴함
+				count++;
+				console.log(count);
+			}
+		}
+		
+		//클로저함수 완성
+		let closureTest3=function() {
+			var count=0;
+			return function() { //익명함수를 리턴함
+				count++;
+				console.log(count);
+			}
+		}(); //()를 추가한 이유: 부모함수() 실행하기 위함--> 
+		//									자식함수 반환->closureTest3 할당
 		
 	}
 	

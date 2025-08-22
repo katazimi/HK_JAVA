@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>js04_DOM탐색메서드</title>
+<script type="text/javascript">
+	function searchId() {
+		//id 탐색 후 배경색을 지정
+		const p=document.getElementById("idTest");
+		console.log(typeof p);
+		
+		p.style.backgroundColor="red";
+		p.style.color="white";
+		p.textContent="<b>id로 탐색이 되는구나~~~</b>";
+		p.innerHTML="<b>태그내부요소접근</b>"; 
+	}
+	
+	function searchName(){
+		let inputs=document.getElementsByName("test02");
+		console.log(inputs.length);
+		
+		inputs[0].value="첫번째요소";
+		inputs[1].value="두번째요소";
+		inputs[2].value="세번째요소";
+		
+		//inputs.style.backgroundColor="yellow"; // (x) -> 인덱스로 접근해야함 
+		
+		for (var i = 0; i < inputs.length; i++) {
+			inputs[i].style.backgroundColor="yellow";
+		}
+	}
+	
+	function searchTagName() {
+		let spans=document.getElementsByTagName("span");
+		for (var i = 0; i < spans.length; i++) {
+			spans[i].style.backgroundColor="yellow";
+			spans[i].style.display="block";
+			spans[i].style.margin="10px";
+		}
+	}
+	
+	function searchQuery() {
+		let spans=document.querySelectorAll("p:last-child span");
+		spans[0].style.color="blue";
+	}
+</script>
+</head>
+<body>
+	<h1>DOM탐색 메서드의 종류</h1>
+	<p>
+		1. getElementById(): 태그의 id속성 이름으로 탐색해서 객체로 반환
+		- 반환값은 Element 객체 1개 <button onclick="searchId()">확인</button>
+	</p>
+	<p id="idTest">idTest</p>
+	<p>
+		2.getElementsByName("name속성이름"): form요소에 사용되는 name속성
+		- 반환값은 Element 여러개(배열형태) <button onclick="searchName()">확인</button>
+		<br/>
+		<input type="text" name="test02"/>
+		<input type="text" name="test02"/>
+		<input type="text" name="test02"/>
+	</p>
+	<p>
+		3.getElementsByTagName("tag이름"): 태그 이름으로 탐색
+		- 반환값은 Element 여러개(배열형태) <button onclick="searchTagName()">확인</button>
+		<br/>
+		<span>tag</span><span>이름</span><span>탐색</span>
+	</p>
+	<p>4.getElementsByClassName("className")</p>
+	<p>
+		5.querySelectorAll("selector표현식"): ~ALL 여러개 반환(배열)
+		<br/>
+		querySelector("selector표현식"): 한개 반환
+		<button onclick="searchQuery()">확인</button>
+		<br/>
+		<span>selector</span>
+		<span>쿼리</span>
+		<span>탐색</span>
+	</p>
+</body>
+</html>

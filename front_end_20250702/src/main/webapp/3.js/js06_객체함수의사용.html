@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>js06_객체함수의사용</title>
+<script type="text/javascript">
+	//선언적 함수: functio 키워드를 사용하여 정의, 이름이 있다.
+	//			다른 객체나 함수에서 호출이 가능 -> 재사용
+	//			파라미터 선언: 변수명만 작성 -> func(a,b){} -> 호출할때 func(5,6)(O)
+	//														   func() (O)
+	//			리턴값을 정의할 수 있다.: return 키워드 사용
+	function func01() {
+		console.log("선언적함수");
+		let val=func01_2(5,10);
+		console.log("연산결과:"+val);
+	}
+	function func01_2(a, b) { //파라미터 선언
+		console.log(a,":",b);
+		return a+":"+b;
+	}
+	
+	//익명함수: 객체 내부에서 사용되고 종료 -> 이름이 없어서
+	//		  변수에 할당해서 사용하면 호출이 가능
+	//		  파라미터로 기능을 전달할때 사용가능
+	//		  ES5(2009년) --> ES6(2015년)
+	//		  화살표 함수 : function(){}
+	//					  --> ()=>{}
+	let i=0;
+	let func02=function(){
+		console.log("익명함수");
+		//window.setInterval(); // 지연시간을 두고 기능을 반복
+		
+//		setInterval(function(){
+//			console.log(i++);
+//		}, 1000); 
+		
+		setInterval(() => {		//화살표 함수
+			console.log(i++);
+		}, 1000); 
+		
+//		setInterval(test, 1000);
+	}
+	function test() {
+		console.log(i++);
+	}
+	
+	//onload이벤트는 페이지가 로딩되면 스크립트를 실행
+	onload=function(){
+		var pArray=document.getElementsByClassName("a");
+		pArray[0].onclick=()=>{
+			console.log("객체리터럴방식");
+			//리터럴: 값 자체를 의미 --> var a=5; var a=b;
+			var jsonObj={
+				"subject":"javascript",
+				"credit":1,
+				//"printout":()=>{return jsonObj.subject+","+json.credit+"학점"}
+				//화살표 함수의 코드가 리턴코드만 있다면 {} 생략가능
+				"printout":()=>jsonObj.subject+","+jsonObj.credit+"학점"
+			}
+			
+			//객체에 정의된 메서드를 사용
+			console.log(jsonObj.printout());
+			
+			//객체의 값 변경하는경우
+			jsonObj.subject="JS"; //update개념
+			jsonObj["test"]="value"; //insert개념
+			delete jsonObj["credit"]; //delete개념
+			
+			console.log(jsonObj.subject, jsonObj.credit, jsonObj.test);
+			
+			//ES6에서 추가된 기능
+			//1.화살표 함수
+			jsonObj["arrowFunc"]=(a,b)=>{console.log(a,b)};
+			
+			//2.구조분해할당 기능
+			//- 직접 구조 분해하고 할당하는 코드
+			let subject1=jsonObj.subject;
+			let test1=jsonObj.test;
+			
+			//- 구조분해할당 문법사용
+			let {subject,test} = jsonObj; //jsonObj에 선언된 이름과 같은 이름의 변수로 선언
+			console.log("구조분해할당:",subject,test);
+			
+			//- 템플릿 리터럴
+			//java에서 println("a"+5+":") -> printf("%d는 결과값이%d",5,10)
+			console.log(`템플릿리터럴:${subject},${test}`);
+		}
+		
+		//2.객체 생성자 함수 방식-------------------------------------------------
+		pArray[1].onclick=()=>{
+			
+		}
+		
+		//생성자 함수
+		function Info(subject){
+			let test="일반 변수선언"; //외부에서 접근이 불가
+			//변수(메서드) 선언할때 this예약어를 사용
+			this.subject=subject;
+		}
+		
+	}
+	
+</script>
+</head>
+<body>
+	<h1>선언적 함수</h1>
+	<p>이름이 정의되어 있는 기본적인 함수 <button onclick="func01();">확인</button></p>
+	
+	<h1>익명함수</h1>
+	<p>이름이 없는 함수 <button onclick="func02();">확인</button></p>
+	
+	<h1>자바스크립트 객체 만들기</h1>
+	<p class="a">1.객체 리터럴 방식</p>
+	<p class="a">2.객체 생성자 함수 방식</p>
+	<p class="a">3.프로토타입 사용하기</p>
+	<p class="a">4.클로저 사용하기</p>
+</body>
+</html>

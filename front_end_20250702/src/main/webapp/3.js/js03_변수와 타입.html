@@ -3,6 +3,61 @@
 <head>
 <meta charset="UTF-8">
 <title>js03_변수와 타입</title>
+<script type="text/javascript">
+	var variable = 10; //전역변수 : 여러함수나 객체들이 모두 접근해서 사용(공통)
+	
+	function test01(){
+		variable = variable+5;
+		console.log(variable);
+	}
+	
+	function test02(){
+		variable = variable+10;
+		console.log(variable);
+	}
+	
+	test01();
+	test02();
+	
+	//할당하기
+	var t1=6; //숫자타입
+		console.log(typeof t1);
+		t1="문자" //문자열 타입
+		console.log(typeof t1);
+		t1=[1,2,3,4,5]; //array타입
+		console.log(typeof t1);
+		t1=function(){};
+		console.log(typeof t1);
+		t1={"key1":5,
+			"key2":"값",
+			"key3":function(){}
+		}
+		console.log(typeof t1);
+		// 타입에 대한 명확성이 부족 --> Type Script 등장!!
+		
+	//var 예약어의 문제점
+	//1. 변수 선언전에 변수를 사용하는데 오류가 안남
+	// --> hoisting현상 (hoist: 올리다, 말아올리다, 끌어올리다)
+	// --> 호이스팅현상 : JS를 실행하기 전에, 선언된 변수들을 먼저 확인해서 맨 위로 올려버림
+	console.log(variable3);
+	var variable3=10;
+	
+	//2. 재선언 가능
+	var variable3 = 5; // 원래라면 오류가 나야함 --> JS에서는 가능
+	console.log(variable3); //5가 잘 출력됨
+	
+	/*
+							 선언		,	 할당		,		범위
+		var	 :	변수표현	,	재선언O	,	재할당O	,	함수( 블록(if,for,{}등))
+		let	 :	변수표현	,	재선언X	,	재할당O	,	{}블록 안에서만 접근 가능
+		const:	상수표현	,	재선언X	,	재할당X	,	{}블록 안에서만 접근 가능
+	*/
+	
+	console.log(variable4); //호이스팅현상 제거
+	let variable4=5; 
+	/* let variable4=10; //재선언 안됨!  */
+	
+</script>
 </head>
 <body>
 	<h1>변수 선언 규칙</h1>
@@ -10,6 +65,14 @@
 	<p>2.영문자,_,$로 시작할 수 있다.</p>
 	<p>3.영문자,_,$,숫자를 포함할 수 있다.</p>
 	<p>4.예약어를 사용할 수 없음!</p>
-	
+	<h1>변수의 적용범위(scope)</h1>
+	<p>1.전역변수</p>
+	<p>2.지역변수</p>
+	<h1>변수의 선언과 할당</h1>
+	<p>1. var 예약어를 사용해서 선언(전통적인 방식)</p>
+	<p>ECMA Script(ES5: var사용, ES6: let,const 추가)</p>
+	<p>2. 값 할당할때 타입: 변수의 타입은 할당하는 값의 타입에 따라 결정된다. 
+			(let a = 5); --> type script 등장배경
+	</p>
 </body>
 </html>

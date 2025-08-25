@@ -103,10 +103,10 @@
 			this.credit=2;
 			this.printout=function(){return `${subject},${this.credit}학점`};
 			
-			//외부에서 메서드를 통해 속성에 접근이 가능
+			//외부에서 메서드를 통해 속성에 접근이 가능 -> 은닉화
 			this.getTest=function(){
 				return test;
-			}
+			};
 		}
 		
 		//3. 프로토타입 사용하기
@@ -115,6 +115,7 @@
 		//프로토타입을 안쓰는 경우: 객체 각각 따로 관리해야 하는 경우
 		pArray[2].onclick=()=>{
 			const infoA=new Info("javascript"); //기존에 사용하던 객체에도 사용
+			let test2 = Info.getTest;
 			
 			Info.prototype.addFunc=function() {
 				console.log(`기능추가:${this.subject}`);
@@ -132,13 +133,13 @@
 		
 		//4.클로저: 부모함수의 전달범위를 자식함수가 기억하는 상태
 		pArray[3].onclick=()=>{
-			//closuerTest1();
-			//closureTest2()();
+//			closuerTest1();
+//			closureTest2()();
 			
-			//closureTest2_2(); //자식함수만 실행
+//			closureTest2_2(); //자식함수만 실행
 			closureTest3();
 		}
-		let closureTest2_2=closureTest2();
+		let closureTest2_2=closureTest2(); //자식함수를 반환하여 변수에 저장
 		
 		var count=0;
 		function closuerTest1(){
@@ -165,6 +166,8 @@
 			}
 		}(); //()를 추가한 이유: 부모함수() 실행하기 위함--> 
 		//									자식함수 반환->closureTest3 할당
+		
+		//확인방법: closureTest2_2확인 -> closuerTest3확인
 		
 	}
 	

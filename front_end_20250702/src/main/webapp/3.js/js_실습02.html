@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>js_실습02</title>
+<script type="text/javascript">
+	let expression="";
+	function numClick(p){
+		expression+=p.textContent;
+		document.querySelectorAll("h1")[1].textContent=expression;
+	}
+	
+	function arithmeticClick(p){
+		if (p.textContent=="="){
+			document.querySelectorAll("h1")[0].textContent=expression;
+			document.querySelectorAll("h1")[1].textContent=`${eval(expression)}`;
+			console.log(`${eval(expression)}`);
+		}else{
+			expression+=p.textContent;
+			document.querySelectorAll("h1")[1].textContent=expression;
+		}
+	}
+	
+	function clearBtn(){
+		expression="";
+		document.querySelectorAll("h1")[0].textContent="";
+		document.querySelectorAll("h1")[1].textContent="";
+	}
+	
+	function symBtn(){
+		let sym = `(-${expression.substring(expression.length-1)})`;
+		expression=expression.substring(0,expression.length-1)+sym;
+		document.querySelectorAll("h1")[1].textContent=expression;
+	}
+	
+	function modBtn(){
+		expression+="%";
+		document.querySelectorAll("h1")[1].textContent=expression;
+	}
+	
+	function backBtn(){
+		expression=expression.substring(0,expression.length-1);
+		document.querySelectorAll("h1")[1].textContent=expression;
+	}
+	
+</script>
+<style type="text/css">
+	#calculator{
+		background-color: rgb(42,44,46);
+		width: 400px;
+		height: 600px;
+		padding:10px;
+	}
+	
+	h1{
+		text-align: right;
+		margin:10px;
+		color:white;
+		height: 30px;
+	}
+	#postCalc{
+		color: rgb(159,160,161);
+	}
+	#calc{
+		color: rgb(233,233,234);
+	}
+	
+	p{
+		width: 80px;
+		height:80px;
+		border-radius: 80px;
+		background-color: rgb(80,81,82);
+		text-align: center;
+		line-height: 80px;
+		font-size: 30px;
+		float:left;
+		margin:10px;
+		color:white;
+	}
+	p:active{
+		background-color: rgb(132,133,136);
+	}
+	
+	.arithmetic{
+		background-color: rgb(241,154,56);
+	}
+	.arithmetic:active{
+		background-color: rgb(244,201,149);
+	}
+	
+	.func{
+		background-color: rgb(111,113,116);
+	}
+	.func:active {
+		background-color: rgb(114,115,118);
+	}
+</style>
+</head>
+<body>
+	<h1 style="color: black; text-align: left; margin-top: 10px; margin-bottom: 30px;">계산기 구현하기</h1>
+	<div id="calculator">
+		<h1 id="postCalc"></h1>
+		<h1 id="clac"></h1>
+		<div>
+			<p class="func" onclick="clearBtn()">C️</p>
+			<p class="func" onclick="symBtn()">+/-</p>
+			<p class="func" onclick="modBtn()">%</p>
+			<p class="arithmetic" onclick="arithmeticClick(this)">÷</p>
+		</div>
+		<div>
+			<p onclick="numClick(this)">7</p>
+			<p onclick="numClick(this)">8</p>
+			<p onclick="numClick(this)">9</p>
+			<p class="arithmetic" onclick="arithmeticClick(this)">X</p>
+		</div>
+		<div>
+			<p onclick="numClick(this)">4</p>
+			<p onclick="numClick(this)">5</p>
+			<p onclick="numClick(this)">6</p>
+			<p class="arithmetic" onclick="arithmeticClick(this)">-</p>
+		</div>
+		<div>
+			<p onclick="numClick(this)">1</p>
+			<p onclick="numClick(this)">2</p>
+			<p onclick="numClick(this)">3</p>
+			<p class="arithmetic" onclick="arithmeticClick(this)">+</p>
+		</div>
+		<div>
+			<p onclick="backBtn()">⌫</p>
+			<p onclick="numClick(this)">0</p>
+			<p onclick="numClick(this)">.</p>
+			<p class="arithmetic" onclick="arithmeticClick(this)">=</p>
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>js07_StreamObject</title>
+<script type="text/javascript">
+	function strTest01(){
+		//리터럴 방식
+		let string01="String";
+		let string02="Test";
+		
+		// + 연산자 사용
+		let string03=string01+string02;
+		
+		// concat(): 여러 문자열을 합칠때 이용
+		var newString="String".concat("Test","Jave","script");
+		console.log(string03,newString);
+		document.querySelectorAll(".result")[0].textContent=newString;
+	}
+	
+	function strTest02() {
+		// 동등연산자 ==(일반적인 비교), ===(엄격한 비교)
+		// ,패턴으로 비교 match()(정규화 표현식)
+		
+		//동등연산자: ===
+		var numVal=10; // 숫자형
+		if(numVal=="10"){ // 자동형변환되어 비교됨
+			console.log("==연산자 사용: 숫자 10이 맞습니다");
+		}
+		
+		if(numVal==="10"){ // === 사용시 타입이 다르면 다르다고 비교
+			console.log("===연산자 사용: 숫자 10이 맞습니다");
+		}else {
+			console.log("===연산자 사용: 숫자 10이 아닙니다");
+		}
+		
+		//객체와 비교
+		let strLit="한경";
+		let strObj=new String("한경"); //new 객체정의
+		
+		if (strLit==strObj) {
+			console.log("==연산자 사용: 같다")
+		}
+		
+		if (strLit===strObj) {
+			console.log("===연산자 사용: 같다")
+		}else {
+			console.log("===연산자 사용: 다르다")
+		}
+		
+		// match함수 이용
+		let strVal=prompt("당신의 이름은?","");
+		// isNaN(): 숫자인지 확인하는 함수
+		if(strVal.match(/[0-9]/)) {
+			alert("숫자가 포함되어 있어요!! 확인해주세요.");
+		}else {
+			if(strVal=="한경"){
+				console.log("한경이 맞습니다.");
+				document.querySelectorAll(".result")[1].innerHTML="<b>"+strVal+"이 맞습니다.</b>";
+			}else{
+				console.log("한경이 아닙니다.");
+				document.querySelectorAll(".result")[1].innerHTML=`<b>${strVal}이 아닙니다.</b>`;
+			}
+		}
+	}
+	
+	function strTest03() {
+		//"indexOf()메서드", "substring()메서드"를 추출
+		let strVal="문자열 추출하기. 관련 메서드: indexOf()메서드, substring()메서드.";
+		let idx1 = strVal.indexOf("indexOf()메서드");
+		let idx2 = strVal.indexOf("substring()메서드");
+		
+		let str1=strVal.substring(idx1,idx1+12);
+		let str2=strVal.substring(idx2,idx2+14);
+		
+		console.log(`${str1}, ${str2}`);
+		document.querySelectorAll("#re1")[0].textContent=str1;
+		document.querySelectorAll("#re2")[0].textContent=str2;
+	}
+	
+	let count = 6; //전역변수
+	function strTest04() {
+		//문제: 입력 키워드 최대 6개로 제한
+		//입력된 문자열 각각의 키워드를 추출해서 <span>요소에 출력하세요
+		//출력하는 형식:
+	    //"<br>키워드:수박<br/>키워드:바나나<br/>키워드:사과" -->span요소에 출력
+		let prop = prompt("쉼표로 구분하여 키워드를 입력하세요. 예) 수박,바나나,사과");
+		let props=prop.split(",");
+		console.log(props);
+		
+		console.log(count);
+		
+		if(props.length>count) {
+			alert(`키워드가 ${count}개 이상입니다! 확인해주세요.`);
+		}else{
+			let str="";
+			for (var i = 0; i < props.length; i++) {
+				str += `키워드:${props[i]}<br/>`;
+			}
+			document.querySelectorAll("#key")[0].innerHTML=`${str}`;
+		}
+	}
+	
+	function numCount() {
+		count = document.getElementById("num").value;
+		document.querySelectorAll('fieldset button')[0].style.color='red';
+	}
+	
+	//계산기 기능 구현하기 : OS제공 계산기 참고 
+	//					-> 사칙연산, 클리어, 백스페이스(하나씩 지우기)
+	//					-> eval()함수 활용: eval("5+10")
+	//					input onclick="cal(this)" -> ele.value 입력된 값
+</script>
+</head>
+<body>
+	<h1>String 객체의 사용</h1>
+	<h2>문자열 합치기<button onclick="strTest01()">확인</button></h2>
+	<p class="result"></p>
+	
+	<h2>문자열 비교하기<button onclick="strTest02()">확인</button></h2>
+	<p class="result"></p>
+	
+	<h2>문자열 비교하기: indexOf()/lastIndexIf():일치하는단어(해당인덱스 반환)
+											 일치하는단어X(-1반환)
+	</h2>
+	<h2>문자열 추출하기: substring-문자열 시작인덱스~종료인덱스<br/>
+					 split()-문자열에 토큰으로 나눠서 배열로 반환("a,b,c,d" -> [a,b,c,d])
+		<button onclick="strTest03()">확인</button>
+	</h2>
+	<p class="result"><span id="re1"></span><br/><span id="re2"></span></p>
+	
+	<h2>키워드 나누기<button onclick="strTest04()">클릭</button></h2>
+	<span id="key"></span>
+	<hr>
+	<fieldset>
+		<label>최대입력수:</label>
+		<input type="number" id="num" min="1" />
+		<button onclick="numCount()">설정</button>
+		<br/>
+		<small>사용자가 최대입력수를 입력하고 설정버튼을 클릭하면 적용:
+			   설정버튼의 폰트색을 red로 변경</small>
+	</fieldset>
+</body>
+</html>

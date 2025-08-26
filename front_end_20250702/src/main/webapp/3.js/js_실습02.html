@@ -12,9 +12,15 @@
 	
 	function arithmeticClick(p){
 		if (p.textContent=="="){
-			document.querySelectorAll("h1")[0].textContent=expression;
+			expression = expression.replace("x","*");
+			expression = expression.replace("÷","/");
 			document.querySelectorAll("h1")[1].textContent=`${eval(expression)}`;
-			console.log(`${eval(expression)}`);
+			expression = expression.replace("*","x");
+			expression = expression.replace("/","÷");
+			document.querySelectorAll("h1")[0].textContent=expression;
+			expression = document.querySelectorAll("h1")[1].textContent;
+			
+			console.log(expression);
 		}else{
 			expression+=p.textContent;
 			document.querySelectorAll("h1")[1].textContent=expression;
@@ -97,7 +103,7 @@
 </style>
 </head>
 <body>
-	<h1 style="color: black; text-align: left; margin-top: 10px; margin-bottom: 30px;">계산기 구현하기</h1>
+	<h2 style="width: 400px; color: black; text-align: center; margin-top: 10px; margin-bottom: 30px; font-size:30px;">계산기 구현하기</h2>
 	<div id="calculator">
 		<h1 id="postCalc"></h1>
 		<h1 id="clac"></h1>
@@ -111,7 +117,7 @@
 			<p onclick="numClick(this)">7</p>
 			<p onclick="numClick(this)">8</p>
 			<p onclick="numClick(this)">9</p>
-			<p class="arithmetic" onclick="arithmeticClick(this)">X</p>
+			<p class="arithmetic" onclick="arithmeticClick(this)">x</p>
 		</div>
 		<div>
 			<p onclick="numClick(this)">4</p>

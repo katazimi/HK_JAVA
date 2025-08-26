@@ -27,15 +27,15 @@
 		}
 	}
 	
-	function clearBtn(){
+	function clearBtn(){ //클리어 버튼
 		expression="";
 		document.querySelectorAll("h1")[0].textContent="";
 		document.querySelectorAll("h1")[1].textContent="";
 	}
 	
-	function symBtn(){
-		let sym = `(-${expression.substring(expression.length-1)})`;
-		expression=expression.substring(0,expression.length-1)+sym;
+	function symBtn(){ //부호 변경 버튼
+		let sym = `(-${expression.substring(expression.search(/[^0-9]/)+1,expression.length)})`;
+		expression=expression.substring(0,expression.search(/[^0-9]/)+1)+sym;
 		document.querySelectorAll("h1")[1].textContent=expression;
 	}
 	

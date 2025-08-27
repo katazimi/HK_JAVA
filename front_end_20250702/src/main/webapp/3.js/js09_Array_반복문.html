@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>js09_Array_반복문</title>
+<script type="text/javascript">
+	let array=[1,2,3,4,5];
+	//일반 for문: 전통적인 방식
+	//		     큰 규모의 배열을 실행할 때 성능이 좋을 수 있다.(for each보다)
+	//			 break, continue, 조건문 등 제어가 필요한 경우 사용 아
+	for (var i = 0; i < array.length; i++) {
+		if(array[i]>3) {
+			break;
+		}
+		console.log(array[i]);
+	}
+	console.log("-----------------");
+	//향상된 for문
+	for ( var item in array) {
+		console.log(item);
+	}
+	console.log("-----------------");
+	//forEach: ES5 2009부터 추가된 반복문 기능
+	//		   인자값(배열의 값 받는 변수, 배열의 인덱스, 해당배열)
+	array.forEach(function(item,index,arr){
+			console.log(`${index} : ${item}`);
+	});
+	
+	//map():인자값(item,index,arr){return item;}
+	//해당 배열을 순회하면서 새로운 값을 정의한 배열로 반환해준다.
+	let array2=array.map((item)=>{
+		let newVal=item+1;
+		return newVal;
+	});
+	console.log(array2);
+	
+	//filter(): true/false 결과에 따라서 값을 배열로 반환
+	let array3 = array.filter((item)=>{
+		return item%2===0; //2의 배수만 배열로 반환
+	});
+	console.log(array3);
+	
+	//reduce : 배열값의 총합을 반환
+	//초기값 설정하지 않으면 배열의 첫번째값이 초기값이 된다.
+	let array4=array.reduce((a,c)=>{
+		return a+c;
+	},10);
+	console.log(array4);
+</script>
+</head>
+<body>
+	
+</body>
+</html>

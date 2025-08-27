@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+	onload=function() {
+		document.querySelector("#btn").onclick=function(e){
+			e.target.style.backgroundColor="red";
+			console.log("버튼클릭",e.target.tagName);
+			
+			let url="js12_pop.html";
+			let title="팝업창 페이지";
+			let prop="width=400px, height=400px, top=300px, left=800px";
+			window.open(url,title,prop);
+		}
+	}
+	
+</script>
+</head>
+<body>
+	<h1>팝업창 만들기</h1>
+	<input type="text" name="val01"/>
+	<button id="btn">팝업창</button>
+	
+	<h1>팝업창에서 전달된 값</h1>
+	<input type="text" name="val02"/>
+</body>
+</html>

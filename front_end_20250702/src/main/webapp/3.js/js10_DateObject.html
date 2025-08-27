@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>js10_DateObject</title>
+<script type="text/javascript">
+	function testDate01(){
+		const date=new Date(); //default 생성자:오늘에 대한 날짜정보로 생성
+		let spanDate=document.getElementById("today");
+		spanDate.textContent=date.toLocaleString();
+	}
+	
+	function testDate02(){
+		const date=new Date();
+		let year=date.getFullYear();//년도
+		let month=date.getMonth()+1 // 0~11월로 구성
+		let day=date.getDate();//일
+		let week=date.getDay();//요일
+		let dayOfWeek=["일","월","화","수","목","금","토"];
+		
+		let spanDate=document.getElementById("today");
+		spanDate.textContent=`${year}/${month}/${day}(${dayOfWeek[week]})`
+	}
+	
+	function testDate03(){
+//		const date=new Date("2025-09-05"); //yyyy-MM-dd hh:mm:ss
+		const date=new Date(2025,9-1,5); //주의 월값은 -1
+		document.getElementById("specific").textContent
+		=date.toLocaleDateString();
+	}
+	
+	function testDate04(){
+		//현재 날짜 출력기능
+		const today=new Date();
+		
+		//경과일 변수에 저장하기
+		let inputDate = parseInt(document.getElementById("inputDate").value);
+		console.log(inputDate);
+		
+		//현재날짜에서 10일(경과일)뒤에 날짜는?
+		//10일 뒤 날짜 출력
+		//setDate()메서드 사용
+		const date = new Date(today.setDate(today.getDate()+inputDate));
+		let year2=date.getFullYear();//년도
+		let month2=date.getMonth()+1 // 0~11월로 구성
+		let day2=date.getDate();//일
+		let week2=date.getDay();//요일
+		let dayOfWeek=["일","월","화","수","목","금","토"];
+		document.getElementById("resultDate").value=`${year2}/${month2}/${day2}(${dayOfWeek[week2]})`;
+	}
+	
+	function testDate05(){
+		//현재 날짜, 수료날짜 --> 남은 일수는?
+		//getTime() --> new Date(현재날짜), new Date(수료날짜)
+		
+		//현재 날짜 추가
+		const today=new Date();
+	
+		//수료일 설정
+		const completionDate = new Date(document.getElementById("d_day").value);
+		
+		//남은 일수 계산
+		let dDay = Math.ceil((completionDate.getTime()-today.getTime())/1000/60/60/24);
+		document.getElementById("period").value=dDay;
+	}
+	
+	window.onload = function() {
+		const today=new Date();
+		let year=today.getFullYear();//년도
+		let month=today.getMonth()+1 // 0~11월로 구성
+		let day=today.getDate();//일
+		let week=today.getDay();//요일
+		let dayOfWeek=["일","월","화","수","목","금","토"];
+		document.getElementById("dates").value=`${year}/${month}/${day}(${dayOfWeek[week]})`;
+		document.getElementById("dates2").value=`${year}/${month}/${day}(${dayOfWeek[week]})`;
+	} 
+</script>
+</head>
+<body>
+	<h1>오늘 날짜 출력하기</h1>
+	<span id="today"></span><br>
+	<button onclick="testDate01()">오늘날짜</button>
+	<button onclick="testDate02()">오늘날짜(표현방식설정)</button>
+	
+	<h1>특정 날짜 출력하기</h1>
+	<span id="specific"></span><br>
+	<button onclick="testDate03()">특정날짜</button>
+	
+	<h1>경과날짜구하기</h1>
+	<label>현재날짜:</label><input type="text" id="dates" readonly="readonly"/><br/>
+	<label>경과일:</label><input type="number" id="inputDate" min="1"/>일<br/>
+	<label>경과후 날짜:</label><input type="text" id="resultDate"
+											 	readonly="readonly"/><br/>
+	<button onclick="testDate04()">경과날짜조회</button>
+	<h1>D-Day기능</h1>
+	<label>현재날짜:</label><input type="text" id="dates2" readonly="readonly"/><br/>
+	<label>수료일:</label><input type="date" id="d_day" /><br/>
+	<label>남은 일수:</label><input type="text" id="period"
+											 	readonly="readonly"/><br/>
+	<button onclick="testDate05()">확인</button>
+	
+</body>
+</html>

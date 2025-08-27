@@ -5,6 +5,30 @@
 <title>Insert title here</title>
 <script type="text/javascript">
 	
+	//생성자 함수로 만들기: this예약어 사용
+	function Lotto(){
+
+		//번호를 저장하는 배열 선언
+		this.balls=new Array();
+		//로또번호 랜덤생성 메서드
+		this.makeBall = function(){
+			return parseInt(Math.random()*45+1);
+		}
+		//배열에 저장하는 메서드
+		this.lottoBalls=function() {
+			let count=0;
+			
+			while(count<7) {
+				let ball=this.makeBall();
+				if(this.balls.indexOf(ball)==-1) {
+					this.balls.push(ball);
+					count++;
+				}
+			}
+			console.log(this.balls);
+		}
+	}
+	
 	//랜덤 숫자 생성
 	function makeBall() {
 		return parseInt(Math.random()*45+1);
@@ -29,14 +53,14 @@
 	function lottoPrint() {
 		//실습문제: 정렬된 당첨번호 6개와 보너스 번호 1개로 나눠서 화면에 출력
 		
-		const winNum = lottoBalls();
-		
+		//const lottoNum = lottoBalls();
+		const lotto = new Lotto();
+			  lotto.lottoBalls();
+		const lottoNum = lotto.balls;
 		//오름차순 정렬
-		winNum.sort((a,b)=>a-b);
-		
+		lottoNum.sort((a,b)=>a-b);
 		//추첨번호에서 보너스 번호 하나 추출
-		const bonus = winNum.pop(); //winNum배열 맨뒤에서 숫자 하나를 꺼내옴
-		const lottoNum = winNum;
+		const bonus = lottoNum.pop(); //winNum배열 맨뒤에서 숫자 하나를 꺼내옴
 		
 		document.querySelectorAll("span")[1].textContent=`${lottoNum.join("-")}`
 		document.querySelectorAll("span")[3].textContent= bonus;
@@ -49,7 +73,7 @@
 		<span>로또번호: </span>
 		<span>예시)1-3-10-15-20-41</span>&nbsp;&nbsp;&nbsp;
 		<span>보너스번호:</span>
-		<span>32</span>&nbsp;&nbsp;&nbsp;
+		<span>32</span>
 		<button onclick="lottoPrint()">생성</button>
 	</fieldset>
 </body>

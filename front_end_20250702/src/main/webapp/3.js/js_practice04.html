@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>js_practice04</title>
+<style>
+	#lotto{
+		width:430px;
+	}
+	td{
+		width:60px;
+		height:60px;
+		text-align: center;
+		font-size: 20px;
+		
+	}
+	
+</style>
+<script type="text/javascript">
+	//랜덤 숫자 생성
+	function makeBall() {
+		return parseInt(Math.random()*45+1);
+	}
+	
+	//생성된 번호를 배열에 저장하는 기능
+	function lottoBalls() {
+		const balls = [];
+		let count=0;
+		
+		while(count<7) {
+			let ball=makeBall();
+			if(balls.indexOf(ball)==-1) {
+				balls.push(ball);
+				count++;
+			}
+		}
+		console.log(balls);
+		return balls;
+	}
+	
+	function lottoPrint() {
+		//실습문제: 정렬된 당첨번호 6개와 보너스 번호 1개로 나눠서 화면에 출력
+		
+		//const lottoNum = lottoBalls();
+		const lotto = new Lotto();
+			  lotto.lottoBalls();
+		const lottoNum = lotto.balls;
+		//오름차순 정렬
+		lottoNum.sort((a,b)=>a-b);
+		//추첨번호에서 보너스 번호 하나 추출
+		const bonus = lottoNum.pop(); //winNum배열 맨뒤에서 숫자 하나를 꺼내옴
+		
+		document.querySelectorAll("span")[1].textContent=`${lottoNum.join("-")}`
+		document.querySelectorAll("span")[3].textContent= bonus;
+	}
+	
+	function printview(){
+		let count = document.getElementsByName("numvalue")[0].value;
+		let lottoNumsPrint = "";
+		let winNum = lottoBalls();
+		winNum.sort((a,b)=>a-b);
+		document.querySelectorAll("td")[0].textContent=`당첨번호 ${winNum.join("-")}`
+		const lottoNums = new Array(count);
+		for (var x = 0; x < count; x++) {
+			lottoNums[x] = lottoBalls();
+			for (var y = 0; y < 6; y++) {
+				lottoNums[x].sort((a,b)=>a-b);
+				if (y==0) {
+					if(winNum.indexOf(lottoNums[x][y])==-1){
+						lottoNumsPrint += `<tr><td>${lottoNums[x][y]}</td>`
+					}else{
+						lottoNumsPrint += `<tr><td style="background-color: yellow">${lottoNums[x][y]}</td>`
+					}	
+				}else if(y==5){
+					if (winNum.indexOf(lottoNums[x][y])==-1){
+						lottoNumsPrint += `<td>${lottoNums[x][y]}</td></tr>`
+					}else{
+						lottoNumsPrint += `<td style="background-color: yellow">${lottoNums[x][y]}</td></tr>`
+					}
+				}else {
+					if(winNum.indexOf(lottoNums[x][y])==-1){
+						lottoNumsPrint += `<td>${lottoNums[x][y]}</td>`
+					}else{
+						lottoNumsPrint += `<td "background-color: yellow">${lottoNums[x][y]}</td>`
+					}
+					
+				}
+			}
+			
+		}
+		
+		console.log(lottoNums);
+		document.getElementById("test").innerHTML=lottoNumsPrint;
+	}
+	
+</script>
+</head>
+<body>
+	<form>
+		로또게임-구매 매수를 입력하세요 <input type="text" name="numvalue">
+		<input type="button" value="go!" onclick="printview(numvalue.value)"><br>
+	</form>
+		로또 번호<br>
+	<div id="lotto"></div>
+	<table id="lottolist" border="1">
+		<tr><td colspan="6" style="text-align: left">당첨 번호 </td></tr>
+		<tbody id="test"></tbody>
+	</table>
+</body>
+</html>

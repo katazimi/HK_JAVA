@@ -2,8 +2,14 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>js12_pop</title>
+<title>js12_pop.html</title>
 <script type="text/javascript">
+	function childValue(){
+		var val=document.getElementsByName("childVal1")[0].value;
+		console.log(val);
+		window.opener.document.getElementsByName("val02")[0].value=val;
+	}
+	
 	onload=function(){
 		//팝업창을 열어준 부모페이지
 		let val = window.opener.document.getElementsByName("val01")[0].value;
@@ -14,18 +20,15 @@
 			window.self.close(); //self:자신의 창, top, parent...
 		}
 		
-		function childVal(){
-			var val=document.getElementsByName("childVal")[0].value;
-			window.opener.document.getElementsByName("val02")[0].value=val;
-		}
+	
 	}
 </script>
 </head>
 <body>
 	<h1>팝업창이야~</h1>
 	<span id="val"></span>
-	<input type="text" name="childVal"/>
-	<button onclick="childVal()">전달</button>
+	<input type="text" name="childVal1"/>
+	<button onclick="childValue()">전달</button>
 	<button>창닫기</button>
 </body>
 </html>

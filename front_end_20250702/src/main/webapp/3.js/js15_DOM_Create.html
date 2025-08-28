@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>js15_DOM-Create</title>
+<script type="text/javascript">
+	/*
+		Element 객체 생성: document.createElement("div")
+			- setAttribute("속성이름","속성값") : 재사용X
+			- setAttributeNode(Attribute객체) : 재사용O
+		
+		Attribute 객체 생성: document.createAttribute("속성이름")
+			- nodeValue: 속성값 정의 ( attr.nodeValue="값")
+		
+		Text 객체 생성: document.createTextNode("text")
+					  ele.textContent="text" 이 방식과는 좀 다름
+					  appendChild(Node)메서드를 사용해서 추가해야함
+	*/
+	
+	function eleCreate(){
+		const div = document.createElement("div"); //<div></div> 생성
+		const styleAttr=document.createAttribute("style"); //style=""생성
+		const txt=document.createTextNode("엘리먼트"); //"엘리먼트" 생성
+		
+		//속성 객체에 값 넣기
+		styleAttr.nodeValue="color:red;"
+		
+//		div.setAttribute("style","color:red");	//속성객체 사용 안할
+		div.setAttributeNode(styleAttr); //<div style="속성값"></div>
+		
+		//text 객체 넣기
+//		div.textContent="문자열 타입"; (X)
+		div.appendChild(txt); //<div style="값">텍스트추가</div>
+		
+		//body에 엘리먼트 추거
+		document.querySelector("#main").appendChild(div);
+	}
+</script>
+<style type="text/css">
+	#main{
+		background-color: lightblue;
+	}
+</style>
+</head>
+<body>
+	<h1>요소생성하기</h1>
+	<button onclick="eleCreate()">엘리먼트 생성</button>
+	<div id="main"></div>
+</body>
+</html>

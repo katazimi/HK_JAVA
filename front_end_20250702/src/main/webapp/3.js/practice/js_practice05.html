@@ -2,18 +2,27 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>js_practice05</title>
 <script type="text/javascript">
 	
-	//문제1
 	onload=function(){
+		const span=document.getElementsByClassName("sub");
+		//getEle..(): 반환객체 -> 유사배열객체 : HTMLCollection타입 -> Array객체 아님 => forEach,map 사용불가
+		//querySelector...(): 반환객체 -> 유사배열객체 : NodeList타입 => forEach, map사용 가능
+		for (var i = 0; i < span.length; i++) {
+			span[i].onclick=(e)=>{
+				e.target.nextElementSibling.firstElementChild.textContent="첫번째 요소";
+			}
+		}
+	}
+	
+	function testSearch(){
+		//문제1
 		const boxA = document.querySelector("#a");
 		const boxAP = boxA.parentNode;
 		boxAP.style.backgroundColor="lightblue";
-	}
-	
-	//문제2
-	function testSearch(){
+		
+		//문제2
 		const boxB = document.querySelector("#b");
 		const boxBC = boxB.childNodes;
 		boxBC[3].style.fontSize="20pt";

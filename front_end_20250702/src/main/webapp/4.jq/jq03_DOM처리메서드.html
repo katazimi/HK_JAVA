@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>jq03_DOM처리메서드</title>
+<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+<script type="text/javascript">
+	$(function(){
+		$("button").eq(0).click(function(){
+			const $p=$("<p title='속성'></p>");
+			$p.text("prepend메서드"); //textContent와 동일한 기능
+			$p.addClass("prepend"); //class속성을 추가하는 메서드
+			$(".insert01").prepend($p); //자식요소 가장앞에 추가
+			
+			//문자열로 요소를 바로 추가하는것도 가능
+			//$(".insert01").prepend("<p title='속성'>prepend</p>");
+		});
+		
+		$("button").eq(1).click(function(){
+			const $p=$("<p title='속성'></p>");
+			$p.text("append메서드"); //textContent와 동일한 기능
+			$p.addClass("append"); //class속성을 추가하는 메서드
+			$(".insert01").append($p); //자식요소 가장앞에 추가
+		});
+		
+		$("button").eq(4).click(function(){
+			const $ele=$(".insert01").children().first();
+			$(".insert02").append($ele);
+		});
+		
+		$("button").eq(5).click(function(){
+			$(".insert02 > .a").before("<p tile='속성'>before</p>");
+		});
+		
+		$("button").eq(6).click(function(){
+			$(".insert02 > .a").after("<p tile='속성'>after</p>");
+		});
+		
+		$("button").eq(7).click(function(){
+			$(".insert02 > p").wrap("<div class='wrapper'><p>(wrap으로 감쌌음)</p></div>");
+		});
+		
+		$("button").eq(8).click(function(){
+			const $ele=$(".insert02").children().first();
+			$(".insert01 > .a").after($ele);
+		});
+	})
+</script>
+<style type="text/css">
+	.insert01{
+		border:1px solid red;
+		margin-bottom: 20px;
+	}
+	
+	.insert02{
+		border:1px solid red;
+	}
+	
+	.wrapper{
+		background-color: yellow;
+	}
+</style>
+</head>
+<body>
+	<h1>내부요소추가하기</h1>
+	<button>prepend</button>
+	<button>append</button>
+	<button>html</button>
+	<button>text</button>
+	<button>DOM요소 이동</button>
+	<h1>외부요소추가하기</h1>
+	<button>before</button>
+	<button>after</button>
+	<button>wrap</button>
+	<button>DOM요소 이동</button>
+	
+	<div class="insert01">
+		<p class="a">내부추가하기</p>
+	</div>
+	<div class="insert02">
+		<p class="a">외부추가하기</p>
+	</div>
+</body>
+</html>

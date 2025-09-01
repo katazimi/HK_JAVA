@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>jq01_환경설정및작성방법</title>
+<!-- CDN방식 -->
+<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+<script type="text/javascript">
+	/*
+		환경설정:	파일을 다운받아서 링크
+				URL링크(CDN): 네트워크 상황에 영향을 많이 받음
+				
+		작성방법: $ 특수문자 사용, $의 의미는 jquery() -> $() 간소화
+		js: load이벤트 작성 -> onload = fuction()=>{}
+		jq:				 -> $(function(){});
+						 -> $(document).ready(function(){});
+	*/
+	// onload기능
+	$(function(){
+//		alert("Hello JQuery!");
+
+		$("button").eq(3).click(function(){
+//			$("img").css("display","none");
+			$("img").hide(2000,function(){alert("짜잔!!이미지가 사라졌어요!"); 
+											$("img").show(2000).css({"width":"400px","height":"250px"}).
+											slideUp(2000);
+											}); //요소를 감추는 기능
+			
+		});//click이벤트 종료
+		
+		//JQ
+		$("img").click(function(){
+			$(this).hide();
+		})
+		//JS
+		const imgs = document.querySelectorAll("img");
+		for (var i = 0; i < imgs.length; i++) {
+			imgs[i].onclick=function(e){
+				e.target.style.display="none";
+			}
+		}
+		
+		
+	})
+		
+	function imgSize(){
+		const imgJQ=$("div > img"); //img요소 객체들 생성
+//		imgJQ.style.width="400px"; //생성한 객체는 jquery객체라 적용이 안됨
+								   //jquery 객체에 구현되어 있는 속성X: style
+		imgJQ.css("width","400px");
+		imgJQ.css("height","250px");
+		
+		imgJQ.css({"width":"400px",
+					"height":"250px"}
+		);
+		
+//		const imgJS=document.querySelectorAll("div > img");
+//		imgJS[0].style.height="250px";
+	}
+	
+	//DOM탐색메서드
+	function highlight(){
+		//목록중에 인덱스가 1인 목록을 강조
+		$("ol > li").eq(1).css("background-color","yellow");
+		$("ol > li").last().css({"background-color":"blue",
+								 "color":"white"
+								});
+		//JS에서는 유사배열[HTMLCollection]
+		//document.getElementsByTagName("p").forEach() -> (x)
+		$("ol > li").css("font-size","30px"); //jq -> 유사배열.기능() (O)
+		
+	}
+	
+	//DOM처리메서드 확인
+	function addImg(){
+		//JS: appendChild(Node 객체): Target 요소의 자식들중에 마지막 위치에 추가
+		// 주의!! div.appendChild("<p>text</p>") (X)
+		//		document.createElement("p") -> 객체로 만들어서 추가
+//		const img=$("<p>text</p>") //태그를 문자열로 넣으면 새롭게 생성
+//		$("div").append(img); //객체도 넣을수 있음
+
+		$("div").append("<img src='../img/dog.jpeg' alt='강아지사진'/>"); //파라미터에 Node객체, 문자열 형태
+		
+	}
+	
+</script>
+</head>
+<body>
+	<h1>jquery의 사용</h1>
+	<ol>
+		<li>셀렉터 표현식</li>
+		<li>DOM탐색메서드</li>
+		<li>DOM처리메서드</li>
+		<li>이벤트메서드</li>
+		<li>AJAX메서드</li>
+		<li>기타메서드</li>
+	</ol>
+	<button onclick="imgSize()">이미지 축소</button>
+	<button onclick="highlight()">리스트강조</button>
+	<button onclick="addImg()">이미지추가</button>
+	<button>이미지감추기</button>
+	<hr/>
+	<div>
+		<img src="../img/apple.png" alt="사과사진"/>
+	</div>
+</body>
+</html>

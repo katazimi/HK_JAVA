@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>jq02_메뉴만들기</title>
+<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+<style type="text/css">
+	.menu{
+		width:120px;
+		background-color: orange;
+		position: absolute;
+		border: 1px solid black;
+	}
+	
+	#menu02{
+		left:140px;
+	}
+	
+	#menu03{
+		left:270px;
+		
+	}
+	div > a{
+		text-decoration: none;
+		width:118px;
+		height: 30px;
+		display: inline_block;
+		text-align: center;
+		line-height:30px;
+		font-weight: bold;
+		color:white;
+	}
+	
+	.menu > div{
+		display:none;
+	}
+</style>
+<script type="text/javascript">
+	$(function(){
+		// 마우스가 나갈때 하위메뉴가 사라지는 문제점
+		/* $(".menu > a").mouseover(function(){
+			$(this).nextAll("div").show();
+		});
+		
+		$(".menu > a").mouseout(function(){
+			$(this).nextAll("div").hide();
+		}); */
+		
+		//hover(mouseFunc,mouseFunc): css: hover(셀렉터 표현식)
+		/* $(".menu").hover(function(){
+			//stop(): 앞에 적용된 여러효과를 종료
+			$(this).children("div").stop().slideDown();
+		},function(){
+			$(this).children("div").stop().slideUp();
+		}); */
+		
+		$(".menu").hover(function(){
+			//slideToggle: up, down 기능을 모두 구현
+			$(this).children("div").stop().slideToggle();
+		})
+	})
+</script>
+</head>
+<body>
+	<h1>메뉴만들기</h1>
+	<div id="menu01" class="menu">
+		<a href='#'>필터링 메서드</a>
+		<div>slice()</div>
+		<div>first()</div>
+		<div>last()</div>
+		<div>eq()</div>
+	</div>
+	
+	<div id="menu02" class="menu">
+		<a href='#'>트리탐색 메서드</a>
+		<div>find()</div>
+		<div>children()</div>
+		<div>parent()</div>
+		<div>prev() / next()</div>
+	</div>
+	
+	<div id="menu03" class="menu">
+		<a href='#'>기타메서드</a>
+		<div>add()</div>
+		<div>is()</div>
+		<div>end()</div>
+		<!-- $("p").next().append("<span></span>").end().css("k","v") -->
+	</div>
+</body>
+</html>

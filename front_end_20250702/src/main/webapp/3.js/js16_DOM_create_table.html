@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>js16_DOM_create_table.html</title>
+<script type="text/javascript">
+	function tableVal(){
+		// 폼에서 입력한 값을 가져오자
+		// -기능추거
+		//	1. 입력된 정보를 목록에 추가할때 10개로 제한
+		//		-> alert으로 "행이 10개를 초과했습니다"
+		//	2. 입력이 안된 항목을 알려주기 (유효값 처리 개념)
+		//		-> 경고창으로 경고하기(내용이 안된 항목 알려주기: 아이디 비밀번호 전화번호)
+		const inputs=document.querySelectorAll("form[name=formTest] input[name]");
+		let idx = new Array();
+		for (let i = 0; i < inputs.length; i++) {
+			if(inputs[i].value==""){
+				idx.push(i);
+			}
+		}
+		
+		let str="";
+		for (var i = 0; i < idx.length; i++) {
+			str = str + inputs[idx[i]].parentElement.previousElementSibling.textContent+" ";
+		}
+		
+		if (idx.length == 0){
+			//행갯수 구하기
+			const count = document.querySelectorAll("#addtr tr").length;
+			
+			if (count <10) {
+				const tr=document.createElement("tr");
+				for (let i = 0; i < inputs.length; i++) {
+					const td=document.createElement("td");
+					td.textContent=inputs[i].value;
+					tr.appendChild(td);
+				}
+				//완성된 tr요소를 tbody에 추가하자
+				document.querySelector("#addtr").appendChild(tr);
+			}else{
+				alert("행의 갯수가 10개를 초과했습니다.");
+			}
+		}else{
+			str = "모두 입력하세요!("+str+")";
+			alert(str);
+		}
+		
+		
+		
+		
+	}
+</script>
+</head>
+<body>
+	<form name="formTest">
+		<table border="1">
+			<caption>회원정보입력</caption>
+			<col width="100px"><col width="300px">
+			<tr>
+				<th>아이디</th>
+				<td><input type="text" name="id"></td>
+			</tr>
+			<tr>
+				<th>비밀번호</th>
+				<td><input type="password" name="pw"></td>
+			</tr>
+			<tr>
+				<th>주소</th>
+				<td><input type="text" name="addr"></td>
+			</tr>
+			<tr>
+				<th>전화번호</th>
+				<td><input type="tel" name="phone"></td>
+			</tr>
+			<tr>
+				<td colspan="2"><input type="button" value="추가" 
+									   onclick="tableVal()"></td>
+			</tr>
+		</table>
+	</form>
+	<hr/>
+	<div id="addTable">
+		<table border="1" id="ctb">
+			<caption>회원정보목록</caption>
+			<col width="100px"><col width="100px">
+			<col width="300px"><col width="200px">
+			<thead>
+				<tr>
+					<th>아이디</th>
+					<th>비밀번호</th>
+					<th>주소</th>
+					<th>전화번호</th>
+				</tr>
+			</thead>
+			<tbody id="addtr"></tbody>
+		</table>
+	</div>
+</body>
+</html>

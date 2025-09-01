@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>js18_cookie.html</title>
+<script type="text/javascript">
+	/*
+		웹서비스 동작 방식: 클라이언트  -------------------  서버
+						request        				response
+						
+						
+		- cookie: 클라이언트 측에 저장되고, 용량이 적은 데이터, 정보를 유지/관리
+				서버로 전송됨, 용량은 4kb로 제한, 도메인 하나당 쿠기 약 20개
+				
+			-저장형식: 문자열 -> "key=value;id=hk;name=hankung;...." ;로 구분
+			-저장내용: key,value,expires 기본설정내용
+				- expires: 설정단위 UTC기준(세계표준시)으로 Date객체를 이용해서 설정
+				- domain: 쿠키사용범위 (주 도메인: https://www.naver.com
+								     서브도메인: https://www.cafe.naver.com
+								     주/서브 도메인접근: .naver.com
+									)
+				- path: 쿠키사용범위(/admin/a/b, admin/config)
+				- secure: https로만 접근할 수 있는지 여부 - true/false
+				
+			- 유효기간 설정: 쿠키의 사용기간 -> 설정X 브라우저가 종료될때 삭제됨
+						  설정방법 expires, max-age 두가지 방식 존재
+			
+	*/
+	
+	function setCookieTest(){
+		setCookie("user4","hk4",1);
+	}
+			
+	function removeCookieTest(){
+		removeCookie("user");
+	}
+	
+	function getCookieTest(){
+		getCookie("user");
+	}
+			
+	function setCookie(name,value,expires,domain,path,secure){
+		
+		let cookies="";
+		
+		//인코딩 처리3가지 : ASCII코드로 변환, 나머지 유니코드 변환 -> 이제 안씀
+		//escape() : 주소전체를 인코딩할때 사용
+		//			 일반 문자는 인코딩처리, 주소와 관련된 특수문자는 제외
+		//			 예) https://www.hankyung.com/user?id=hk&name=han
+		//encodeURIComponent(): 모든 문자/특수문자 등등을 인코딩 처리함
+		//						파라미터에 대한 내용도 모두 처리 가능
+		
+		cookies+=name+"="+encodeURIComponent(value); //인코딩처리해서 저장
+		
+		const date = new Date();
+		date.setDate(date.getDate()+expires);
+		cookies+=";expires="+date.toUTCString(); //유효기간 설정(세계표준시)
+	// 	cookies+=";max_age="+(1000*1*60*60*24)// ms단위로 설정
+	
+		if(domain){
+			cookies+=";domain="+domain;
+		}
+		if(path){
+			cookies+=";path="+path;
+		}
+		if(secure){
+			cookies+=";secure="+secure;
+		}
+		
+		document.cookie=cookies;//쿠키 저장하기
+	}
+	
+	// cookie삭제기능: expires 값을 재설정
+	function removeCookie(name) {
+		const date=new Date();
+		date.setDate(date.getDate()-1); //유효기간 지남
+		document.cookie=name+"=;expires="+date.toUTCString();
+	//		document.cookie=name+"=;max-age=0";
+	}
+		
+	// getCookie 기능 구현
+	function getCookie(cookieName){
+		//cookie="user=hk;name=han;admin=kkk" -> 문자열 추출
+		
+		let cookieValue = document.cookie.split(";");
+		console.log(cookieValue);
+		let value = "";
+		
+		for (var i = 0; i < cookieValue.length; i++) {
+			if(cookieValue[i].indexOf(cookieName)!= -1){
+				value=cookieValue[i].split("=")[1];
+				console.log("저장된 쿠키값: ",value);
+				return decodeURIComponent(value);
+			}
+		}
+	}
+	
+/*
+ 	Web Storage: 데이터를 서버로 전송하지 않는다.
+ 				 저장공간이 쿠키보다 크다(최대 5MB)
+ 	- sessionStorage: 웹페이지가 열려 있는 동안 값을 유지
+ 					  
+ 	- localStorage: 웹페이지가 종료되도 값을 유지
+ 					유효기간 없이 데이터를 저장
+ 					삭제할때 캐시를 삭제하거나, javascript로 삭제한다.
+ */
+ 	//메서드가 구현되어 있고 session...,local... 모두 이름이 동일
+ 	sessionStorage.setItem("id1","value1"); //추가
+ 	sessionStorage.getItem("id1"); //가져오기
+ 	sessionStorage.removeItem("id1"); //삭제
+ 	sessionStorage.clear(); //전체삭제
+	
+ 	localStorage.setItem("id2","value2"); //추가
+ 	localStorage.getItem("id2"); //가져오기
+</script>
+</head>
+<body>
+	<h1>쿠키사용하기</h1>
+	<button onclick="setCookieTest()">쿠키추가</button>
+	<button onclick="removeCookieTest()">쿠키삭제</button>
+	<button onclick="getCookieTest()">쿠키값 가져오기</button>
+</body>
+</html>

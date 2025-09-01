@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+	function ajaxGet(){
+		const xhr=new XMLHttpRequest();
+		
+		let params="num=1&id=hk";
+		
+		//		(요청방식, 요청주소, 비동기여부)
+		xhr.open("GET","data.json?"+params,true);
+		
+		xhr.onreadystatechange=function(){
+			if(xhr.readyState===4 && xhr.status === 200){
+				let data = JSON.parse(xhr.responseText);
+				console.log(data.id, data.name);
+				
+				document.querySelector("#result").innerHTML=`<p>${data.id}</p><p>${data.name}</p><p>${data.addr}</p>`
+			}
+		}
+		
+		//요청을 서버로 전송
+		xhr.send();
+	}
+</script>
+</head>
+<body>
+	<button onclick="ajaxGet()">Get방식</button>
+	<div id="result"></div>
+</body>
+</html>

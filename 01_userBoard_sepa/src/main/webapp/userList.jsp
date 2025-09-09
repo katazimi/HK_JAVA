@@ -8,6 +8,15 @@
 <head>
 <meta charset="UTF-8">
 <title>회원목록 조회</title>
+<style>
+	table{
+		border-collapse: collapse;
+		border: 2px solid black;
+	}
+	td,th{
+		border: 1px solid black;
+	}
+</style>
 </head>
 <% //Scriptlet: java 실행부
 	//Dao객체: DB에 접근해야 되기 때문에
@@ -42,8 +51,8 @@
 				<td><%=dto.getMobile2()%></td>
 				<td><%=dto.getHeight()%></td>
 				<td><%=dto.getmDate()%></td>
-				<td><button>수정</button></td>
-				<td><button>삭제</button></td>
+				<td><a href=#>수정</a></td>
+				<td><a href=#>삭제</a></td>
 			</tr>
 			<% 	
 			}

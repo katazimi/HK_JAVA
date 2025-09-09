@@ -101,7 +101,48 @@ public class UserDao {
 		return list;
 	}
 	//회원등록 기능: Insert (반환타입: boolean)
-	
+	// 전달받은 파라미터들을 현재 메서드에 전달해야 함
+	public boolean insertUser(UserDto dto) {
+		int count = 0; //쿼리 성공 여부
+		
+		//DB에 연결할 정보를 정의
+		//DB에 연결하고 작업할 준비를 위한 객체 선언
+		Connection conn=null; //DB연결시 사용할 객체
+		PreparedStatement psmt = null; //쿼리 준비 및 실행시 사용할 객체
+				
+		//2단계: DB연결(localhost:3306 id, pw)
+		String url="jdbc:mariadb://localhost:3306/hk";
+		String user="root";
+		String password="wlgns5002!";
+		
+		String sql = " INSERT INTO userTbl VALUES(?,?,?,?,?,?,?,SYSDATE()) ";
+		
+		try {
+			conn = DriverManager.getConnection(url,user, password);
+			psmt = conn.prepareStatement(sql);
+			psmt.setString(1, dto.getUserID());
+			psmt.setString(2, dto.getName());
+			psmt.setInt(3, dto.getBirthYear());
+			psmt.setString(4, dto.getAddr());
+			psmt.setString(5, dto.getMobile1());
+			psmt.setString(6, dto.getMobile2());
+			psmt.setInt(7, dto.getHeight());
+			count = psmt.executeUpdate(); //추가,수정,삭제 작업은 excuteUpdate()
+								  //반환값: 업데이트된 행의 갯수(int)
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(psmt!=null)
+					psmt.close();
+				if(conn!=null)
+					conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return count>0?true:false;
+	}
 	//회원정보 상세 조회: Select (반환타입: DTO)
 	
 	//회원정보 수정: Update (반환타입: boolean)

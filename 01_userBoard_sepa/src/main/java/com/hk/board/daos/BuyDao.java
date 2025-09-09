@@ -52,9 +52,12 @@ public class BuyDao {
 			e.printStackTrace();
 		} finally {
 			try {
-				rs.close();
-				psmt.close();
-				conn.close();
+				if (rs!=null)
+					rs.close();
+				if (psmt!=null)
+					psmt.close();
+				if (conn!=null)
+					conn.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}

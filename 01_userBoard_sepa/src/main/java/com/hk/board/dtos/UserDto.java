@@ -1,14 +1,16 @@
 package com.hk.board.dtos;
-// DTO객체: 데이터를 운발할때 사용할 객체
-//		java OOP 3대 개념: 상속, 은닉화, 다형성 -> 은닉화 적용
-//		DB테이블에 컬럼과 매칭
-// 구성내용: 멤버필드, 생성자, get/set메서드, toString 메서드
 
 import java.io.Serializable;
 import java.util.Date;
 
 public class UserDto implements Serializable{
-	
+	// lombok 라이브러리 -> 멤버필드만 작성하고 어노테이션으로 설정만 해주면
+	//					 생성자, setter/getter, toString 등을 생략할수 있게 해줌
+	// DTO객체: 데이터를 운발할때 사용할 객체
+	//	java OOP 3대 개념: 상속, 은닉화, 다형성 -> 은닉화 적용
+	//	DB테이블에 컬럼과 매칭
+	//구성내용: 멤버필드, 생성자, get/set메서드, toString 메서드
+
 	private static final long serialVersionUID = 2321399647172914564L;
 	
 	private String userID;

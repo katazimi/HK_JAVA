@@ -9,13 +9,22 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<style type="text/css">
+	table{
+		border-collapse: collapse;
+		border:2px solid black;
+	}
+	td,th{
+		border: 1px solid black;
+	}
+</style>
 </head>
 <%
 	BuyDao bDao = new BuyDao();
 	List<BuyDto>list = bDao.getAllBuying();
 %>
 <body>
-	<table border="1">
+	<table>
 		<tr>
 			<th>순서</th>
 			<th>아이디</th>

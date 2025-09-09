@@ -29,11 +29,6 @@
 		<tr>
 			<th>아이디</th>
 			<th>이름</th>
-			<th>출생년도</th>
-			<th>지역</th>
-			<th>극번</th>
-			<th>전화번호</th>
-			<th>키</th>
 			<th>가입일</th>
 			<th>수정</th>
 			<th>삭제</th>
@@ -45,20 +40,15 @@
 			<tr>
 				<td><%=dto.getUserID()%></td>
 				<td><%=dto.getName()%></td>
-				<td><%=dto.getBirthYear()%></td>
-				<td><%=dto.getAddr()%></td>
-				<td><%=dto.getMobile1()%></td>
-				<td><%=dto.getMobile2()%></td>
-				<td><%=dto.getHeight()%></td>
 				<td><%=dto.getmDate()%></td>
-				<td><a href=#>수정</a></td>
-				<td><a href=#>삭제</a></td>
+				<td><a href="userUpdateForm.jsp?userID=<%=dto.getUserID()%>">수정</a></td>
+				<td><a href="userDelete.jsp?userID=<%=dto.getUserID()%>">삭제</a></td>
 			</tr>
 			<% 	
 			}
 		%>
 		<tr>
-			<td colspan="10">
+			<td colspan="5">
 				<a href="index.jsp">메인화면</a>
 			</td>
 		</tr>

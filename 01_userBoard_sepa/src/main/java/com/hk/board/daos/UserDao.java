@@ -144,8 +144,124 @@ public class UserDao {
 		return count>0?true:false;
 	}
 	//회원정보 상세 조회: Select (반환타입: DTO)
-	
+	public UserDto getUser(String userID){
+		UserDto dto = new UserDto();
+		
+		Connection conn = null;
+		PreparedStatement psmt = null;
+		ResultSet rs = null;
+		
+		String url="jdbc:mariadb://localhost:3306/hk";
+		String user="root";
+		String password="wlgns5002!";
+		
+		String sql = " SELECT * FROM userTbl WHERE userID=?";
+		
+		try {
+			conn = DriverManager.getConnection(url,user,password);
+			psmt = conn.prepareStatement(sql);
+			psmt.setString(1, userID);
+			rs = psmt.executeQuery();
+			
+			while(rs.next()) {
+				dto.setUserID(rs.getString(1));
+				dto.setName(rs.getString(2));
+				dto.setBirthYear(rs.getInt(3));
+				dto.setAddr(rs.getString(4));
+				dto.setMobile1(rs.getString(5));
+				dto.setMobile2(rs.getString(6));
+				dto.setHeight(rs.getInt(7));
+				dto.setmDate(rs.getDate(8));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(rs!=null) 
+					rs.close();
+				if(psmt!=null)
+					psmt.close();
+				if(conn!=null)
+					conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return dto;
+	}
 	//회원정보 수정: Update (반환타입: boolean)
+	public boolean updateUser(UserDto dto) {
+		int count=0;
+		//DB에 연결하고 작업할 준비를 위한 객체 선언
+		Connection conn=null; //DB연결시 사용할 객체
+		PreparedStatement psmt = null; //쿼리 준비 및 실행시 사용할 객체
+				
+		//2단계: DB연결(localhost:3306 id, pw)
+		String url="jdbc:mariadb://localhost:3306/hk";
+		String user="root";
+		String password="wlgns5002!";
+		
+		String sql = " UPDATE userTbl SET name=?, birthYear=?, addr=?, mobile1=?, mobile2=?, height=? WHERE userID=? ";
+		
+		try {
+			conn = DriverManager.getConnection(url,user,password);
+			psmt = conn.prepareStatement(sql);
+			psmt.setString(1, dto.getName());
+			psmt.setInt(2, dto.getBirthYear());
+			psmt.setString(3, dto.getAddr());
+			psmt.setString(4, dto.getMobile1());
+			psmt.setString(5, dto.getMobile2());
+			psmt.setInt(6, dto.getHeight());
+			psmt.setString(7, dto.getUserID());
+			count = psmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(psmt!=null)
+					psmt.close();
+				if(conn!=null)
+					conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return count>0?true:false;
+	}
 	
 	//회원삭제: Delete (반환타입: boolean)
+	public boolean deleteUser(String userID) {
+		int count=0;
+		Connection conn=null; //DB연결시 사용할 객체
+		PreparedStatement psmt = null; //쿼리 준비 및 실행시 사용할 객체
+				
+		String url="jdbc:mariadb://localhost:3306/hk";
+		String user="root";
+		String password="wlgns5002!";
+		
+		String sql = "DELETE FROM userTbl WHERE userID=?";
+		
+		try {
+			conn = DriverManager.getConnection(url,user,password);
+			psmt = conn.prepareStatement(sql);
+			psmt.setString(1, userID);
+			count = psmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(psmt!=null)
+					psmt.close();
+				if(conn!=null)
+					conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return count>0?true:false;
+	}
 }

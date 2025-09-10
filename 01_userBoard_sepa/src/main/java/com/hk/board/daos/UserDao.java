@@ -201,7 +201,8 @@ public class UserDao {
 		String url="jdbc:mariadb://localhost:3306/hk";
 		String user="root";
 		String password="wlgns5002!";
-		
+		//String pool 메모리 영역: +연산자로 문자열 더하기
+		//						-> 값이 변경될때마다 새롭게 객체가 생성
 		String sql = " UPDATE userTbl SET name=?, birthYear=?, addr=?, mobile1=?, mobile2=?, height=? WHERE userID=? ";
 		
 		try {

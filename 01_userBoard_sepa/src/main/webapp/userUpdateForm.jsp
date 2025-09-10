@@ -9,6 +9,15 @@
 <head>
 <meta charset="UTF-8">
 <title>회원정보수정폼</title>
+<style type="text/css">
+	table{
+		border-collapse: collapse;
+		border:2px solid black;
+	}
+	td,th{
+		border: 1px solid black;
+	}
+</style>
 </head>
 <%
 	String userID=request.getParameter("userID");
@@ -18,6 +27,7 @@
 %>
 <body>
 	<h1>회원정보수정</h1>
+	<a href="userList.jsp">뒤로가기</a>
 	<form action="userUpdate.jsp" method="post">
 		<input type="hidden" name="userID" value="<%=dto.getUserID()%>">
 		<table>

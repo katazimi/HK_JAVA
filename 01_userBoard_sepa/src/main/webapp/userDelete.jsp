@@ -14,7 +14,7 @@
 	boolean isD = dao.deleteUser(userID);
 	
 	if (isD) {
-		response.sendRedirect("index.jsp");
+		response.sendRedirect("userList.jsp");
 	}else{
 		response.sendRedirect("error.jsp");
 	}

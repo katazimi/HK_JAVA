@@ -42,7 +42,7 @@
 				<td><%=dto.getName()%></td>
 				<td><%=dto.getmDate()%></td>
 				<td><a href="userUpdateForm.jsp?userID=<%=dto.getUserID()%>">수정</a></td>
-				<td><a href="userDelete.jsp?userID=<%=dto.getUserID()%>">삭제</a></td>
+				<td><a href="#" onclick="deleteUser('<%=dto.getUserID()%>')">삭제</a></td>
 			</tr>
 			<% 	
 			}
@@ -53,6 +53,15 @@
 			</td>
 		</tr>
 	</table>
-	
+	<script type="text/javascript">
+		function deleteUser(userID) {
+			if (confirm("정말 삭제하겠습니까?")){
+				location.href="userDelete.jsp?userID="+userID;
+			}else{
+				location.href="userList.jsp";
+			}
+		}
+		
+	</script>
 </body>
 </html>

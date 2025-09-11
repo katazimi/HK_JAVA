@@ -26,4 +26,15 @@
     <!--
     <Manager pathname="" />
     -->
+    
+    <Resource name="jdbc/hk"
+	          auth="Container"
+		      type="javax.sql.DataSource"
+		      maxTotal="20"    
+		      maxIdle="10"
+		      maxWaitMillis="10000"
+		      username="root"
+		      password="wlgns5002!"
+		      driverClassName="org.mariadb.jdbc.Driver"
+		      url="jdbc:mariadb://localhost:3306/hk"/>
 </Context>

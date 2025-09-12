@@ -15,10 +15,22 @@
 	boolean isD = dao.deleteBoard(seq);
 	
 	if (isD) {
-		response.sendRedirect("boardlist.jsp");
-	} else {
-		response.sendRedirect("error.jsp");
+		%>
+		<script type="text/javascript">
+			alert("글을 삭제했습니다.")
+			location.href="boardlist.jsp"
+		</script>
+		
+		<%
+	}else{
+		%>
+		<script type="text/javascript">
+			alert("글을 삭제에 실패했습니다")
+			location.href="error.jsp"
+		</script>
+		<%
 	}
+	
 %>
 <body>
 

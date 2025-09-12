@@ -40,7 +40,6 @@
 				<td colspan="2">
 					<input type="submit" value="글 등록" />
 					<button type="button" onclick="location.href='boardlist.jsp'">글 목록</button>
-					<button type="button" onclick="location.href='boardlist.jsp'">글 목록</button>
 				</td>
 			</tr>
 		</table>

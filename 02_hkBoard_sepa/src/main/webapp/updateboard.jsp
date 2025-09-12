@@ -19,9 +19,20 @@
 	boolean isU = dao.updateBoard(new HkDto(seq,title,content));
 	
 	if (isU) {
-		response.sendRedirect("boardlist.jsp");
+		%>
+		<script type="text/javascript">
+			alert("글을 수정했습니다.")
+			location.href="boarddetail.jsp?seq=<%=seq%>"
+		</script>
+		
+		<%
 	}else{
-		response.sendRedirect("error.jsp");
+		%>
+		<script type="text/javascript">
+			alert("글을 수정에 실패했습니다")
+			location.href="error.jsp"
+		</script>
+		<%
 	}
 %>
 <body>

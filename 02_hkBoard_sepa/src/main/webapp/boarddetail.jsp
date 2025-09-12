@@ -28,6 +28,9 @@
 	th,td{
 		border: 1px solid black;
 	}
+	th{
+		background-color: lightgrey;
+	}
 </style>
 </head>
 <%

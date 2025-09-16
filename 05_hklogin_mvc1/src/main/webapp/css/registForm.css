@@ -1,0 +1,29 @@
+@charset "UTF-8";
+
+#registForm{
+	width: 600px;
+}
+
+#registForm  input{
+	width: 97%;
+	height: 20px;
+	margin: 5px;
+}
+
+#registForm input[name="id"] {
+	width: 85%;
+}
+
+#registForm input[name="address"] {
+	width: 80%;
+}
+
+#registForm input[name="address2"] {
+	width: 46.5%;
+}
+
+#registForm input[name="address3"] {
+	width: 46.5%;
+}
+
+

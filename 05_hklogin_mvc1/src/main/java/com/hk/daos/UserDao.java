@@ -125,6 +125,85 @@ public class UserDao extends Database{
 		
 		return dto; 
 	}
+	//정보가져오기
+	public UserDto getUser(String id) {
+		UserDto dto=new UserDto();
+		Connection conn=null;
+		PreparedStatement psmt=null;
+		ResultSet rs=null;
+		
+		String sql ="SELECT seq,id,name,address,email,role,regdate FROM userinfo WHERE id=?";
+		
+		try {
+			conn=getConnection();
+			psmt=conn.prepareStatement(sql);
+			psmt.setString(1, id);
+			
+			rs=psmt.executeQuery();
+			while(rs.next()) {
+				dto.setSeq(rs.getInt(1));
+				dto.setId(rs.getString(2));
+				dto.setName(rs.getString(3));
+				dto.setAddress(rs.getString(4));
+				dto.setEmail(rs.getString(5));
+				dto.setRole(rs.getString(6));
+				dto.setRegdate(rs.getDate(7));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(rs, psmt, conn);
+		}
+		
+		return dto;
+	}
+	//정보수정
+	public boolean updateUser(UserDto dto) {
+		int count=0;
+		
+		Connection conn=null;
+		PreparedStatement psmt=null;
+		
+		String sql = "UPDATE userinfo SET address=?, email=? WHERE id=?";
+		
+		try {
+			conn=getConnection();
+			psmt=conn.prepareStatement(sql);
+			psmt.setString(1, dto.getAddress());
+			psmt.setString(2, dto.getEmail());
+			psmt.setString(3, dto.getId());
+			count = psmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(null, psmt, conn);
+		}
+		
+		return count>0?true:false;
+	}
+	//탈퇴
+	public boolean delUser(String id) {
+		int count=0;
+		
+		Connection conn=null;
+		PreparedStatement psmt=null;
+		
+		String sql = "UPDATE userinfo SET enabled='N' WHERE id=?";
+		
+		try {
+			conn=getConnection();
+			psmt=conn.prepareStatement(sql);
+			psmt.setString(1, id);
+			count = psmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(null, psmt, conn);
+		}
+		
+		return count>0?true:false;
+		
+	}
 	
 	//관리자 기능
 }

@@ -77,6 +77,62 @@
 //		session.removeAttribute("ldto");
 		session.invalidate(); //세션의 모든 정보를 삭제
 		response.sendRedirect("index.jsp");
+	}else if (command.equals("userinfo")) {
+		String id=request.getParameter("id");
+		UserDto dto=dao.getUser(id);
+		
+		//객체(dto)를 스코프객체에 저장하고
+		request.setAttribute("dto", dto);
+		//이동한다.
+		pageContext.forward("userinfo.jsp");
+	} else if (command.equals("userupdate")) {
+		String id=request.getParameter("id");
+		String address=request.getParameter("address");
+		String email=request.getParameter("email");
+		
+		boolean isS=dao.updateUser(new UserDto(id,address,email));
+		
+		if(isS) {
+			%>
+			<script type="text/javascript">
+				alert("수정완료");
+				location.href
+				="userController.jsp?command=userinfo&id=<%=id%>";
+			</script>
+			<%
+		}else{
+			%>
+			<script type="text/javascript">
+				alert("수정실패");
+				location.href
+				="error.jsp";
+			</script>
+			<%
+		}
+		
+	} else if(command.equals("deluser")) {
+		String id=request.getParameter("id");
+		
+		boolean isS=dao.delUser(id);
+		session.invalidate();//세션 삭제
+		
+		if(isS){
+			%>
+			<script type="text/javascript">
+				alert("회원 탈퇴를 완료하였습니다.");
+				location.href
+				="index.jsp";
+			</script>
+			<%
+		}else{
+			%>
+			<script type="text/javascript">
+				alert("회원탈퇴실패");
+				location.href
+				="error.jsp";
+			</script>
+			<%
+		}
 	}
 %>
 </body>

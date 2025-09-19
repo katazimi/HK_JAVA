@@ -7,11 +7,11 @@ public class UserDto implements Serializable{
 	
 	private static final long serialVersionUID = 8076875390372850812L;
 	
-	private int seq;
 	private String id;
-	private String name;
 	private String password;
+	private String name;
 	private String address;
+	private String phone;
 	private String email;
 	private String enabled;
 	private String role;
@@ -22,43 +22,29 @@ public class UserDto implements Serializable{
 		// TODO Auto-generated constructor stub
 	}
 
-	public UserDto(int seq, String id, String name, String password, String address, String email, String enabled,
-			String role, Date regdate) {
+	public UserDto(String id, String password, String name, String address, String phone,String email) {
 		super();
-		this.seq = seq;
 		this.id = id;
-		this.name = name;
 		this.password = password;
+		this.name = name;
 		this.address = address;
 		this.email = email;
-		this.enabled = enabled;
-		this.role = role;
-		this.regdate = regdate;
 	}
-	
+
 	public UserDto(String id, String name, String password, String address, String email) {
 		super();
 		this.id = id;
-		this.name = name;
 		this.password = password;
+		this.name = name;
 		this.address = address;
 		this.email = email;
 	}
 	
-	public UserDto(String id,  String address, String email) {
+	public UserDto(String id, String address, String email) {
 		super();
 		this.id = id;
 		this.address = address;
 		this.email = email;
-	}
-	
-
-	public int getSeq() {
-		return seq;
-	}
-
-	public void setSeq(int seq) {
-		this.seq = seq;
 	}
 
 	public String getId() {
@@ -69,14 +55,6 @@ public class UserDto implements Serializable{
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	public String getPassword() {
 		return password;
 	}
@@ -85,12 +63,28 @@ public class UserDto implements Serializable{
 		this.password = password;
 	}
 
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public String getAddress() {
 		return address;
 	}
 
 	public void setAddress(String address) {
 		this.address = address;
+	}
+	
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 
 	public String getEmail() {
@@ -131,10 +125,8 @@ public class UserDto implements Serializable{
 
 	@Override
 	public String toString() {
-		return "UserDto [seq=" + seq + ", id=" + id + ", name=" + name + ", password=" + password + ", address="
-				+ address + ", email=" + email + ", enabled=" + enabled + ", role=" + role + ", regdate=" + regdate
-				+ "]";
+		return "UserDto [id=" + id + ", password=" + password + ", name=" + name + ", address=" + address + ", email="
+				+ email + ", enabled=" + enabled + ", role=" + role + ", regdate=" + regdate + "]";
 	}
-	
 	
 }

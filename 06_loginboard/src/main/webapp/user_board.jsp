@@ -23,12 +23,16 @@
 	}
 </style>
 <script type="text/javascript">
-	function insertBoard(id){
-		location.href="boardInsert.jsp?id="+id;
+	function moveMain() {
+		location.href="userController.jsp?command=moveMain";
 	}
 	
-	function getList(id){
-		location.href="boardController.jsp?command=getList&id="+id;
+	function boardUpdate(id, seq) {
+		location.href = "board_update.jsp?id="+id+"&seq="+seq;
+	}
+	
+	function boardDelete(id, seq) {
+		location.href = "boardController.jsp?command=delBoard&id="+id+"&seq="+seq;
 	}
 </script>
 </head>
@@ -40,11 +44,7 @@
 <div id="container">
 	<div class="main">
 		<div>
-			<h1>사용자 페이지</h1>
-			<span>
-			<%=ldto.getId()%>[<%=ldto.getRole()%>]
-			님이 로그인 하였습니다.
-			</span>
+			<h1>내가 작성한 글</h1>
 			<span>
 				<a href="userController.jsp?command=userDetail&id=<%=ldto.getId()%>">나의정보조회</a>
 			</span>|
@@ -55,30 +55,32 @@
 		<div>
 			<table>
 				<col width="50px"/>
-				<col width="100px"/>
 				<col width="200px"/>
 				<col width="600px"/>
 				<col width="200px"/>
+				<col width="120px"/>
 				<tr>
-					<th>글번호</th><th>ID</th><th>제목</th><th>내용</th><th>작성일</th>
+					<th>글번호</th><th>제목</th><th>내용</th><th>작성일</th><th> </th>
 				</tr>
 				<%
 				for(BoardDto bdto:list) {
 				%>
 				<tr>
 					<td><%=bdto.getSeq()%></td>
-					<td><%=bdto.getId()%></td>
 					<td><%=bdto.getTitle()%></td>
 					<td><%=bdto.getContent()%></td>
 					<td><%=bdto.getRegdate()%></td>
+					<td>
+						<button class="btn btn-outline-success" onclick="boardUpdate('<%=ldto.getId()%>','<%=bdto.getSeq()%>')">수정</button>
+						<button class="btn btn-outline-danger" onclick="boardDelete('<%=ldto.getId()%>','<%=bdto.getSeq()%>')">삭제</button>
+					</td>
 				</tr>
 				<%
 				}
 				%>
 				<tr>
 					<td colspan="5">
-						<button onclick="insertBoard('<%=ldto.getId()%>')">글작성</button>
-						<button onclick="getList('<%=ldto.getId()%>')">내가 작성한 글 보기</button>
+						<button onclick="moveMain()">메인페이지</button>
 					</td>
 				</tr>
 			</table>

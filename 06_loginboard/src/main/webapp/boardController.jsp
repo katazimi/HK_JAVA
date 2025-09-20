@@ -25,25 +25,30 @@
 		dto.setContent(request.getParameter("content"));
 		
 		boolean isS = dao.insertBoard(dto);
-		List<BoardDto> list = dao.getAllList();
+		
 		
 		if(isS) {
 			%>
 			<script type="text/javascript">
 				alert("작성이 완료되었습니다..");
-				request.setAttribute("list", list);
-				pageContext.forward("user_main.jsp");
 			</script>
 			<%
 		}else {
 			%>
 			<script type="text/javascript">
 				alert("작성 실패...");
-				request.setAttribute("list", list);
-				pageContext.forward("user_main.jsp");
 			</script>
 			<%
 		}
+		
+		List<BoardDto> list = dao.getAllList();
+		request.setAttribute("list", list);
+		pageContext.forward("user_main.jsp");
+	}else if (command.equals("getList")) {
+		String id = request.getParameter("id");
+		List<BoardDto> list = dao.getList(id);
+		request.setAttribute("list", list);
+		pageContext.forward("user_board.jsp");
 	}
 %>
 </body>

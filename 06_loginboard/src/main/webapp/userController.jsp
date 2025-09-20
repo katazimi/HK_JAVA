@@ -102,7 +102,20 @@
 		
 		boolean isS = dao.updateUser(new UserDto(id,name,password,address,phone,email));
 		
-		response.sendRedirect("user_main.jsp");
+		List<BoardDto> list = bdao.getAllList();
+		request.setAttribute("list", list);
+		pageContext.forward("user_main.jsp");
+	} else if (command.equals("userDel")) {
+		String id = request.getParameter("id");
+		
+		boolean isS = dao.delUser(id);
+		boolean isS2 = bdao.delBoard(id);
+		
+		pageContext.forward("index.jsp");
+	} else if (command.equals("moveMain")) {
+		List<BoardDto> list = bdao.getAllList();
+		request.setAttribute("list", list);
+		pageContext.forward("user_main.jsp");
 	}
 %>
 </body>

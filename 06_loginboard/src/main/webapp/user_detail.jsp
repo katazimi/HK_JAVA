@@ -24,6 +24,11 @@
 	function userUpdate(id){
 	    location.href="userUpdate.jsp?id="+id;
 	}
+	
+	function userDel(id) {
+		if(confirm('정말 탈퇴하시겠습니까?'))
+			location.href="userController.jsp?command=userDel&id="+id;
+	}
 </script>
 </head>
 <%
@@ -40,7 +45,13 @@
 		<tr><th>이메일</th><td><%=dto.getEmail()%></td></tr>
 		<tr><th>회원등급</th><td><%=dto.getRole()%></td></tr>
 		<tr><th>가입일</th><td><%=dto.getRegdate()%></td></tr>
-		<tr><td colspan="2"><button onclick="userUpdate('<%=dto.getId()%>')">회원정보수정</button><button>메인페이지</button></td></tr>
+		<tr>
+			<td colspan="2">
+				<button onclick="userUpdate('<%=dto.getId()%>')">회원정보수정</button>
+				<button onclick="userDel('<%=dto.getId()%>')">회원탈퇴</button>
+				<button onclick="location.href='userController.jsp?command=moveMain'">메인페이지</button>
+			</td>
+		</tr>
 	</table>
 </body>
 </html>

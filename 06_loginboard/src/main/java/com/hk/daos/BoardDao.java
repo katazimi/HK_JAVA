@@ -29,7 +29,7 @@ public class BoardDao extends Database{
 		PreparedStatement psmt = null;
 		ResultSet rs = null;
 		
-		String sql = "SELECT TSEQ,TID,TTITLE,TCONTENT,TREGDATE FROM T_BOARD";
+		String sql = "SELECT TSEQ,TID,TTITLE,TCONTENT,TREGDATE FROM T_BOARD WHERE DELFLAG='N'";
 		
 		try {
 			conn=getConnection();
@@ -70,6 +70,7 @@ public class BoardDao extends Database{
 			psmt.setString(3, dto.getContent());
 			System.out.println(dto.getId());
 			System.out.println(dto.getContent());
+			count = psmt.executeUpdate();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -78,5 +79,59 @@ public class BoardDao extends Database{
 		}
 		
 		return count>0?true:false;
+	}
+	
+	public boolean delBoard(String id) {
+		int count=0;
+		
+		Connection conn=null;
+		PreparedStatement psmt=null;
+		
+		String sql = "UPDATE T_BOARD SET DELFLAG ='Y' WHERE TID=?";
+		
+		try {
+			conn=getConnection();
+			psmt=conn.prepareStatement(sql);
+			psmt.setString(1, id);
+			count=psmt.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			close(null, psmt, conn);
+		}
+		
+		return count>0?true:false;
+	}
+	
+	public List<BoardDto> getList(String id) {
+		List<BoardDto> list = new ArrayList<BoardDto>();
+		
+		Connection conn = null;
+		PreparedStatement psmt = null;
+		ResultSet rs = null;
+		
+		String sql = "SELECT TSEQ,TTITLE,TCONTENT,TREGDATE FROM T_BOARD WHERE TID=?";
+		
+		try {
+			conn=getConnection();
+			psmt=conn.prepareStatement(sql);
+			psmt.setString(1, id);
+			rs=psmt.executeQuery();
+			while(rs.next()) {
+				BoardDto dto = new BoardDto();
+				dto.setSeq(rs.getInt(1));
+				dto.setTitle(rs.getString(2));
+				dto.setContent(rs.getString(3));
+				dto.setRegdate(rs.getDate(4));
+				list.add(dto);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(rs, psmt, conn);
+		}
+		
+		return list;
 	}
 }

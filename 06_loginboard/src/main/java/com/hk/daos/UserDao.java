@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.apache.catalina.startup.ConnectorCreateRule;
+
 import com.hk.datasource.Database;
 import com.hk.dtos.RoleStatus;
 import com.hk.dtos.UserDto;
@@ -178,6 +180,29 @@ public class UserDao extends Database{
 			count = psmt.executeUpdate();
 			System.out.println(dto.getEmail());
 		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(null, psmt, conn);
+		}
+		
+		return count>0?true:false;
+	}
+	
+	public boolean delUser(String id) {
+		int count =0;
+		
+		Connection conn=null;
+		PreparedStatement psmt=null;
+		
+		String sql = "UPDATE T_USER SET TENABLED = 'N' WHERE TID=?";
+		
+		try {
+			conn=getConnection();
+			psmt=conn.prepareStatement(sql);
+			psmt.setString(1,id);
+			count=psmt.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			close(null, psmt, conn);

@@ -59,17 +59,17 @@
 					<th>회원번호</th><th>ID</th><th>이름</th><th>주소</th><th>E-MAIL</th><th>가입여부</th><th>회원등급</th><th>가입일</th>
 				</tr>
 				<%
-				for(UserDto dto:list) {
+				for(UserDto dto2:list) {
 				%>
 				<tr>
-					<td><%=dto.getId()%></td>
-					<td><%=dto.getName()%></td>
-					<td><%=dto.getAddress()%></td>
-					<td><%=dto.getPhone()%></td>
-					<td><%=dto.getEmail()%></td>
-					<td><%=dto.getEnabled()=="Y"?"가입중":"회원탈퇴"%></td>
-					<td><%=dto.getRole()%></td>
-					<td><%=dto.getRegdate() %></td>
+					<td><%=dto2.getId()%></td>
+					<td><%=dto2.getName()%></td>
+					<td><%=dto2.getAddress()%></td>
+					<td><%=dto2.getPhone()%></td>
+					<td><%=dto2.getEmail()%></td>
+					<td><%=dto2.getEnabled()=="Y"?"가입중":"회원탈퇴"%></td>
+					<td><%=dto2.getRole()%></td>
+					<td><%=dto2.getRegdate() %></td>
 					<td></td>
 				</tr>
 				<%

@@ -69,16 +69,16 @@
 					<th>회원번호</th><th>ID</th><th>이름</th><th>회원등급</th><th>가입일</th>
 				</tr>
 				<%
-				for(UserDto dto:list) {
+				for(UserDto dto2:list) {
 				%>
 				<tr>
 					<td><%=dto.getId()%></td>
 					<td><%=dto.getName()%></td>
 					<td> 
 						<select name="status">
-        					 <option value="USER" <%="USER".equals(dto.getRole()) ? "selected" : ""%>>USER</option>
-            				 <option value="MANAGER" <%="MANAGER".equals(dto.getRole()) ? "selected" : ""%>>MANAGER</option>
-            				 <option value="ADMIN" <%="ADMIN".equals(dto.getRole()) ? "selected" : ""%>>ADMIN</option>
+        					 <option value="USER" <%="USER".equals(dto2.getRole()) ? "selected" : ""%>>USER</option>
+            				 <option value="MANAGER" <%="MANAGER".equals(dto2.getRole()) ? "selected" : ""%>>MANAGER</option>
+            				 <option value="ADMIN" <%="ADMIN".equals(dto2.getRole()) ? "selected" : ""%>>ADMIN</option>
       					</select>
       					<button onclick="updateRole(this, '<%=dto.getId()%>')">수정</button>
       				</td>

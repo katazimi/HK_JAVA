@@ -49,6 +49,61 @@
 		List<BoardDto> list = dao.getList(id);
 		request.setAttribute("list", list);
 		pageContext.forward("user_board.jsp");
+	}else if (command.equals("updateForm")) {
+		int seq = Integer.parseInt(request.getParameter("seq"));
+		
+		BoardDto dto = dao.getList(seq);
+		request.setAttribute("dto", dto);
+		pageContext.forward("board_update.jsp");
+	}else if(command.equals("updateBoard")) {
+		BoardDto dto = new BoardDto();
+		dto.setId(request.getParameter("id"));
+		dto.setSeq(Integer.parseInt(request.getParameter("seq")));
+		dto.setTitle(request.getParameter("title"));
+		dto.setContent(request.getParameter("content"));
+		
+		boolean isS = dao.updateBoard(dto);
+		
+		if(isS) {
+			%>
+			<script type="text/javascript">
+				alert("수정이 완료되었습니다..");
+			</script>
+			<%
+		}else {
+			%>
+			<script type="text/javascript">
+				alert("수정 실패...");
+			</script>
+			<%
+		}
+		String id = request.getParameter("id");
+		List<BoardDto> list = dao.getList(id);
+		request.setAttribute("list", list);
+		pageContext.forward("user_board.jsp");
+	}else if (command.equals("delBoard")) {
+		int seq = Integer.parseInt(request.getParameter("seq"));
+		
+		boolean isS = dao.delBoard(seq);
+		
+		if(isS) {
+			%>
+			<script type="text/javascript">
+				alert("삭제가 완료되었습니다..");
+			</script>
+			<%
+		}else {
+			%>
+			<script type="text/javascript">
+				alert("삭제 실패...");
+			</script>
+			<%
+		}
+		
+		String id = request.getParameter("id");
+		List<BoardDto> list = dao.getList(id);
+		request.setAttribute("list", list);
+		pageContext.forward("user_board.jsp");
 	}
 %>
 </body>

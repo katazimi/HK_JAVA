@@ -27,12 +27,12 @@
 		location.href="userController.jsp?command=moveMain";
 	}
 	
-	function boardUpdate(id, seq) {
-		location.href = "board_update.jsp?id="+id+"&seq="+seq;
+	function boardUpdate(seq) {
+		location.href = "boardController.jsp?command=updateForm&seq="+seq;
 	}
 	
-	function boardDelete(id, seq) {
-		location.href = "boardController.jsp?command=delBoard&id="+id+"&seq="+seq;
+	function boardDelete(seq, id) {
+		location.href = "boardController.jsp?command=delBoard&seq="+seq+"&id="+id;
 	}
 </script>
 </head>
@@ -71,8 +71,8 @@
 					<td><%=bdto.getContent()%></td>
 					<td><%=bdto.getRegdate()%></td>
 					<td>
-						<button class="btn btn-outline-success" onclick="boardUpdate('<%=ldto.getId()%>','<%=bdto.getSeq()%>')">수정</button>
-						<button class="btn btn-outline-danger" onclick="boardDelete('<%=ldto.getId()%>','<%=bdto.getSeq()%>')">삭제</button>
+						<button class="btn btn-outline-success" onclick="boardUpdate('<%=bdto.getSeq()%>')">수정</button>
+						<button class="btn btn-outline-danger" onclick="boardDelete('<%=bdto.getSeq()%>','<%=bdto.getId()%>')">삭제</button>
 					</td>
 				</tr>
 				<%

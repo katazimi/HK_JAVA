@@ -1,6 +1,7 @@
 package com.hk.board.controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -8,6 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.hk.board.daos.HkDao;
 import com.hk.board.dtos.HkDto;
@@ -17,6 +19,11 @@ public class BoardController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		//session 객체 얻어오기
+//		HttpSession session = request.getSession();
+//		session.setAttribute("ldto", dto);
+		
 		//command 구현(요청 구분)
 		// --> command=boardList	와 같이 파라미터 값을 추가전달해야하는 불편함이 있음
 		// getRequestURI(): ?전까지 구해줌
@@ -52,6 +59,59 @@ public class BoardController extends HttpServlet {
 			}else{
 				response.sendRedirect("boardlist.board");
 			}
+		} else if (command.equals("/muldel.board")) { //여러글 삭제
+			String[] seqs = request.getParameterValues("seq");
+			boolean isS = dao.mulDel(seqs);
+			
+			if(isS) {
+				response.sendRedirect("boardlist.board");
+			} else{
+				 response.sendRedirect("error.jsp");
+			}
+		} else if (command.equals("/boarddetail.board")) {
+			String sseq = request.getParameter("seq");
+			int seq = Integer.parseInt(sseq);
+			
+			HkDto dto = dao.getBoard(seq);
+			request.setAttribute("dto", dto);
+			
+			dispatch("boarddetail.jsp",request, response);
+		} else if (command.equals("/updateboardform.board")) {
+			String sseq = request.getParameter("seq");
+			int seq = Integer.parseInt(sseq);
+			
+			HkDto dto = dao.getBoard(seq);
+			request.setAttribute("dto", dto);
+			
+			dispatch("updateboardform.jsp",request, response);
+		} else if (command.equals("/updateboard.board")) {
+			int seq = Integer.parseInt(request.getParameter("seq"));
+			String title = request.getParameter("title");
+			String content = request.getParameter("content");
+			boolean isU = dao.updateBoard(new HkDto(seq,title,content));
+			
+			if (isU) {
+//				PrintWriter out = response.getWriter();
+//				String js = 
+//				"<script type='text/javascript'>"
+//				+	"alert('글을 수정했습니다.');"
+//				+	"location.href='boarddetail.board?seq="+seq+"';"
+//				+"</script>";
+////				response.sendRedirect("boardlist.board?seq="+seq);
+//				out.print(js);
+				jsResponse(response, "글을 수정했습니다.", "boardlist.board?seq="+seq);
+			}else{
+				response.sendRedirect("error.jsp");
+			}
+		} else if (command.equals("/deleteboard.board")) {
+			int seq = Integer.parseInt(request.getParameter("seq"));
+			boolean isD = dao.deleteBoard(seq);
+			
+			if (isD) {
+				response.sendRedirect("boardlist.board?seq="+seq);
+			}else{
+				response.sendRedirect("error.jsp");
+			}
 		}
 	}
 
@@ -67,5 +127,16 @@ public class BoardController extends HttpServlet {
 	//forward 기능 구현
 	public void dispatch(String url, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.getRequestDispatcher(url).forward(request, response);
+	}
+	
+	public void jsResponse(HttpServletResponse response,String msg, String url) throws IOException {
+		PrintWriter out = response.getWriter();
+		String js = 
+		"<script type='text/javascript'>"
+		+	"alert('"+msg+"');"
+		+	"location.href='"+url+"';"
+		+"</script>";
+//		response.sendRedirect("boardlist.board?seq="+seq);
+		out.print(js);
 	}
 }

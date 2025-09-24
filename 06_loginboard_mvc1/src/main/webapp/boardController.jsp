@@ -44,6 +44,9 @@
 		List<BoardDto> list = dao.getAllList();
 		request.setAttribute("list", list);
 		pageContext.forward("user_main.jsp");
+	} else if(command.equals("insertBoardForm")) {
+		String id = request.getParameter("id");
+		response.sendRedirect("boardInsert.jsp?id="+id);
 	}else if (command.equals("getList")) {
 		String id = request.getParameter("id");
 		List<BoardDto> list = dao.getList(id);

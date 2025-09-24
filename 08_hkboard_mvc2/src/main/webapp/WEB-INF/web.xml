@@ -22,7 +22,7 @@
   	<error-code>404</error-code>
   	<location>/error.jsp</location>
   </error-page>
-  <!-- 예외처리 클래스 확인 -->
+  <!-- 그외처리 클래스 확인 -->
   <error-page>
   	<exception-type>java.lang.NullPointerException</exception-type>
   	<location>/error.jsp</location>

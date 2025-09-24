@@ -17,7 +17,7 @@
 		<h2>시스템 오류입니다. 관리자에게 문의하세요(02-1234-5678)</h2>
 		<%
 			//상태코드, 요청URI
-			int statusCode = (int)request.getAttribute("javax.servlet.error.status_code");
+			Integer statusCode = (Integer)request.getAttribute("javax.servlet.error.status_code");
 			
 			String requestUri=(String)request.getAttribute("javax.servlet.error.request_uri");
 			
@@ -29,7 +29,7 @@
 				<p><strong>예외 타입: </strong><%=throwable.getClass().getName()%></p>
 				<p><strong>예외 메세지: </strong><%=throwable.getMessage()%></p>
 				<%
-			}else{
+			}else if(statusCode!=null && requestUri!=null){
 				%>
 				<p><strong>예외 코드: </strong><%=statusCode%></p>
 				<p><strong>예외 코드: </strong><%=requestUri%></p>

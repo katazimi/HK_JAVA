@@ -22,34 +22,27 @@
 	}
 </style>
 </head>
-<%
-	String sseq = request.getParameter("seq");
-	int seq = Integer.parseInt(sseq);
-	
-	HkDao dao = new HkDao();
-	HkDto dto = dao.getBoard(seq);
-%>
 <body>
 	<h1>글 수정</h1>
-	<form action="boardController.jsp?command=updateboard" method="post">
-		<input type="hidden" name="seq" value="<%=dto.getSeq()%>">
+	<form action="updateboard.board" method="post">
+		<input type="hidden" name="seq" value="${dto.seq}">
 		<table>
 			<tr>
 				<th>작성자(ID)</th>
-				<td><%=dto.getId()%></td>
+				<td>${dto.id}</td>
 			</tr>
 			<tr>
 				<th>제목</th>
-				<td><input type="text" name="title" value="<%=dto.getTitle()%>" required="required"/></td>
+				<td><input type="text" name="title" value="${dto.title}" required="required"/></td>
 			</tr>
 			<tr>
 				<th>내용</th>
-				<td><textarea rows="10" cols="60" name="content" required="required"><%=dto.getContent()%></textarea></td>
+				<td><textarea rows="10" cols="60" name="content" required="required">${dto.title}</textarea></td>
 			</tr>
 			<tr>
 				<td colspan="2">
 					<input type="submit" value="글 수정" />
-					<input type="button" value="글 목록" onclick="location.href='boardlist.jsp'; return false;"/>
+					<input type="button" value="글 목록" onclick="location.href='boardlist.board'; return false;"/>
 				</td>
 			</tr>
 		</table>

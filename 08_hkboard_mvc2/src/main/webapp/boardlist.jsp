@@ -56,7 +56,7 @@
 <body>
 	<h1>게시판</h1>
 	<h2>글 목록</h2>
-	<form action="muldel.jsp" method="post" onsubmit="return isAllCheck()">
+	<form action="muldel.board" method="post" onsubmit="return isAllCheck()">
 		<table>
 		<col width="50px"/>
 		<col width="50px"/>
@@ -82,7 +82,7 @@
 						<td style="text-align: center;"><input type="checkbox" name="seq" value="${dto.seq}" /></td>
 						<td>${dto.seq}</td>
 						<td>${dto.id}</td>
-						<td><a href="boardController.jsp?command=boarddetail&seq=${dto.seq}">${dto.title}</a></td>
+						<td><a href="boarddetail.board?seq=${dto.seq}">${dto.title}</a></td>
 						<td><fmt:formatDate value="${dto.regdate}" pattern="yyyy년 MM월 dd일"/></td>
 					</tr>
 				</c:forEach>

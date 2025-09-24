@@ -97,7 +97,7 @@ public class BoardController extends HttpServlet {
 //				+	"alert('글을 수정했습니다.');"
 //				+	"location.href='boarddetail.board?seq="+seq+"';"
 //				+"</script>";
-////				response.sendRedirect("boardlist.board?seq="+seq);
+//				response.sendRedirect("boardlist.board?seq="+seq);
 //				out.print(js);
 				jsResponse(response, "글을 수정했습니다.", "boardlist.board?seq="+seq);
 			}else{

@@ -24,7 +24,7 @@
 </style>
 <script type="text/javascript">
 	function insertBoard(id){
-		location.href="boardInsert.jsp?id="+id;
+		location.href="boardController.jsp?command=insertBoardForm&id="+id;
 	}
 	
 	function getList(id){

@@ -162,7 +162,7 @@
              Note: The pattern used is equivalent to using pattern="common" -->
         <Valve className="org.apache.catalina.valves.AccessLogValve" directory="logs" pattern="%h %l %u %t &quot;%r&quot; %s %b" prefix="localhost_access_log" suffix=".txt"/>
 
-      <Context docBase="07_hello_servlet" path="/07_hello_servlet" reloadable="true" source="org.eclipse.jst.jee.server:07_hello_servlet"/><Context docBase="08_hkboard_mvc2" path="/08_hkboard_mvc2" reloadable="true" source="org.eclipse.jst.jee.server:08_hkboard_mvc2"/><Context docBase="06_loginboard_mvc1" path="/06_loginboard_mvc1" reloadable="true" source="org.eclipse.jst.jee.server:06_loginboard_mvc1"/><Context docBase="09_loginboard_mvc2" path="/09_loginboard_mvc2" reloadable="true" source="org.eclipse.jst.jee.server:09_loginboard_mvc2"/></Host>
+      <Context docBase="07_hello_servlet" path="/07_hello_servlet" reloadable="true" source="org.eclipse.jst.jee.server:07_hello_servlet"/><Context docBase="08_hkboard_mvc2" path="/08_hkboard_mvc2" reloadable="true" source="org.eclipse.jst.jee.server:08_hkboard_mvc2"/><Context docBase="06_loginboard_mvc1" path="/06_loginboard_mvc1" reloadable="true" source="org.eclipse.jst.jee.server:06_loginboard_mvc1"/><Context docBase="09_loginboard_mvc2" path="/09_loginboard_mvc2" reloadable="true" source="org.eclipse.jst.jee.server:09_loginboard_mvc2"/><Context docBase="10_answerboard_MVC2_JSTL_myBatis" path="/10_answerboard_MVC2_JSTL_myBatis" reloadable="true" source="org.eclipse.jst.jee.server:10_answerboard_MVC2_JSTL_myBatis"/></Host>
     </Engine>
   </Service>
 </Server>

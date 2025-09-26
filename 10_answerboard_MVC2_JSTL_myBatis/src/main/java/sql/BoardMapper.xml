@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hk.dao">
+  <select id="boardlist" resultType="AnsDto">
+    SELECT SEQ,ID,TITLE,CONTENT,REGDATE,REFER,STEP,DEPTH,READCOUNT,DELFLAG 
+    FROM answerboard ORDER BY REFER DESC, STEP ASC
+  </select>
+  
+  <insert id="insertboard" parameterType="AnsDto">
+  	INSERT INTO answerboard 
+  	VALUES(NULL,#{id},#{title},#{content},SYSDATE(),
+  		  (SELECT NVL(MAX(refer),0)+1 FROM answerboard),0,0,0,'N')
+  </insert>
+  
+  <select id="getboard" parameterType="Integer" resultType="AnsDto">
+  	SELECT seq,id,title,content,regdate,readcount FROM answerboard WHERE seq=#{seq}
+  </select>
+  
+  <update id="readcount" parameterType="Integer">
+  	UPDATE answerboard SET readcount=readcount+1 WHERE seq = #{seq}
+  </update>
+</mapper>

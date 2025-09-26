@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+  <!-- DB 접속정보 파일 경로 설정 -->
+  <properties resource="sql/db.properties" />
+  
+  <!-- 변수 설정 -->
+  <typeAliases>
+  	<typeAlias type="com.hk.dto.AnsDto" alias="AnsDto"/>
+  </typeAliases>
+  
+  <!-- DB접속 정보 설정 -->
+  <environments default="development">
+    <environment id="development">
+      <transactionManager type="JDBC"/>
+      <dataSource type="POOLED">
+        <property name="driver" value="${driver}"/>
+        <property name="url" value="${url}"/>
+        <property name="username" value="${username}"/>
+        <property name="password" value="${password}"/>
+      </dataSource>
+    </environment>
+  </environments>
+  <mappers>
+    <mapper resource="sql/BoardMapper.xml"/>
+  </mappers>
+</configuration>

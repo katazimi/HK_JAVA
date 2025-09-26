@@ -28,7 +28,7 @@ public class AdminController extends HttpServlet {
 		//command 구현(요청 구분)
 		// --> command=boardList	와 같이 파라미터 값을 추가전달해야하는 불편함이 있음
 		// getRequestURI(): ?전까지 구해줌
-		request.getRequestURI(); //요청 주소를 얻어옴
+//		request.getRequestURI(); //요청 주소를 얻어옴
 		String requestURI = request.getRequestURI();
 		StringBuffer requestURL = request.getRequestURL();
 		String contextPath = request.getContextPath();

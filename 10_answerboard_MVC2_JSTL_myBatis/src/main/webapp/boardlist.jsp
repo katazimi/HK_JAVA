@@ -59,7 +59,7 @@
 	<form action="muldel.board" method="post" onsubmit="return isAllCheck()">
 		<table class="table table-striped">
 		<tr>
-			<th><input class="form-check-input" type="checkbox" id="chkAll" onchange="allSel(this.checked)"/></th>
+			<th style="text-align: center;"><input class="form-check-input" type="checkbox" id="chkAll" onchange="allSel(this.checked)"/></th>
 			<th>번호</th>
 			<th>작성자</th>
 			<th>제목</th>
@@ -82,7 +82,16 @@
 						<td style="text-align: center;"><input class="form-check-input" type="checkbox" name="seq" value="${dto.seq}" /></td>
 						<td>${dto.seq}</td>
 						<td>${dto.id}</td>
-						<td><a href="boarddetail.board?seq=${dto.seq}&review=y">${dto.title}</a></td>
+						<td>
+							<c:choose>
+								<c:when test="${dto.delFlag=='Y'}">
+									---삭제된 글입니다.---
+								</c:when>
+								<c:otherwise>
+									<a href="boarddetail.board?seq=${dto.seq}&review=y">${dto.title}</a>
+								</c:otherwise>
+							</c:choose>
+						</td>
 						<td><fmt:formatDate value="${dto.regdate}" pattern="yyyy년 MM월 dd일"/></td>
 						<td>${dto.readCount}</td>
 						<td>${dto.delFlag}</td>

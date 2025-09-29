@@ -16,10 +16,36 @@
   </insert>
   
   <select id="getboard" parameterType="Integer" resultType="AnsDto">
-  	SELECT seq,id,title,content,regdate,readcount FROM answerboard WHERE seq=#{seq}
+  	SELECT seq,id,title,content,regdate,readcount FROM answerboard <include refid="seqParam"/>
   </select>
   
+  <!-- 조회수 -->
   <update id="readcount" parameterType="Integer">
-  	UPDATE answerboard SET readcount=readcount+1 WHERE seq = #{seq}
+  	UPDATE answerboard SET readcount=readcount+1 <include refid="seqParam"/>
   </update>
+  
+  <!-- 수정하기 -->
+  <update id="boardupdate" parameterType="Map">
+  	UPDATE answerboard SET title=#{title}, content=#{content} <include refid="seqParam"/>
+  </update>
+  
+  <!-- 삭제하기 -->
+  <update id="boarddelete" parameterType="Integer">
+  	UPDATE answerboard SET delflag='Y' <include refid="seqParam"/>
+  </update>
+  
+  <sql id="seqParam">
+  	WHERE seq = #{seq}
+  </sql>
+  
+  <!-- 여러글 삭제:Dynamic Query | parameter: Map(key:array)-->
+  <!-- 동적쿼리 사용시에는 Map으로 전달해야함 -->
+  <update id="muldel" parameterType="Integer">
+  	UPDATE answerboard SET delflag='Y' WHERE seq IN 
+  	<foreach collection="seqs" item="seq" open="(" close=")" separator=",">
+  		#{seq}
+  	</foreach>
+  </update>
+  
+  
 </mapper>

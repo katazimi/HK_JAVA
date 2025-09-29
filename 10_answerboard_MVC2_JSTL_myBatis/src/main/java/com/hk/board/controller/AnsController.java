@@ -81,6 +81,47 @@ public class AnsController extends HttpServlet{
 				System.out.println(session.getAttribute("viewBoards"));
 				dispatch("boarddetail.jsp", request, response);
 			}
+		}else if (command.equals("/updateboardform.board")) {
+			String sseq = request.getParameter("seq");
+			int seq = Integer.parseInt(sseq);
+			AnsDto dto = dao.getBoard(seq);
+			
+			request.setAttribute("dto", dto);
+			dispatch("updateboardform.jsp", request, response);
+		}else if (command.equals("/updateboard.board")) {
+			String sseq = request.getParameter("seq");
+			int seq = Integer.parseInt(sseq);
+			String title = request.getParameter("title");
+			String content = request.getParameter("content");
+			
+			boolean isS = dao.boardUpdate(seq, title, content);
+			
+			if(isS) {
+				response.sendRedirect("boarddetail.board?seq="+seq);
+			}else {
+				response.sendRedirect("error.jsp");
+			}
+		}else if (command.equals("/deleteboard.board")) {
+			String sseq = request.getParameter("seq");
+			int seq = Integer.parseInt(sseq);
+			
+			boolean isS = dao.boardDelete(seq);
+			
+			if(isS) {
+				response.sendRedirect("boardlist.board");
+			}else {
+				response.sendRedirect("error.jsp");
+			}
+		}else if (command.equals("/muldel.board")) {
+			String[]seqs=request.getParameterValues("seq");
+			
+			boolean isS = dao.mulDel(seqs);
+			
+			if(isS) {
+				response.sendRedirect("boardlist.board");
+			}else {
+				response.sendRedirect("error.jsp");
+			}
 		}
 	}
 	

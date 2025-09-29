@@ -1,7 +1,9 @@
 package com.hk.dao;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 
@@ -76,6 +78,65 @@ public class AnsDao extends SqlMapConfig{
 			sqlSession=getSessionFactory().openSession(true);
 			
 			count=sqlSession.update(namespace+"readcount",seq);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			sqlSession.close();
+		}
+		
+		return count>0?true:false;
+	}
+	
+	public boolean boardUpdate(int seq, String title, String content) {
+		int count = 0;
+		SqlSession sqlSession=null;
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("seq", seq);
+		map.put("title", title);
+		map.put("content", content);
+		
+		try {
+			sqlSession=getSessionFactory().openSession(true);
+			
+			count=sqlSession.update(namespace+"boardupdate",map);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			sqlSession.close();
+		}
+		
+		return count>0?true:false;
+	}
+	
+	public boolean boardDelete(int seq) {
+		int count = 0;
+		SqlSession sqlSession=null;
+		
+		try {
+			sqlSession=getSessionFactory().openSession(true);
+			
+			count=sqlSession.update(namespace+"boarddelete",seq);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			sqlSession.close();
+		}
+		
+		return count>0?true:false;
+	}
+	
+	public boolean mulDel(String[] seqs) {
+		int count=0;
+		SqlSession sqlSession=null;
+		
+		//동적쿼리는 map에 답아서 전달!!
+		Map<String,String[]>map = new HashMap<String, String[]>();
+		map.put("seqs", seqs);
+		
+		try {
+			sqlSession=getSessionFactory().openSession(true);
+			count=sqlSession.update(namespace+"muldel",map);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

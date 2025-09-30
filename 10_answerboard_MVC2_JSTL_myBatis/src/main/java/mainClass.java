@@ -13,9 +13,9 @@ public class mainClass {
 		dto.setTitle("제목입니다.");
 		dto.setContent("글 내용입니다.");
 	
-		List<AnsDto> list = dao.getAllList();
 		
-		System.out.println(list.toString());
+		
+		
 		
 
 	}

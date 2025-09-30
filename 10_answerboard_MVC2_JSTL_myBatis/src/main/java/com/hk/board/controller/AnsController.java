@@ -3,6 +3,7 @@ package com.hk.board.controller;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.ServletException;
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.websocket.Session;
 
+import com.hk.board.util.Paging;
 import com.hk.dao.AnsDao;
 import com.hk.dto.AnsDto;
 
@@ -31,8 +33,20 @@ public class AnsController extends HttpServlet{
 		AnsDao dao = new AnsDao();
 		
 		if (command.equals("/boardlist.board")) {
-			List<AnsDto> list = dao.getAllList();
+			//페이지 번호 받기
+			String pnum=request.getParameter("pnum");
+			List<AnsDto> list = dao.getAllList(pnum);
 			request.setAttribute("list",list);
+			
+			//페이지 갯수 구해서 전달
+			int pCount = dao.getPCount();
+			request.setAttribute("pCount", pCount);
+			
+			//페이지에 페이징 처리 기능 추가
+			//필요한 값: pcount(페이지 갯수), pnum(요청페이지번호), 페이지 범위
+			Map<String,Integer>map=Paging.pagingValue(pCount, pnum, 5);
+			request.setAttribute("pMap", map);
+			
 			dispatch("boardlist.jsp", request, response);
 		} else if (command.equals("/insertboardform.board")) {
 			response.sendRedirect("insertboardform.jsp");
@@ -116,6 +130,20 @@ public class AnsController extends HttpServlet{
 			String[]seqs=request.getParameterValues("seq");
 			
 			boolean isS = dao.mulDel(seqs);
+			
+			if(isS) {
+				response.sendRedirect("boardlist.board");
+			}else {
+				response.sendRedirect("error.jsp");
+			}
+		}else if (command.equals("/replyboard.board")) {
+			String sseq = request.getParameter("seq");
+			int seq = Integer.parseInt(sseq);
+			String id = request.getParameter("id");
+			String title = request.getParameter("title");
+			String content = request.getParameter("content");
+			
+			boolean isS=dao.replyBoard(new AnsDto(seq,id,title,content));
 			
 			if(isS) {
 				response.sendRedirect("boardlist.board");

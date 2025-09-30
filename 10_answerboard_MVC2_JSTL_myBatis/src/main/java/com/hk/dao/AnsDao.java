@@ -15,16 +15,19 @@ public class AnsDao extends SqlMapConfig{
 	private String namespace="com.hk.dao.";
 	
 	//1.글 목록조회
-	public List<AnsDto> getAllList(){
+	public List<AnsDto> getAllList(String pnum){
 		List<AnsDto> list = new ArrayList<AnsDto>();
 		SqlSession sqlSession=null;
+		
+		Map<String, String>map = new HashMap<String, String>();
+		map.put("pnum", pnum);
 		
 		try {
 			//sqlSession 객체를 구하려면 openSession()을 통해서 얻어옴
 			//openSession(true/false): t(autocommit)
 			sqlSession=getSessionFactory().openSession(true);
 			//selectList(쿼리ID)를 실행한다.
-			list=sqlSession.selectList(namespace+"boardlist");
+			list=sqlSession.selectList(namespace+"boardlist",map);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -33,6 +36,22 @@ public class AnsDao extends SqlMapConfig{
 		
 		return list;
 	}
+	//1-2 페이지 수 구하기
+	public int getPCount() {
+		int count=0;
+		SqlSession sqlSession=null;
+		
+		try {
+			sqlSession=getSessionFactory().openSession(true);
+			count=sqlSession.selectOne(namespace+"getpcount");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			sqlSession.close();
+		}
+		return count;
+	}
+	
 	//2.글 추가하기
 	public boolean insertBoard(AnsDto dto){
 		int count = 0;
@@ -138,6 +157,29 @@ public class AnsDao extends SqlMapConfig{
 			sqlSession=getSessionFactory().openSession(true);
 			count=sqlSession.update(namespace+"muldel",map);
 		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			sqlSession.close();
+		}
+		
+		return count>0?true:false;
+	}
+	
+	public boolean replyBoard(AnsDto dto) {
+		int count=0;
+		SqlSession sqlSession=null;
+		
+		try {
+			//transaction 처리: auto commit -> false
+			sqlSession=getSessionFactory().openSession(false);
+			// 같은 그룹에서 부모의 step보다 큰 값을 갖는 글들의 step을 +1
+			sqlSession.update(namespace+"replyupdate",dto);
+			count=sqlSession.insert(namespace+"replyinsert",dto);
+			sqlSession.commit();
+			
+		} catch (Exception e) {
+			//중간에 작업이 실패하면 롤백
+			sqlSession.rollback();
 			e.printStackTrace();
 		} finally {
 			sqlSession.close();

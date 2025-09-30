@@ -10,7 +10,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<a href="boardlist.board">글 목록</a>
+	<a href="boardlist.board?pnum=1">글 목록</a>
 </body>
 </html>
 <jsp:include page="footer.jsp"/>

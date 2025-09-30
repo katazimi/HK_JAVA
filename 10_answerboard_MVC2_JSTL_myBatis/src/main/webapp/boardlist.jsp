@@ -54,6 +54,7 @@
 </style>
 </head>
 <body>
+	<jsp:useBean id="util" class="com.hk.board.util.Util"/>
 	<h1>게시판</h1>
 	<h2>글 목록</h2>
 	<form action="muldel.board" method="post" onsubmit="return isAllCheck()">
@@ -80,21 +81,25 @@
 				<c:forEach items="${list}" var="dto">
 					<tr>
 						<td style="text-align: center;"><input class="form-check-input" type="checkbox" name="seq" value="${dto.seq}" /></td>
-						<td>
-							<c:choose>
-								<c:when test="${dto.seq eq dto.refer}">
-									${dto.seq}
-								</c:when>
-							</c:choose>
-						</td>
+						<td>${dto.seq}</td>
 						<td>${dto.id}</td>
-						<td style="padding-left: ${dto.depth * 50}px;">
+						<td>
 							<c:choose>
 								<c:when test="${dto.delFlag=='Y'}">
 									---삭제된 글입니다.---
 								</c:when>
 								<c:otherwise>
-									<a href="boarddetail.board?seq=${dto.seq}&review=y">${dto.title}</a>
+									<%-- <jsp:setProperty property="arrowNbsp" name="util" value="${dto.depth}"/>
+									<jsp:getProperty property="arrowNbsp" name="util"/> --%>
+									<c:forEach begin="1" end="${dto.depth}" var="i" step="1">
+										&nbsp;&nbsp;&nbsp;&nbsp;
+										<c:if test="${i==dto.depth}">
+											<img src="img/arrow.png" width="15px" height="15px">
+										</c:if>
+									</c:forEach>
+									<a href="boarddetail.board?seq=${dto.seq}&review=y">
+										${fn:length(dto.title)>10?fn:substring(dto.title,0,10)+='...':dto.title}
+									</a>
 								</c:otherwise>
 							</c:choose>
 						</td>
@@ -116,6 +121,35 @@
 		</tr>
 	</table>
 	</form>
+	<nav aria-label="Page navigation example">
+	  <ul class="pagination justify-content-center">
+	    <li class="page-item">
+	    	<c:choose>
+	    		<c:when test="${param.pnum > 1}">
+	    			<c:set var="prevPageNum" value="${param.pnum-1}"/>
+	    		</c:when>
+	    		<c:otherwise>
+	    			<c:set var="prevPageNum" value="${param.pnum}"/>
+	    		</c:otherwise>
+	    	</c:choose>
+	      	<a class="page-link" href="boardlist.board?pnum=${prevPageNum}">Previous</a>
+	    </li>
+	    <c:forEach begin="${pMap.startPage}" end="${pMap.endPage}" var="i" step="1">
+	    	<li class="page-item"><a class="page-link" href="boardlist.board?pnum=${i}">${i}</a></li>
+	    </c:forEach>
+	    <li class="page-item">
+	    	<c:choose>
+	    		<c:when test="${param.pnum < pCount}">
+	    			<c:set var="nextPageNum" value="${param.pnum+1}"/>
+	    		</c:when>
+	    		<c:otherwise>
+	    			<c:set var="nextPageNum" value="${param.pnum}"/>
+	    		</c:otherwise>
+	    	</c:choose>
+	      	<a class="page-link" href="boardlist.board?pnum=${nextPageNum}">Next</a>
+	    </li>
+	  </ul>
+	</nav>
 </body>
 </html>
 <jsp:include page="footer.jsp"/>

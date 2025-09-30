@@ -4,10 +4,10 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hk.dao">
-  <select id="boardlist" resultType="AnsDto">
+ <!--  <select id="boardlist" resultType="AnsDto">
     SELECT SEQ,ID,TITLE,CONTENT,REGDATE,REFER,STEP,DEPTH,READCOUNT,DELFLAG 
     FROM answerboard ORDER BY REFER DESC, STEP ASC
-  </select>
+  </select> -->
   
   <insert id="insertboard" parameterType="AnsDto">
   	INSERT INTO answerboard 
@@ -64,5 +64,15 @@
 					0,'N'
 	)
   </insert>
+  
+  <select id="boardlist" parameterType="Map" resultType="AnsDto">
+  	SELECT rn, seq, id,title,content,regdate,readcount,refer,step,depth,delflag 
+	FROM (SELECT ROW_NUMBER() OVER(ORDER BY refer DESC, step ASC) AS rn,seq,id,title,content,regdate,readcount,refer,step,depth,delflag FROM answerboard) a
+	WHERE CEIL(rn/10) = #{pnum}
+  </select>
+  
+  <select id="getpcount" resultType="int">
+  	SELECT CEIL(COUNT(*)/10) FROM answerboard
+  </select>
   
 </mapper>

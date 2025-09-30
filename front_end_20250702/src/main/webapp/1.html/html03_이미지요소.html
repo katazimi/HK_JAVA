@@ -3,14 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <title>이미지요소</title>
+<style type="text/css">
+	.image-container img {
+      transition: transform 0.3s ease; /* 부드러운 전환 효과 */
+      transform-origin: center; /* 확대의 기준점을 가운데로 설정 */
+    }
+
+    .image-container img:hover {
+      transform: scale(1.5); /* 마우스를 올렸을 때 1.5배 확대 */
+    }
+</style>
 </head>
 <body>
 	<h1>이미지요소</h1>
 	<p>이미지요소는 웹페이지에 이미지를 표현할 때 사용한다.</p>
 	<p>- 주의사항: 사이즈 조절을 할때 해상도를 고려해야한다.</p>
-	<p>
+	<div class="image-container">
 		<img src="../img/dog.jpeg" alt="강아지입니다."/>
-	</p>
+	</div>
 	<a href="https://blog.naver.com/popopo1004ka/223849274569">
 		<img src="../img/dog.jpeg" alt="강아지입니다."/>
 	</a>

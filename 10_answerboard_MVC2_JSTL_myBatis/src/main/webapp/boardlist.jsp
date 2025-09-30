@@ -80,9 +80,15 @@
 				<c:forEach items="${list}" var="dto">
 					<tr>
 						<td style="text-align: center;"><input class="form-check-input" type="checkbox" name="seq" value="${dto.seq}" /></td>
-						<td>${dto.seq}</td>
-						<td>${dto.id}</td>
 						<td>
+							<c:choose>
+								<c:when test="${dto.seq eq dto.refer}">
+									${dto.seq}
+								</c:when>
+							</c:choose>
+						</td>
+						<td>${dto.id}</td>
+						<td style="padding-left: ${dto.depth * 50}px;">
 							<c:choose>
 								<c:when test="${dto.delFlag=='Y'}">
 									---삭제된 글입니다.---

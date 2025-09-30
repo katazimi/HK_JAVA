@@ -47,5 +47,22 @@
   	</foreach>
   </update>
   
+  <!-- 답글달기 -->
+  <update id="replyupdate" parameterType="AnsDto">
+  	<![CDATA[
+	  	UPDATE answerboard SET step=step+1 
+		WHERE refer=(SELECT refer FROM answerboard WHERE seq=#{seq}) AND
+		step>(SELECT step FROM answerboard WHERE seq=#{seq})
+  	]]>
+  </update>
+  
+  <insert id="replyinsert" parameterType="AnsDto">
+  	INSERT INTO answerboard VALUES(NULL,#{id},#{title},#{content},SYSDATE(),				
+  				(SELECT refer FROM answerboard WHERE seq=#{seq}),
+				(SELECT step FROM answerboard WHERE seq=#{seq})+1,
+				(SELECT depth FROM answerboard WHERE seq=#{seq})+1,
+					0,'N'
+	)
+  </insert>
   
 </mapper>

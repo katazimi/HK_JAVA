@@ -35,6 +35,14 @@ public class AnsController extends HttpServlet{
 		if (command.equals("/boardlist.board")) {
 			//페이지 번호 받기
 			String pnum=request.getParameter("pnum");
+			
+			HttpSession session = request.getSession();
+			if(pnum==null) {
+				pnum=(String)session.getAttribute("pnum");
+			}else {
+				session.setAttribute("pnum", pnum);
+			}
+			
 			List<AnsDto> list = dao.getAllList(pnum);
 			request.setAttribute("list",list);
 			

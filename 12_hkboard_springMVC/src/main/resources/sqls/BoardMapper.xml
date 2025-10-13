@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<!-- namespace속성: 반드시 정의를 하자 -->
+<mapper namespace="com.hk.board.dao">
+
+  <select id="boardlist" resultType="HkDto">
+    SELECT SEQ,ID,TITLE,CONTENT,REGDATE
+    FROM HKBOARD 
+  </select>
+  
+  <insert id="insertboard" parameterType="HkDto" >
+  	INSERT INTO HKBOARD
+	VALUES( NULL,#{id},#{title},#{content},SYSDATE())
+  </insert>
+  
+  <select id="getboard" parameterType="Integer" resultType="HkDto">
+  	SELECT SEQ,ID,TITLE,CONTENT,REGDATE
+  	FROM HKBOARD
+  	WHERE SEQ=#{seq}
+  </select>
+  
+  <!-- 수정하기 -->
+  <update id="boardupdate" parameterType="HkDto">
+  	UPDATE HKBOARD SET TITLE=#{title}, CONTENT=#{content}
+  	WHERE SEQ=#{seq}
+  </update>
+  
+  <!-- 삭제하기: delflag = Y update 실행 -->
+  <delete id="boarddelete" parameterType="Integer">
+  	DELETE FROM HKBOARD 
+  	WHERE SEQ=#{seq}
+  </delete>
+  
+  <delete id="muldel" parameterType="Map">
+  	DELETE FROM HKBOARD 
+  	WHERE SEQ IN 
+  	<foreach collection="seqs" item="seq" open="(" close=")"
+  			 separator=",">
+  		#{seq}
+  	</foreach>
+  </delete>
+
+</mapper>
+
+
+
+
+
+
+
+

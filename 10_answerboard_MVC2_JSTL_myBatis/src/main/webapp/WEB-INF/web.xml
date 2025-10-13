@@ -11,6 +11,12 @@
     <welcome-file>default.htm</welcome-file>
     <welcome-file>default.xhtml</welcome-file>
   </welcome-file-list>
+  <resource-ref>
+  	<description>DB Connection Pool</description>
+  	<res-ref-name>jdbc/hk</res-ref-name>
+  	<res-type>javax.sql.DataSource</res-type>
+  	<res-auth>Container</res-auth>
+  </resource-ref>
   <error-page>
     <error-code>500</error-code>
     <location>/error.jsp</location>

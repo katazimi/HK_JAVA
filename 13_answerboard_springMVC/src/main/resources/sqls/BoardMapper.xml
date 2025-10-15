@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hk.ansboard.dao">
+ <!--  <select id="boardlist" resultType="AnsDto">
+    SELECT SEQ,ID,TITLE,CONTENT,REGDATE,REFER,STEP,DEPTH,READCOUNT,DELFLAG 
+    FROM answerboard ORDER BY REFER DESC, STEP ASC
+  </select> -->
+  
+  <insert id="insertboard" parameterType="AnsDto">
+  	INSERT INTO answerboard 
+  	VALUES(NULL,#{id},#{title},#{content},SYSDATE(),
+  		  (SELECT NVL(MAX(refer),0)+1 FROM answerboard),0,0,0,'N')
+  </insert>
+  
+  <!-- <select id="getboard" parameterType="Integer" resultType="AnsDto">
+  	SELECT seq,id,title,content,regdate,readcount FROM answerboard <include refid="seqParam"/>
+  </select> -->
+  
+  <!-- 조회수 -->
+  <update id="readcount" parameterType="Integer">
+  	UPDATE answerboard SET readcount=readcount+1 <include refid="seqParam"/>
+  </update>
+  
+  <!-- 수정하기 -->
+  <update id="boardupdate" parameterType="Map">
+  	UPDATE answerboard SET title=#{title}, content=#{content} <include refid="seqParam"/>
+  </update>
+  
+  <!-- 삭제하기 -->
+  <update id="boarddelete" parameterType="Integer">
+  	UPDATE answerboard SET delflag='Y' <include refid="seqParam"/>
+  </update>
+  
+  <sql id="seqParam">
+  	WHERE seq = #{seq}
+  </sql>
+  
+  <!-- 여러글 삭제:Dynamic Query | parameter: Map(key:array)-->
+  <!-- 동적쿼리 사용시에는 Map으로 전달해야함 -->
+  <update id="muldel" parameterType="Integer">
+  	UPDATE answerboard SET delflag='Y' WHERE seq IN 
+  	<foreach collection="seqs" item="seq" open="(" close=")" separator=",">
+  		#{seq}
+  	</foreach>
+  </update>
+  
+  <!-- 답글달기 -->
+  <update id="replyupdate" parameterType="AnsDto">
+  	<![CDATA[
+	  	UPDATE answerboard SET step=step+1 
+		WHERE refer=(SELECT refer FROM answerboard WHERE seq=#{seq}) AND
+		step>(SELECT step FROM answerboard WHERE seq=#{seq})
+  	]]>
+  </update>
+  
+  <insert id="replyinsert" parameterType="AnsDto">
+  	INSERT INTO answerboard VALUES(NULL,#{id},#{title},#{content},SYSDATE(),				
+  				(SELECT refer FROM answerboard WHERE seq=#{seq}),
+				(SELECT step FROM answerboard WHERE seq=#{seq})+1,
+				(SELECT depth FROM answerboard WHERE seq=#{seq})+1,
+					0,'N'
+	)
+  </insert>
+  
+  <select id="boardlist" parameterType="Map" resultType="AnsDto">
+  	SELECT rn, seq, id,title,content,regdate,readcount,refer,step,depth,delflag 
+	FROM (SELECT ROW_NUMBER() OVER(ORDER BY refer DESC, step ASC) AS rn,
+		  seq,id,title,content,regdate,readcount,refer,step,depth,delflag FROM answerboard) a
+	<where>
+		<choose>
+			<when test="seq!=null">
+				seq = #{seq}
+			</when>
+			<otherwise>
+				CEIL(rn/10) = #{pnum}
+			</otherwise>
+		</choose>
+	</where>
+  </select>
+  
+  <select id="getpcount" resultType="int">
+  	SELECT CEIL(COUNT(*)/10) FROM answerboard
+  </select>
+  
+</mapper>

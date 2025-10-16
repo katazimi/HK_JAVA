@@ -57,7 +57,7 @@
   </update>
   
   <insert id="replyinsert" parameterType="AnsDto">
-  	INSERT INTO answerboard VALUES(NULL,#{id},#{title},#{content},SYSDATE(),				
+  	INSERT INTO answerboard1 VALUES(NULL,#{id},#{title},#{content},SYSDATE(),				
   				(SELECT refer FROM answerboard WHERE seq=#{seq}),
 				(SELECT step FROM answerboard WHERE seq=#{seq})+1,
 				(SELECT depth FROM answerboard WHERE seq=#{seq})+1,

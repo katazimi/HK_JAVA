@@ -23,7 +23,7 @@
 </head>
 <body>
 	<h1>글 수정</h1>
-	<form action="updateboard.board" method="post">
+	<form action="updateboard.do" method="post">
 		<input type="hidden" name="seq" value="${dto.seq}">
 		<table class="table table-striped">
 			<tr>
@@ -41,7 +41,7 @@
 			<tr>
 				<td colspan="2">
 					<input class="btn btn-primary" type="submit" value="글 수정" />
-					<input class="btn btn-primary" type="button" value="글 목록" onclick="location.href='boardlist.board'; return false;"/>
+					<input class="btn btn-primary" type="button" value="글 목록" onclick="location.href='boardlist.do?pnum=1'; return false;"/>
 				</td>
 			</tr>
 		</table>

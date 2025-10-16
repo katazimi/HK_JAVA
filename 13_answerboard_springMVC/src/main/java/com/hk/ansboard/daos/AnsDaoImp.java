@@ -78,9 +78,9 @@ public class AnsDaoImp implements IAnsDao{
 	}
 
 	@Override
-	public boolean mulDel(String[] seqs) {
+	public boolean mulDel(String[] seq) {
 		Map<String,String[]>map = new HashMap<>();
-		map.put("seq", seqs);
+		map.put("seqs", seq);
 		int count=sqlSession.update(namespace+"muldel",map);
 		return count>0?true:false;
 	}

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hk.loginboard.dao">
+ 
+ <!-- USER기능 --> 
+  <!-- 회원가입 -->
+  <insert id="insertuser" parameterType="UserDto">
+  	INSERT INTO userinfo 
+  	VALUES(NULL,#{id},#{name},#{password},#{address},#{email},enabled='Y',role='USER',SYSDATE())
+  </insert>
+  
+  <!-- 아이디 중복확인 -->
+  <select id="idChk" parameterType="String" resultType="String">
+  	SELECT id FROM userinfo WHERE id=#{id}
+  </select>
+  
+  <!-- 로그인 -->
+  <select id="login" parameterType="String" resultType="UserDto">
+  	SELECT id, password, role  FROM userinfo WHERE id=#{id} AND enabled='Y'
+  </select>
+  
+  <!-- 정보가져오기
+  <select id="getuser" parameterType="String" resultType="UserDto">
+  	SELECT seq,id,name,address,email,role,regdate FROM userinfo WHERE id=#{id}
+  </select> -->
+  
+  <!-- 정보수정 -->
+  <update id="updateuser">
+  	UPDATE userinfo SET address=#{address}, email=#{email} WHERE id=#{id}
+  </update>
+  
+  <!-- 회원탈퇴 -->
+  <update id="deluser">
+  	UPDATE userinfo SET enabled='N' WHERE id=#{id}
+  </update>
+  
+  <!-- ADMIN기능 -->
+  <!-- 회원목록전체조회(탈퇴회원 포함) -->
+  <select id="getalluserlist" resultType="UserDto">
+  	SELECT seq,id,name,address,email,role,regdate FROM userinfo
+  </select>
+  
+  <!-- 회원목록전체조회 -->
+  <select id="getuserlist" resultType="UserDto">
+  	SELECT seq,id,name,address,email,role,regdate FROM userinfo WHERE enabled='Y'
+  </select>
+  
+  <!-- 회원상세조회 -->
+  <select id="getuser" parameterType="String" resultType="UserDto">
+  	SELECT seq,id,name,address,email,role,regdate FROM userinfo WHERE id=#{id} AND enabled='Y'
+  </select>
+  
+  <!-- 회원등급수정 -->
+  <update id="updaterole" parameterType="String">
+  	UPDATE userinfo SET role=#{role} WHERE id=#{id}
+  </update>
+</mapper>

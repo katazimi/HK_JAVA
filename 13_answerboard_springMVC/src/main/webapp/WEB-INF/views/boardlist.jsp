@@ -57,7 +57,7 @@
 		<jsp:useBean id="util" class="com.hk.board.util.Util"/>
 		<h1>게시판</h1>
 		<h2>글 목록</h2>
-		<form action="muldel.board" method="post" onsubmit="return isAllCheck()">
+		<form action="muldel.do" method="post" onsubmit="return isAllCheck()">
 			<table class="table table-striped">
 			<tr>
 				<th style="text-align: center;"><input class="form-check-input" type="checkbox" id="chkAll" onchange="allSel(this.checked)"/></th>
@@ -94,10 +94,10 @@
 										<c:forEach begin="1" end="${dto.depth}" var="i" step="1">
 											&nbsp;&nbsp;&nbsp;&nbsp;
 											<c:if test="${i==dto.depth}">
-												<img src="img/arrow.png" width="15px" height="15px">
+												<img src="resources/arrow.png" width="15px" height="15px">
 											</c:if>
 										</c:forEach>
-										<a href="boarddetail.board?seq=${dto.seq}&review=y">
+										<a href="boarddetail.do?seq=${dto.seq}&review=y">
 											${fn:length(dto.title)>10?fn:substring(dto.title,0,10)+='...':dto.title}
 										</a>
 									</c:otherwise>
@@ -132,10 +132,10 @@
 		    			<c:set var="prevPageNum" value="${param.pnum}"/>
 		    		</c:otherwise>
 		    	</c:choose>
-		      	<a class="page-link" href="boardlist.board?pnum=${prevPageNum}">Previous</a>
+		      	<a class="page-link" href="boardlist.do?pnum=${prevPageNum}">Previous</a>
 		    </li>
 		    <c:forEach begin="${pMap.startPage}" end="${pMap.endPage}" var="i" step="1">
-		    	<li class="page-item ${sessionScope.pnum==i?'active':''}"><a class="page-link" href="boardlist.board?pnum=${i}">${i}</a></li>
+		    	<li class="page-item ${sessionScope.pnum==i?'active':''}"><a class="page-link" href="boardlist.do?pnum=${i}">${i}</a></li>
 		    </c:forEach>
 		    <li class="page-item">
 		    	<c:choose>
@@ -146,7 +146,7 @@
 		    			<c:set var="nextPageNum" value="${param.pnum}"/>
 		    		</c:otherwise>
 		    	</c:choose>
-		      	<a class="page-link" href="boardlist.board?pnum=${nextPageNum}">Next</a>
+		      	<a class="page-link" href="boardlist.do?pnum=${nextPageNum}">Next</a>
 		    </li>
 		  </ul>
 		</nav>

@@ -25,6 +25,7 @@ public class AnsController {
 	@RequestMapping(value = "/home.do", method = RequestMethod.GET)
 	public String home() {
 		System.out.println("HOME 페이지로 이동");
+		System.out.println("Working Directory:"+System.getProperty("user.dir"));
 		return "home";
 	}
 	
@@ -54,9 +55,16 @@ public class AnsController {
 	}
 	
 	//글 상세보기
-	@RequestMapping(value = "/boarddetail.do", method = RequestMethod.GET)
-	public String boarddetail() {
-		return "insertboardform";
+	@RequestMapping(value="/boarddetail.do",method=RequestMethod.GET)
+	public String getBoard(Model model,String seq, String review) {
+		if(review!=null&&review.equals("y")) {
+			ansService.readCount(Integer.parseInt(seq));
+			return "redirect:boarddetail.do?seq="+seq;
+		}else {
+			AnsDto dto=ansService.getBoard(Integer.parseInt(seq));
+			model.addAttribute("dto", dto);
+			return "boarddetail";
+		}
 	}
 	
 	//글추가 폼이동
@@ -73,7 +81,61 @@ public class AnsController {
 		if(isS) {
 			return "redirect:boardlist.do";
 		}else {
-			return "error";
+			return "redirect:error";
+		}
+	}
+	
+	//글수정 폼이동
+	@RequestMapping(value = "/updateboardform.do", method = RequestMethod.GET)
+	public String updateBoardForm(int seq,Model model) {
+		AnsDto dto = ansService.getBoard(seq);
+		model.addAttribute("dto",dto);
+		return "updateboardform";
+	}
+	
+	//글 수정
+	@RequestMapping(value = "/updateboard.do", method = RequestMethod.POST)
+	public String updateBoard(AnsDto dto) {
+		
+		boolean isS=ansService.boardUpdate(dto.getSeq(), dto.getTitle(), dto.getContent());
+		if(isS) {
+			return "redirect:boarddetail.do?seq="+dto.getSeq();
+		}else {
+			return "redirect:error";
+		}
+	}
+	
+	//글 삭제
+	@RequestMapping(value = "/deleteboard.do", method = RequestMethod.GET)
+	public String deleteBoard(int seq) {
+		
+		boolean isS=ansService.boardDelete(seq);
+		if(isS) {
+			return "redirect:boardlist.do";
+		}else {
+			return "redirect:error";
+		}
+	}
+	
+	//여러 글 삭제
+	@RequestMapping(value = "/muldel.do", method = RequestMethod.POST)
+	public String mulDel(String[] seq) {
+		boolean isS=ansService.mulDel(seq);
+		if(isS) {
+			return "redirect:boardlist.do";
+		}else {
+			return "redirect:error";
+		}
+	}
+	
+	//답글 추가
+	@RequestMapping(value = "/replyboard.do", method = RequestMethod.POST)
+	public String replyBoard(AnsDto dto) {
+		boolean isS=ansService.replyBoard(dto);
+		if(isS) {
+			return "redirect:boardlist.do";
+		}else {
+			return "redirect:error";
 		}
 	}
 }

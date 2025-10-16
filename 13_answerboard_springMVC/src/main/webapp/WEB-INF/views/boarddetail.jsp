@@ -12,11 +12,11 @@
 	// 필요한 pk값
 	function updateForm(seq){
 		//수정폼 이동
-		location.href = "updateboardform.board?seq="+seq;
+		location.href = "updateboardform.do?seq="+seq;
 	}
 	
 	function delBoard(seq) {
-		location.href = "deleteboard.board?seq="+seq;
+		location.href = "deleteboard.do?seq="+seq;
 	}
 	
 	function replyForm() {
@@ -50,14 +50,14 @@
 					<input class="btn btn-primary" type="button" value="답글" onclick="replyForm()"/>
 					<input class="btn btn-primary" type="button" value="글 수정" onclick="updateForm(${dto.seq})"/>
 					<input class="btn btn-primary" type="button" value="글 삭제" onclick="delBoard(${dto.seq})"/>
-					<input class="btn btn-primary" type="button" value="글 목록" onclick="location.href='boardlist.board'"/>
+					<input class="btn btn-primary" type="button" value="글 목록" onclick="location.href='boardlist.do'"/>
 				</td>
 			</tr>
 		</table>
 	</form>
 	<div id="replyForm">
 			<h2>답글 작성하기</h2>
-			<form action="replyboard.board" method="post">
+			<form action="replyboard.do" method="post">
 				<input type="hidden" name="seq" value="${dto.seq}" />
 				<table class="table table-striped">
 					<tr>
@@ -78,7 +78,7 @@
 					<tr>
 						<td colspan="2">
 							<input class="btn btn-primary" type="submit" value="답글 등록" />
-							<button class="btn btn-primary" type="button" onclick="location.href='boardlist.board'">글 목록</button>
+							<button class="btn btn-primary" type="button" onclick="location.href='boardlist.do'">글 목록</button>
 						</td>
 					</tr>
 				</table>

@@ -23,7 +23,7 @@
 </head>
 <body>
 	<h1>글 추가하기</h1>
-	<form action="insertboard.board" method="post">
+	<form action="insertboard.do" method="post">
 		<table class="table table-striped">
 			<tr>
 				<th>작성자(ID)</th>
@@ -40,7 +40,7 @@
 			<tr>
 				<td colspan="2">
 					<input class="btn btn-primary" type="submit" value="글 등록" />
-					<button class="btn btn-primary" type="button" onclick="location.href='boardlist.board'">글 목록</button>
+					<button class="btn btn-primary" type="button" onclick="location.href='boardlist.do'">글 목록</button>
 				</td>
 			</tr>
 		</table>

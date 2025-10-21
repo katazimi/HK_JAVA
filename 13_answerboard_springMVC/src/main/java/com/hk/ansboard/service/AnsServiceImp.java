@@ -2,9 +2,13 @@ package com.hk.ansboard.service;
 
 import java.util.List;
 
+import javax.management.RuntimeErrorException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.reactive.TransactionSynchronizationManager;
 
 import com.hk.ansboard.daos.IAnsDao;
 import com.hk.ansboard.dtos.AnsDto;
@@ -58,10 +62,17 @@ public class AnsServiceImp implements IAnsService{
 	//Transaction 처리
 	// - 선언적 처리 방법 : 어노테이션 작성 방식
 	// - AOP 처리 방법 : AOP 적용 처리 방식
-	@Transactional
+//	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public boolean replyBoard(AnsDto dto) {
+//		boolean txActive = TransactionSynchronizationManager.isActualTransactionActive();
+//		System.out.println("트랜잭션 활성 상태: " + txActive);
 		ansDao.replyUpdate(dto);
+		
+		if(true) {
+			throw new RuntimeException("트랜잭션 롤백 테스트");
+		}
+		
 		int count = ansDao.replyInsert(dto);
 		return count>0?true:false;
 	}

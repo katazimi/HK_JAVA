@@ -8,25 +8,40 @@
 </head>
 <body>
 <div layout:fragment="content">
-	<div id="container">
+	<div id="container" class="container">
 		<h1>일정관리[달력보기]</h1>
 		<div class="cal">
-			<div id="ctitle">
-				<a href="#">︎◁</a>
-				<a href="#">◀</a>
-				<span class="y"></span>
+			<div id="ctitle" class="text-center">
+				<a th:href="@{/schedule/calendar(year=${calMap.year-1},month=${calMap.month})}">︎◁</a>
+				<a th:href="@{/schedule/calendar(year=${calMap.year},month=${calMap.month-1})}">◀</a>
+				<span class="y" th:text="${calMap.year}"></span>
 				<span>년</span>
-				<span class="m"></span>
+				<span class="m" th:text="${calMap.month}"></span>
 				<span>월</span>
-				<a href="#">►︎︎</a>
-				<a href="#">▷</a>
+				<a th:href="@{/schedule/calendar(year=${calMap.year},month=${calMap.month+1})}">►︎︎</a>
+				<a th:href="@{/schedule/calendar(year=${calMap.year+1},month=${calMap.month})}">▷</a>
 			</div>
-			<div id="thead">
-				<div>일</div><div>월</div><div>화</div><div>수</div>
-				<div>목</div><div>금</div><div>토</div>
+			<div id="thead" class="row row-cols-7 text-center">
+				<div class="col">일</div><div class="col">월</div><div class="col">화</div>
+				<div class="col">수</div><div class="col">목</div><div class="col">금</div>
+				<div class="col">토</div>
 			</div>
 			<div id="tbody">
-				
+				<div class="row row-cols-7">
+					<div id="col" 
+						 class="col" 
+						 th:if="${calMap.dayOfWeek > 1}" 
+						 th:each="b : ${#numbers.sequence(0,calMap.dayOfWeek%7)}">&nbsp;
+					</div>
+					<div id="col" 
+						 class="col" 
+						 th:each="d : ${#numbers.sequence(1,calMap.lastDay)}">
+						<a th:href="@{/schedule/calboardlist(year=${calMap.year},month=${calMap.month},date=${d})}" th:text="${d}"></a>
+						<a th:href="@{/schedule/addcalboardform(year=${calMap.year},month=${calMap.month},date=${d})}">
+							<img class="pen" th:src="@{/img/pen.png}" alt="일정추가">
+						</a>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

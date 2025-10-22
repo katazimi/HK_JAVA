@@ -7,6 +7,7 @@
 <!-- 설정된 패키지명.인터페이스명은 실제 정의된 CalMapper 인터페이스의 경로임 -->
 <mapper namespace="com.hk.board.mapper.CalMapper">
 	
+	<!-- 메서드명과 ID명이 일치해야함 -->
 	<insert id="insertCalBoard" parameterType="CalDto">
 		INSERT INTO calboard VALUE(NULL,#{id},#{title},#{content},#{mdate},SYSDATE())
 	</insert>

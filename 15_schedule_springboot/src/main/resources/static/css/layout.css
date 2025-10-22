@@ -1,0 +1,35 @@
+@charset "UTF-8";
+
+.footer{
+	text-align: center;
+	color:white;
+	background-color: #3c3c3c;
+	line-height: 50px;
+	height: 50px;
+}
+
+.row-cols-7 > * {
+	  flex: 0 0 auto;
+	  width: 14.2857142857%; /* 100% / 7 */
+}
+	
+#col{
+	height: 120px;
+}
+	
+.col{
+	border: 1px solid black;
+}
+
+#ctitle > * {
+	font-size: 20px;
+}
+
+.pen {
+	width: 25px;
+	height: 25px;
+}
+
+.errorField {
+	color: red;
+}

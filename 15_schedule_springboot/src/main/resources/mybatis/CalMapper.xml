@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace속성: 반드시 정의를 하자 -->
+<!-- 설정된 패키지명.인터페이스명은 실제 정의된 CalMapper 인터페이스의 경로임 -->
+<mapper namespace="com.hk.board.mapper.CalMapper">
+	
+	<insert id="insertCalBoard" parameterType="CalDto">
+		INSERT INTO calboard VALUE(NULL,#{id},#{title},#{content},#{mdate},SYSDATE())
+	</insert>
+	
+</mapper>

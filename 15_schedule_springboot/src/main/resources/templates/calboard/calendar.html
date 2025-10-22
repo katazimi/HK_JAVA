@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{layouts/layout}">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<div layout:fragment="content">
+	<div id="container">
+		<h1>일정관리[달력보기]</h1>
+		<div class="cal">
+			<div id="ctitle">
+				<a href="#">︎◁</a>
+				<a href="#">◀</a>
+				<span class="y"></span>
+				<span>년</span>
+				<span class="m"></span>
+				<span>월</span>
+				<a href="#">►︎︎</a>
+				<a href="#">▷</a>
+			</div>
+			<div id="thead">
+				<div>일</div><div>월</div><div>화</div><div>수</div>
+				<div>목</div><div>금</div><div>토</div>
+			</div>
+			<div id="tbody">
+				
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>

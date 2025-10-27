@@ -32,4 +32,17 @@
 		SET title=#{title}, content=#{content}, mdate=#{mdate}, regdate=SYSDATE()
 		WHERE seq=#{seq}
 	</update>
+	
+	<select id="calViewList" parameterType="Map" resultType="CalDto">
+    SELECT seq,id,title,content,mdate,regdate 
+    FROM (SELECT seq,id,title,content,mdate,regdate,ROW_NUMBER() OVER(PARTITION BY SUBSTRING(mdate, 7, 2) ORDER BY seq) AS rn 
+          FROM calboard) AS subboard
+    WHERE id=#{id} AND SUBSTRING(mdate,1,6) = #{yyyyMM} AND subboard.rn &lt; 4
+	</select>
+	
+	<select id="calBoardCount" parameterType="Map" resultType="int">
+		SELECT COUNT(*) 
+		FROM calboard
+		WHERE id=#{id} AND SUBSTR(mdate,1,8) = #{yyyyMMdd}
+	</select>
 </mapper>

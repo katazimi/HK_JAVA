@@ -14,7 +14,7 @@
 }
 	
 #col{
-	height: 120px;
+	height: 140px;
 }
 	
 .col{
@@ -32,4 +32,8 @@
 
 .errorField {
 	color: red;
+}
+
+.calcontent{
+	background-color: yellow;
 }

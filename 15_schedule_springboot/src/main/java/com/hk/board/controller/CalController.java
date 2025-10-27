@@ -1,5 +1,6 @@
 package com.hk.board.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.hk.board.command.DeleteCalCommand;
 import com.hk.board.command.InsertCalCommand;
@@ -149,5 +151,19 @@ public class CalController {
 		calService.calBoardUpdate(updateCalCommand);
 		
 		return "redirect:/schedule/calboarddetail?seq="+updateCalCommand.getSeq();
+	}
+	
+	@ResponseBody // body로 데이터를 보냄
+	@GetMapping("/calcountajax")
+	public Map<String, Integer> calCountAjax(String yyyyMMdd) {
+//		String id = (String)session.getAttribute("id");
+		String id = "JH";
+		int count = calService.calBoardCount(id, yyyyMMdd);
+		
+		// json으로 변환하기 위해 비슷한 형식의 Map객체로 전달한다.
+		Map<String, Integer> map = new HashMap<>();
+		map.put("count", count);
+		
+		return map;
 	}
 }

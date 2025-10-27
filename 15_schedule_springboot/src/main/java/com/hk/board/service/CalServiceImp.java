@@ -69,6 +69,14 @@ public class CalServiceImp {
 		map.put("dayOfWeek", dayOfWeek);
 		map.put("lastDay", lastDay);
 		
+		//한달 단위 일일별 일정 구하기
+		String id="JH"; //session에서 가져오기
+		String yyyyMM=year+util.isTwo(month+"");
+		List<CalDto>clist=calViewList(id, yyyyMM);
+		
+		//구한일정을 request Scope에 저장
+		request.setAttribute("clist", clist);
+		
 		return map;
 	}
 	
@@ -142,4 +150,17 @@ public class CalServiceImp {
 		return calMapper.calBoardUpdate(dto);
 	}
 	
+	public List<CalDto> calViewList(String id, String yyyyMM) {
+		Map<String,String> map = new HashMap<String, String>();
+		map.put("id",id);
+		map.put("yyyyMM", yyyyMM);
+		return calMapper.calViewList(map);
+	}
+	
+	public int calBoardCount(String id, String yyyyMMdd) {
+		Map<String,String> map = new HashMap<String, String>();
+		map.put("id",id);
+		map.put("yyyyMMdd", yyyyMMdd);
+		return calMapper.calBoardCount(map);
+	}
 }

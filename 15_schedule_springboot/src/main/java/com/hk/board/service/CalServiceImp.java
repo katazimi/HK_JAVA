@@ -2,14 +2,35 @@ package com.hk.board.service;
 
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.hk.board.command.DeleteCalCommand;
+import com.hk.board.command.InsertCalCommand;
+import com.hk.board.command.UpdateCalCommand;
+import com.hk.board.dtos.CalDto;
+import com.hk.board.mapper.CalMapper;
+import com.hk.board.utils.Util;
 
 import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class CalServiceImp {
+	
+	@Autowired
+	private Util util;
+	
+	@Autowired
+	private CalMapper calMapper;
+	
+	@Autowired
+	private ModelMapper modelMapper;
+	
+	//달력폼 만드는 기능
 	//request객체를 전달받음
 	public Map<String, Integer> makeCalendar(HttpServletRequest request) {
 		String paramYear=request.getParameter("year");
@@ -49,6 +70,76 @@ public class CalServiceImp {
 		map.put("lastDay", lastDay);
 		
 		return map;
+	}
+	
+	//일정 추가하기
+	public boolean insertCalBoard(InsertCalCommand insertCalCommand) {
+		//command에는 id,title,content,year,month,date,min <- DB와 일치하지 않음
+		// year,month,date,min -> mdate(12자리)로 변환
+		
+		String mdate = insertCalCommand.getYear() 
+					 + util.isTwo(insertCalCommand.getMonth()+"")
+					 + util.isTwo(insertCalCommand.getDate()+"")
+					 + util.isTwo(insertCalCommand.getHour()+"")
+					 + util.isTwo(insertCalCommand.getMin()+"");
+		
+		//command -> dto로 값을 복사해서 넣는 작업
+//		CalDto dto = new CalDto();
+//		dto.setId(insertCalCommand.getId());
+//		dto.setTitle(insertCalCommand.getTitle());
+//		dto.setContent(insertCalCommand.getContent());
+//		dto.setMdate(mdate);
+		
+								  //(복사할 대상 객체, 붙여넣을 객체의 타입)
+		CalDto dto = modelMapper.map(insertCalCommand, CalDto.class);
+		dto.setMdate(mdate);
+		
+		int count = calMapper.insertCalBoard(dto);
+		
+		return count>0?true:false;
+	}
+	
+	//일정목록보기
+	public List<CalDto> calBoardList(String id, Map<String, String>paramMap) {
+		
+		//조회할 일정의 날짜 8자리 만들기
+		String yyyyMMdd=paramMap.get("year")
+					   +util.isTwo(paramMap.get("month"))
+					   +util.isTwo(paramMap.get("date"));
+		Map<String,String>map = new HashMap<>();
+		map.put("id", id);
+		map.put("yyyyMMdd", yyyyMMdd);
+		
+		
+		return calMapper.calBoardList(map);
+	}
+	
+	//일정 삭제하기
+	public boolean calMulDel(String[] seqs) {
+		Map<String,String[]>map = new HashMap<>();
+		map.put("seqs", seqs);
+		return calMapper.calMulDel(map);
+	}
+	
+	//일정 상세보기
+	public CalDto calBoardDetail(int seq) {
+		return calMapper.calBoardDetail(seq);
+	}
+	
+	//일정 수정하기
+	public boolean calBoardUpdate(UpdateCalCommand updateCalCommand) {
+		//Client				Server
+		//		 ----> Command --> dto --> mapper 전달
+		CalDto dto=modelMapper.map(updateCalCommand, CalDto.class);
+		
+		String mdate = updateCalCommand.getYear() 
+				 + util.isTwo(updateCalCommand.getMonth()+"")
+				 + util.isTwo(updateCalCommand.getDate()+"")
+				 + util.isTwo(updateCalCommand.getHour()+"")
+				 + util.isTwo(updateCalCommand.getMin()+"");
+		dto.setMdate(mdate);
+		
+		return calMapper.calBoardUpdate(dto);
 	}
 	
 }

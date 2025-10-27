@@ -10,8 +10,9 @@
 <div layout:fragment="content">
 	<div id="container">
 		<h1>일정 추가하기</h1>
-		<form th:action="@{/schedule/addcalboard}" method="post"
-		      th:object="${insertCalCommand}">
+		<form th:action="@{/schedule/calboardupdate}" method="post"
+		      th:object="${updateCalCommand}">
+		    <input type="hidden" name="seq" th:field="*{seq}"/>
 			<table class="table">
 				<tr>
 					<th>아이디</th>
@@ -19,10 +20,8 @@
 						<input th:field="*{id}" 
 						       type="text" 
 						       name="id" 
-						       class="form-control"/>
-						<span th:if="${#fields.hasErrors('id')}"
-						      th:errors="*{id}"
-						      class="errorField"></span>
+						       class="form-control"
+						       readonly="readonly"/>
 					</td>
 				</tr>
 				<tr>
@@ -30,36 +29,36 @@
 					<td>
 					  <div class="d-flex align-items-center flex-wrap gap-2">
 					    <select name="year" class="form-select w-auto">
-					      <th:block th:each="i:${#numbers.sequence(insertCalCommand.year-5, insertCalCommand.year+5)}">
-					        <option th:value="${i}" th:text="${i}" th:selected="${insertCalCommand.year==i}"></option>
+					      <th:block th:each="i:${#numbers.sequence(updateCalCommand.year-5, updateCalCommand.year+5)}">
+					        <option th:value="${i}" th:text="${i}" th:selected="${updateCalCommand.year==i}"></option>
 					      </th:block>
 					    </select>
 					    <span>년</span>
 					
 					    <select name="month" class="form-select w-auto">
 					      <th:block th:each="i:${#numbers.sequence(1,12)}">
-					        <option th:value="${i}" th:text="${i}" th:selected="${insertCalCommand.month==i}"></option>
+					        <option th:value="${i}" th:text="${i}" th:selected="${updateCalCommand.month==i}"></option>
 					      </th:block>
 					    </select>
 					    <span>월</span>
 					
 					    <select name="date" class="form-select w-auto">
 					      <th:block th:each="i:${#numbers.sequence(1,31)}">
-					        <option th:value="${i}" th:text="${i}" th:selected="${insertCalCommand.date==i}"></option>
+					        <option th:value="${i}" th:text="${i}" th:selected="${updateCalCommand.date==i}"></option>
 					      </th:block>
 					    </select>
 					    <span>일</span>
 					
 					    <select name="hour" class="form-select w-auto">
 					      <th:block th:each="i:${#numbers.sequence(0,23)}">
-					        <option th:value="${i}" th:text="${i}"></option>
+					        <option th:value="${i}" th:text="${i}" th:selected="${updateCalCommand.hour==i}"></option>
 					      </th:block>
 					    </select>
 					    <span>시</span>
 					
 					    <select name="min" class="form-select w-auto">
 					      <th:block th:each="i:${#numbers.sequence(0,59)}">
-					        <option th:value="${i}" th:text="${i}"></option>
+					        <option th:value="${i}" th:text="${i}" th:selected="${updateCalCommand.min==i}"></option>
 					      </th:block>
 					    </select>
 					    <span>분</span>
@@ -92,9 +91,11 @@
 				</tr>
 				<tr>
 					<td colspan="2">
-						<input type="submit" value="일정추가" class="btn btn-outline-primary"/>
+						<input type="submit" value="일정수정" class="btn btn-outline-primary"/>
+						<input type="button" value="일정목록" class="btn btn-outline-primary"
+							   th:onclick="|location.href='@{/schedule/calboardlist}'|"/>
 						<input type="button" value="달력" class="btn btn-outline-dark"
-						       th:onclick="|location.href='@{/schedule/calendar}'|"/>
+						       th:onclick="|location.href='@{/schedule/calendar(year=${session.ymd.year},month=${session.ymd.month})}'|"/>
 					</td>
 				</tr>
 			</table>

@@ -8,6 +8,7 @@ public class problem6 {
 	public static int[] solution(int l, int r) {
         int[] answer;
         List<Integer>list = new ArrayList<Integer>();
+        System.out.println(list.size());
         for (int i=l; i<=r; i++) {
             String num = i+"";
             if(!(num.contains("1")||num.contains("2")||num.contains("3")||
@@ -16,7 +17,8 @@ public class problem6 {
 			    list.add(i);
 		    }
         }
-        
+        int[][] arr = new int[2][2];
+        int n = arr.length;
         if (list.size()>0) {
         	answer = new int[list.size()];
         	for (int i=0; i<list.size(); i++) {

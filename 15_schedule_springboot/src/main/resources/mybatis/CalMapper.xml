@@ -12,4 +12,24 @@
 		INSERT INTO calboard VALUE(NULL,#{id},#{title},#{content},#{mdate},SYSDATE())
 	</insert>
 	
+	<select id="calBoardList" parameterType="Map" resultType="CalDto">
+		SELECT seq, id, title, content, mdate, regdate 
+		FROM calboard 
+		WHERE id=#{id} AND SUBSTRING(mdate,1,8) = #{yyyyMMdd}
+	</select>
+	
+	<delete id="calMulDel" parameterType="Map">
+		DELETE FROM calboard WHERE seq IN 
+		<foreach collection="seqs" item="seq" open="(" close=")" separator=",">#{seq}</foreach>
+	</delete>
+	
+	<select id="calBoardDetail" parameterType="Integer" resultType="CalDto">
+		SELECT seq,id,title,content,mdate,regdate FROM calboard WHERE seq=#{seq}
+	</select>
+	
+	<update id="calBoardUpdate" parameterType="CalDto">
+		UPDATE calboard 
+		SET title=#{title}, content=#{content}, mdate=#{mdate}, regdate=SYSDATE()
+		WHERE seq=#{seq}
+	</update>
 </mapper>

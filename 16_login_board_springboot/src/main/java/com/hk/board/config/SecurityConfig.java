@@ -52,40 +52,40 @@ public class SecurityConfig {
 		//--시큐리티 기능을 안쓸 경우-------------------------------------------------------------------------------------------------------
 		                          // /board/list   ,  http://naver.com/dev/source
 		// 기능 비활성화    cors : service1 -----> service2: data가져올수 없게 처리
-//		http.cors(AbstractHttpConfigurer::disable) 
-//		    .csrf(AbstractHttpConfigurer::disable) // cors,csrf 비활성화
-//		    .formLogin(AbstractHttpConfigurer::disable);//loginform 비활성화
+		http.cors(AbstractHttpConfigurer::disable) 
+		    .csrf(AbstractHttpConfigurer::disable) // cors,csrf 비활성화
+		    .formLogin(AbstractHttpConfigurer::disable);//loginform 비활성화
 		
 		//--시큐리티 기능을 쓸 경우-------------------------------------------------------------------------------------------------------
 		
-		http
-        // (1) CSRF 기본은 켜져 있으나, API 프로젝트라면 끄는 경우도 있음
-        .csrf(csrf -> csrf.disable())
-        .cors(cors -> cors.disable())
-        
-        // (2) 요청별 인가 설정: 경로별 접근 제한 기능(authorizeHttpRequests객체)
-        .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/", "/css/**", "/js/**", "/img/**", "/user/addUser", "/user/login").permitAll() // 누구나 접근 가능
-            .requestMatchers("/admin/**").hasRole("ADMIN")  // 관리자 전용
-            .anyRequest().authenticated() // 나머지는 인증 필요
-        )
-
-        // (3) 폼 로그인 설정
-        .formLogin(login -> login
-            .loginPage("/user/login")            // 커스텀 로그인 페이지 경로
-            .loginProcessingUrl("/user/login") // 로그인 요청 처리 URL:내부적으로 UserDetailService가 인증->우리는 따로 구현해서 상관없음
-            .defaultSuccessUrl("/", true)   // 로그인 성공 시 이동할 페이지
-            .permitAll()
-        )
-
-
-        // (4) 로그아웃 설정
-        .logout(logout -> logout
-            .logoutUrl("/user/logout")
-            .logoutSuccessUrl("/")
-            .invalidateHttpSession(true)
-        )
-        ;
+//		http
+//        // (1) CSRF 기본은 켜져 있으나, API 프로젝트라면 끄는 경우도 있음
+//        .csrf(csrf -> csrf.disable())
+//        .cors(cors -> cors.disable())
+//        
+//        // (2) 요청별 인가 설정: 경로별 접근 제한 기능(authorizeHttpRequests객체)
+//        .authorizeHttpRequests(auth -> auth
+//            .requestMatchers("/", "/css/**", "/js/**", "/img/**", "/user/addUser", "/user/login").permitAll() // 누구나 접근 가능
+//            .requestMatchers("/admin/**").hasRole("ADMIN")  // 관리자 전용
+//            .anyRequest().authenticated() // 나머지는 인증 필요
+//        )
+//
+//        // (3) 폼 로그인 설정
+//        .formLogin(login -> login
+//            .loginPage("/user/login")            // 커스텀 로그인 페이지 경로
+//            .loginProcessingUrl("/user/login") // 로그인 요청 처리 URL:내부적으로 UserDetailService가 인증->우리는 따로 구현해서 상관없음
+//            .defaultSuccessUrl("/", true)   // 로그인 성공 시 이동할 페이지
+//            .permitAll()
+//        )
+//
+//
+//        // (4) 로그아웃 설정
+//        .logout(logout -> logout
+//            .logoutUrl("/user/logout")
+//            .logoutSuccessUrl("/")
+//            .invalidateHttpSession(true)
+//        )
+//        ;
 
     return http.build();
 		

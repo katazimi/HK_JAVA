@@ -34,7 +34,8 @@
 					}
 				},
 				error:function(e){
-					alert("통신오류:"+e);
+					alert("통신오류:"+e.statusText
+							+"서버응답:"+e.responseText);
 				}
 			});
 		});
@@ -64,7 +65,7 @@
 				<th>아이디:</th>
 				<td><input th:field="*{id}" type="text" 
 				              class="form-control" name="id" />
-				    <span id="idChk" class="n"></span>          
+				    <span id="idChk" class="n"></span>
 					<span th:if="${#fields.hasErrors('id')}" 
 					      th:errors="*{id}" class="errorField"></span>
 				</td>

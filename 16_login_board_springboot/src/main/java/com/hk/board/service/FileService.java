@@ -67,8 +67,7 @@ public class FileService {
 			HttpServletResponse response) throws UnsupportedEncodingException {
 		
 		//저장경로
-		String filePath=request.getSession().getServletContext()
-				        .getRealPath("upload");
+		String filePath=System.getProperty("user.dir") + "/upload/";
 		
 		//다운로드를 위한 준비 작업
 		

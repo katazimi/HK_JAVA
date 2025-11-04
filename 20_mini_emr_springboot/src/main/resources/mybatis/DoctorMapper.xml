@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.hk.emr.mapper.DoctorMapper">
+	<select id="getDoctorList" resultType="doctorDto">
+		SELECT DP.doctor_id AS doctorId, U.username AS name, D.name AS deptName
+		FROM USER_ACCOUNT AS U INNER JOIN DOCTOR_PROFILE AS DP ON U.user_id = DP.user_id 
+							   INNER JOIN DEPARTMENT AS D ON DP.dept_id = D.dept_id
+	</select>
+	
+	<insert id="addDoctor" parameterType="doctorDto" >
+		Insert INTO DOCTOR_PROFILE VALUES(NULL,#{userId},1,NULL)
+	</insert>
+	
+</mapper>

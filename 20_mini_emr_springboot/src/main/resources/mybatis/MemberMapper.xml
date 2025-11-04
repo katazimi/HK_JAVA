@@ -4,9 +4,14 @@
 
 <mapper namespace="com.hk.emr.mapper.MemberMapper">
 	
-	<insert id="addUser" parameterType="memberDto">
-		INSERT INTO USER_ACCOUNT
-		VALUES(NULL,#{userName},#{password},#{name},#{role})
+	<insert id="addUser" 
+        parameterType="com.hk.emr.dtos.MemberDto"
+        useGeneratedKeys="true" 
+        keyProperty="userId"> 
+        INSERT INTO USER_ACCOUNT 
+           (username, password, name, role)
+    	VALUES 
+           (#{userName}, #{password}, #{name}, #{role})
 	</insert>
 	
 	<select id="idChk" parameterType="String" resultType="String">
@@ -21,6 +26,12 @@
 		SELECT user_id AS userid, username, name, password, role
 		FROM USER_ACCOUNT
 		WHERE username = #{id}
+	</select>
+	
+	<select id="getUserId" parameterType="String" resultType="Integer">
+		SELECT user_id 
+		FROM USER_ACCOUNT
+		WHERE username = #{username}
 	</select>
 	
 </mapper>

@@ -17,7 +17,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.hk.emr.command.AddDepartmentCommand;
 import com.hk.emr.command.AddUserCommand;
+import com.hk.emr.dtos.DepartmentDto;
+import com.hk.emr.dtos.DoctorDto;
 import com.hk.emr.dtos.MemberDto;
 import com.hk.emr.service.AdminService;
 
@@ -97,7 +100,44 @@ public class AdminController {
 	}
 	
 	@GetMapping(value = "/settings") 
-	public String settings() {
+	public String settings(Model model) {
+		// 1. 서비스에서 모든 계정 목록을 가져옵니다.
+	    // (adminService에 'findAllAccounts' 같은 메서드가 필요합니다.)
+	    List<DepartmentDto> departmentList = adminService.findAllDepartments(); 
+
+	    // 2. 템플릿(HTML)으로 목록을 전달합니다.
+	    model.addAttribute("departmentList", departmentList);
+		
 		return "admin/settings";
+	}
+	
+	@PostMapping(value = "/departments")
+	public ResponseEntity<?> departments(@Validated @RequestBody AddDepartmentCommand addUserCommand,
+            BindingResult result) {
+		if(result.hasErrors()) {
+	        System.out.println("회원가입 유효값 오류");
+	        // ◀ 실패 시 400 에러와 JSON 메시지 반환
+	        return ResponseEntity.badRequest().body(Map.of("message", "입력값에 오류가 있습니다."));
+	    }
+		
+		try {
+	        adminService.addDepartment(addUserCommand);
+	        System.out.println("진료과 등록 성공");
+	        // ◀ 성공 시 200 OK와 JSON 메시지 반환
+	        return ResponseEntity.ok().body(Map.of("message", "계정이 성공적으로 생성되었습니다."));
+	    } catch (Exception e) {
+	        System.out.println("진료과 등록 실패..");
+	        e.printStackTrace();
+	        // ◀ 서버 에러 시 500 에러와 JSON 메시지 반환
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                             .body(Map.of("message", "서버 오류로 등록에 실패했습니다."));
+	    }
+	}
+	
+	@GetMapping("/schedules") 
+	public String schedules(Model model) {
+		List<DoctorDto>doctors = adminService.getDoctorList();
+		model.addAttribute("doctors", doctors);
+		return "admin/schedule";
 	}
 }

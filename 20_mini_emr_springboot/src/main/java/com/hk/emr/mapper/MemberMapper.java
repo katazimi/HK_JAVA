@@ -8,11 +8,13 @@ import com.hk.emr.dtos.MemberDto;
 
 @Mapper
 public interface MemberMapper {
-	public boolean addUser(MemberDto dto);
+	public int addUser(MemberDto dto);
 	
 	public MemberDto loginUser(String id);
 	
 	public String idChk(String id);
 
 	public List<MemberDto> findAllAccounts();
+	
+	public int getUserId(String username);
 }

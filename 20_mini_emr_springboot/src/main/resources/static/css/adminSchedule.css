@@ -1,0 +1,12 @@
+@charset "UTF-8";
+
+body { font-family: sans-serif; display: flex; }
+        .sidebar { width: 200px; background: #f4f4f4; padding: 20px; height: 100vh; }
+        .sidebar ul { list-style: none; padding: 0; }
+        .sidebar li { margin-bottom: 10px; }
+        .content { flex-grow: 1; padding: 30px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #f9f9f9; width: 100px; }
+        .btn { background-color: #007bff; color: white; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; }
+        select, input[type="time"] { padding: 8px; font-size: 14px; }

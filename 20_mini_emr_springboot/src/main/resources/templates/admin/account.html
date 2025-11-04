@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>계정 관리</title>
+    <link type="text/css" th:href="@{/css/adminAccount.css}" rel="stylesheet">
+</head>
+<body>
+    <nav class="sidebar">
+        <h2>병원 관리 (ADMIN)</h2>
+        <ul>
+            <li><a href="/admin/">대시보드</a></li>
+            <li><a href="/admin/accounts"><b>계정 관리</b></a></li>
+            <li><a href="/admin/settings">병원 설정</a></li>
+            <li><a href="/logout">로그아웃</a></li>
+        </ul>
+    </nav>
+
+    <main class="content">
+        <h1>계정 관리</h1>
+        <p>병원의 접수직원(STAFF) 및 의사(DOCTOR) 계정을 관리합니다.</p>
+
+        <button class="btn" onclick="openCreateModal()">
+            ➕ 새 계정 발급
+        </button>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>로그인 ID (Username)</th>
+                    <th>이름 (Name)</th>
+                    <th>권한 (Role)</th>
+                    <th>관리</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="account : ${accounts}">
+                    <td th:text="${account.userName}"></td>
+                    <td th:text="${account.name}"></td>
+                    <td>
+                        <span th:switch="${account.role}">
+                            <span th:case="'DOCTOR'">의사</span>
+                            <span th:case="'STAFF'">접수직원</span>
+                            <span th:case="*">기타</span>
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn" th:onclick="|location.href='@{/admin/accounts/edit/{id}(id=${account.userId})}'|">수정</button>
+                        <button class="btn btn-danger">삭제</button>
+                    </td>
+                </tr>
+                
+                <tr th:if="${#lists.isEmpty(accounts)}">
+                    <td colspan="4" style="text-align: center;">등록된 계정이 없습니다.</td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+
+    <div id="modal-create-form" class="modal">
+        <div class="modal-content">
+            <h2>새 계정 발급</h2>
+            <form id="createAccountForm">
+                <label for="username">로그인 ID:</label>
+                <input type="text" id="userName" name="userName" required>
+
+                <label for="password">초기 비밀번호:</label>
+                <input type="password" id="password" name="password" required>
+
+                <label for="name">이름:</label>
+                <input type="text" id="name" name="name" required>
+
+                <label for="role">권한:</label>
+                <select id="role" name="role" required>
+                    <option value="">권한을 선택하세요...</option>
+                    <option value="STAFF">접수직원 (STAFF)</option>
+                    <option value="DOCTOR">의사 (DOCTOR)</option>
+                </select>
+
+                <button type="submit" class="btn">저장</button>
+                <button type="button" class="btn btn-danger" onclick="closeCreateModal()">취소</button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        const modal = document.getElementById('modal-create-form');
+        function openCreateModal() { modal.style.display = 'flex'; }
+        function closeCreateModal() { modal.style.display = 'none'; }
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // --- ID 중복 체크 ---
+            $("#userName").on("blur", function() {
+                var inputId = $(this).val(); 
+                if (!inputId) {
+                    return;
+                }
+
+                $.ajax({
+                    type: "GET",
+                    url: "/admin/idChk", // 컨트롤러 URL 확인
+                    data: { id: inputId },
+                    dataType: "json",
+                    success: function(response) {
+                        if (response.id) { 
+                            alert("'" + response.id + "'는 이미 사용 중인 ID입니다.");
+                        } else {
+                            alert("사용 가능한 ID입니다.");
+                        }
+                    },
+                    error: function(e) {
+                        alert("ID 중복 체크 중 오류가 발생했습니다.");
+                    }
+                });
+            });   
+
+            // --- 폼 전송 (Submit) ---
+            $("#createAccountForm").on("submit", function(e) {
+                e.preventDefault(); 
+
+                var formData = {
+                	id: $("#userName").val(), // DTO 필드명(userName)과 일치
+                    password: $("#password").val(),
+                    name: $("#name").val(),
+                    role: $("#role").val()
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: "/admin/addUser", // 컨트롤러 URL 확인
+                    contentType: "application/json", 
+                    data: JSON.stringify(formData),
+                    
+                    success: function(response) {
+                        // (참고) 이 로직은 컨트롤러가 JSON을 반환한다고 가정한 것입니다.
+                        alert(response.message || "계정이 성공적으로 생성되었습니다.");
+                        closeCreateModal();
+                        location.reload(); 
+                    },
+                    error: function(xhr, status, error) {
+                        var errorMsg = xhr.responseJSON ? xhr.responseJSON.message : "서버 오류로 등록에 실패했습니다.";
+                        alert(errorMsg);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

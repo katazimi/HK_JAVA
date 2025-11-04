@@ -38,6 +38,19 @@ public class problem6 {
 			System.out.println(number[i]);
 		}
 		
+		String a = "안";
+		String b = "녕";
+		String c = "하";
+				
+		
+		String s = a+b+c;
+		
+		
+		System.out.println(s);
+		System.out.println(Math.abs(-1));
+		System.out.println(a.substring(1));
+		
+//		System.out.println(Integer.parseInt(s.substring(4,5)));
 	}
 
 }

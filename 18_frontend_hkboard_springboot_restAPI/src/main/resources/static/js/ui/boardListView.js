@@ -4,7 +4,8 @@ import { renderBoardForm } from './boardFormView.js';
 import { deleteBoards } from '../api/boardApi.js';
 
 export async function renderBoardList(container) {
-    const data = await getBoardList();
+	//js에서 서버통신을 통해 list를 가져온다.
+    const data = await getBoardList(); //async-await : 작업이 끝날때까지 기다림
     const list = data.list;
 
     container.innerHTML = `
@@ -37,7 +38,7 @@ export async function renderBoardList(container) {
                 <tr>
                     <td colspan="5">
                         <button type="button" id="insertBtn">글추가</button>
-                        <button type="button" id="deleteBtn">삭제</button>
+                        <button type="button" id="deleteBtn">삭제</button>강지훈바보
                     </td>
                 </tr>
             </tfoot>

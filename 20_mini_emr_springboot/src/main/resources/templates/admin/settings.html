@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>병원 설정</title>
+    <style>
+        /* (admin/accounts.html과 동일한 스타일) */
+        body { font-family: sans-serif; display: flex; }
+        .sidebar { width: 200px; background: #f4f4f4; padding: 20px; height: 100vh; }
+        .sidebar ul { list-style: none; padding: 0; }
+        .sidebar li { margin-bottom: 10px; }
+        .content { flex-grow: 1; padding: 30px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #f9f9f9; }
+        .btn { background-color: #007bff; color: white; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; }
+        .btn-danger { background-color: #dc3545; }
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            justify-content: center; align-items: center;
+        }
+        .modal-content { background-color: white; padding: 30px; border-radius: 5px; width: 400px; }
+        .modal-content input { width: 95%; padding: 10px; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <h2>병원 관리 (ADMIN)</h2>
+        <ul>
+            <li><a href="/admin/dashboard">대시보드</a></li>
+            <li><a href="/admin/accounts">계정 관리</a></li>
+            <li><a href="/admin/settings"><b>병원 설정</b></a></li>
+            <li><a href="/logout">로그아웃</a></li>
+        </ul>
+    </nav>
+
+    <main class="content">
+        <h1>병원 설정</h1>
+        <hr>
+        
+        <h2>진료과 관리 (Departments)</h2>
+        <p>병원에서 운영하는 진료과를 등록하고 관리합니다.</p>
+
+        <button class="btn" onclick="openModal('modal-dept-form')">
+            ➕ 새 진료과 등록
+        </button>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>진료과 ID (Dept ID)</th>
+                    <th>진료과 이름</th>
+                    <th>관리</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="dept : ${departments}">
+                    <td th:text="${dept.deptId}">1</td>
+                    <td th:text="${dept.name}">내과</td>
+                    <td>
+                        <button class="btn">수정</button>
+                        <button class="btn btn-danger">삭제</button>
+                    </td>
+                </tr>
+                
+                <tr th:if="${#lists.isEmpty(departments)}">
+                    <td colspan="3" style="text-align: center;">등록된 진료과가 없습니다.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        </main>
+
+    <div id="modal-dept-form" class="modal">
+        <div class="modal-content">
+            <h2>새 진료과 등록</h2>
+            <form id="createDeptForm">
+                <label for="deptName">진료과 이름:</label>
+                <input type="text" id="deptName" name="name" required>
+
+                <button type="submit" class="btn">저장</button>
+                <button type="button" class="btn btn-danger" onclick="closeModal('modal-dept-form')">취소</button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // 모달 제어 함수 (ID를 받아 처리)
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            
+            // "createDeptForm" 폼이 submit될 때 실행
+            $("#createDeptForm").on("submit", function(e) {
+                
+                e.preventDefault(); // 기본 새로고침 방지
+
+                var formData = {
+                    name: $("#deptName").val() // DTO/Command의 'name' 필드와 일치
+                };
+
+                // /api/admin/departments 컨트롤러 호출
+                $.ajax({
+                    type: "POST",
+                    url: "/admin/departments", // 기능 정의서의 URL
+                    contentType: "application/json",
+                    data: JSON.stringify(formData),
+                    
+                    success: function(response) {
+                        alert("진료과가 성공적으로 등록되었습니다.");
+                        closeModal('modal-dept-form');
+                        location.reload(); // 목록 새로고침
+                    },
+                    error: function(xhr) {
+                        alert(xhr.responseJSON.message || "등록에 실패했습니다.");
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

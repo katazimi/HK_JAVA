@@ -45,7 +45,7 @@ public class BoardController {
 	
 	//글추가하기: 전달파라미터 id,title,content -> 필수
 	@PostMapping("/insert")
-	public Map<String,Integer> insert(HkDto dto){
+	public Map<String,Integer> insert(@RequestBody HkDto dto){
 		System.out.println("글 추가하기");
 		Map<String, Integer> map=new HashMap<>();
 		map.put("count", boardService.insertBoard(dto));

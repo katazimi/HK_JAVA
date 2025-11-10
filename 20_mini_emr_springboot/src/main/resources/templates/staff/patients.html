@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>환자 관리</title>
+    <link type="text/css" th:href="@{/css/staffCommon.css}" rel="stylesheet">
+    <link type="text/css" th:href="@{/css/staffPatient.css}" rel="stylesheet">
+</head>
+<body>
+
+    <nav class="sidebar">
+        <h2>EMR (STAFF)</h2>
+        <ul>
+            <li><a href="/staff/">접수/예약</a></li>
+            <li><a href="/staff/payment">수납 관리</a></li>
+            <li><a href="/staff/patients"><b>환자 관리</b></a></li>
+            <li><a href="/user/logout">로그아웃</a></li>
+        </ul>
+    </nav>
+
+    <main class="content">
+        <h1>전체 환자 관리</h1>
+        <p>병원의 모든 환자 목록을 조회하고 관리합니다.</p>
+        <hr>
+
+        <input type="text" id="patientSearchInput" placeholder="환자명/차트번호 검색..." style="padding: 10px; width: 300px;">
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>차트번호</th>
+                    <th>환자명</th>
+                    <th>연락처</th>
+                    <th>생년월일</th>
+                    <th>관리</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="patient : ${patientList}">
+                    <td th:text="${patient.chartNum}"></td>
+                    <td th:text="${patient.name}"></td>
+                    <td th:text="${patient.phone}"></td>
+                    <td th:text="${patient.birth}"></td>
+                    <td>
+                        <button class="btn">상세/수정</button>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(patientList)}">
+                    <td colspan="5" style="text-align: center;">등록된 환자가 없습니다.</td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+    
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+        // (검색 로직 등...)
+    </script>
+</body>
+</html>

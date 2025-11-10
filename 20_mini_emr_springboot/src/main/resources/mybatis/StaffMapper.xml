@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hk.emr.mapper.StaffMapper">
+	<insert id="addPatient" parameterType="patientDto" 
+			useGeneratedKeys="true" keyProperty="patientId">
+		INSERT INTO PATIENT VALUES(NULL, 'temporary',#{name},#{phone},#{birth})
+	</insert>
+	
+	<update id="updateChartNum" parameterType="patientDto">
+		UPDATE PATIENT
+    	SET chart_number = #{chartNum}
+    	WHERE patient_id = #{patientId}
+	</update>
+	
+	<select id="getPatients" resultType="patientDto">
+		SELECT chart_number AS chartNum,name,phone,birth_date AS birth
+		FROM PATIENT
+	</select>
+</mapper>

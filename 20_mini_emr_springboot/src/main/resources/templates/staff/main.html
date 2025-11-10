@@ -1,10 +1,142 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+    <meta charset="UTF-8">
+    <title>접수/예약 대시보드</title>
+    <link type="text/css" th:href="@{/css/staffCommon.css}" rel="stylesheet">
+     <link type="text/css" th:href="@{/css/staffMain.css}" rel="stylesheet">
 </head>
 <body>
 
+    <nav class="sidebar">
+        <h2>EMR (STAFF)</h2>
+        <ul>
+            <li><a href="/staff/"><b>접수/예약</b></a></li>
+            <li><a href="/staff/payment">수납 관리</a></li>
+            <li><a href="/staff/patients">환자 관리</a></li>
+            <li><a href="/user/logout">로그아웃</a></li>
+        </ul>
+    </nav>
+
+    <main class="content">
+        <h1>접수/예약 대시보드</h1>
+        <p><strong th:text="${session.mdto.name}">접수직원</strong>님, 환영합니다.</p>
+        <hr>
+
+        <div class="quick-actions">
+            <input type="text" id="patientSearchInput" placeholder="환자명/차트번호 검색..." style="padding: 10px; width: 300px;">
+            <button class="btn btn-success" onclick="openModal('modal-new-patient')">
+                ➕ 신규 환자 등록
+            </button>
+        </div>
+
+        <div id="patient-search-results" style="margin-top: 20px;">
+            </div>
+
+        <div class="appointment-list" style="margin-top: 30px;">
+            <h2>오늘 예약 현황 (SCHEDULED)</h2>
+            <ul id="today-appointments">
+                <li th:each="appt : ${todayList}" th:id="'appt-' + ${appt.appointmentId}">
+                    <span th:text="${appt.appointmentTime} + ' - ' + ${appt.patientName}"></span>
+                    <button class="btn" th:data-id="${appt.appointmentId}" onclick="checkInPatient(this.dataset.id)">
+                        환자 도착 (접수)
+                    </button>
+                </li>
+                <li th:if="${#lists.isEmpty(todayList)}">오늘 예약된 환자가 없습니다.</li>
+            </ul>
+        </div>
+    </main>
+
+    <div id="modal-new-patient" class="modal">
+        <div class="modal-content">
+            <h2>신규 환자 등록</h2>
+            <form id="newPatientForm">
+                <label>환자명:</label>
+                <input type="text" id="newName" name="name" required>
+                <label>연락처:</label>
+                <input type="text" id="newPhone" name="phone">
+                <label>생년월일(YYYYMMDD):</label>
+                <input type="text" id="newBirthDate" name="birthDate">
+                <button type="submit" class="btn">저장</button>
+                <button type="button" class="btn" onclick="closeModal('modal-new-patient')">취소</button>
+            </form>
+        </div>
+    </div>
+    
+    <div id="modal-appointment" class="modal">
+        <div class="modal-content">
+            <h2>접수/예약</h2>
+            <form id="appointmentForm">
+                <input type="hidden" id="apptPatientId" name="patientId">
+                <p><strong>환자:</strong> <span id="apptPatientName"></span></p>
+                
+                <label>의사 선택:</label>
+                <select id="apptDoctorId" name="doctorId" required>
+                    <option value="">-- 의사 선택 --</option>
+                    <option th:each="doc : ${doctorList}" 
+                            th:value="${doc.doctorId}" 
+                            th:text="${doc.name}"></option>
+                </select>
+                
+                <label>예약 시간:</label>
+                <input type="datetime-local" id="apptTime" name="dateTime">
+                
+                <button type="submit" class="btn">저장</button>
+                <button type="button" class="btn" onclick="closeModal('modal-appointment')">취소</button>
+            </form>
+        </div>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script th:inline="javascript">
+        // --- 모달 제어 ---
+        function openModal(id) { $('#' + id).css('display', 'flex'); }
+        function closeModal(id) { $('#' + id).css('display', 'none'); }
+
+        $(document).ready(function() {
+            
+            // --- 신규 환자 등록 (AJAX) ---
+            $("#newPatientForm").on("submit", function(e) {
+                e.preventDefault();
+                var formData = {
+                    name: $("#newName").val(),
+                    phone: $("#newPhone").val(),
+                    birth: $("#newBirthDate").val()
+                };
+                $.ajax({
+                    type: "POST",
+                    url: "/staff/patients", // 신규 환자 등록 API
+                    contentType: "application/json",
+                    data: JSON.stringify(formData),
+                    success: function() {
+                        alert("신규 환자가 등록되었습니다.");
+                        closeModal('modal-new-patient');
+                    },
+                    error: function() { alert("환자 등록에 실패했습니다."); }
+                });
+            });
+
+            // --- (참고) 환자 검색 / 접수 / 예약 로직은 여기에 추가... ---
+            // (예: patientSearchInput keyup 이벤트, 예약 모달 열기 등)
+            
+        });
+
+        // --- (AJAX) 환자 도착 처리 (Check-in) ---
+        function checkInPatient(appointmentId) {
+            if (!confirm("환자가 도착했습니까? (접수 처리)")) return;
+            
+            $.ajax({
+                type: "POST",
+                url: "/api/staff/appointments/" + appointmentId + "/arrive", // '도착' API
+                success: function() {
+                    alert("환자가 접수되었습니다. (진료 대기)");
+                    // 성공 시 목록에서 해당 항목 제거
+                    $("#appt-" + appointmentId).remove();
+                },
+                error: function() { alert("접수 처리에 실패했습니다."); }
+            });
+        }
+    </script>
 </body>
 </html>

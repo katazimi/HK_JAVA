@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>수납 관리</title>
+    <link type="text/css" th:href="@{/css/staffCommon.css}" rel="stylesheet">
+    <link type="text/css" th:href="@{/css/staffPayment.css}" rel="stylesheet">
+</head>
+<body>
+
+    <nav class="sidebar">
+        <h2>EMR (STAFF)</h2>
+        <ul>
+            <li><a href="/staff/">접수/예약</a></li>
+            <li><a href="/staff/payment"><b>수납 관리</b></a></li>
+            <li><a href="/staff/patients">환자 관리</a></li>
+            <li><a href="/user/logout">로그아웃</a></li>
+        </ul>
+    </nav>
+
+    <main class="content">
+        <h1>수납 관리</h1>
+        <p>진료가 완료되어 수납 대기 중인 환자 목록입니다.</p>
+        <hr>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>환자명</th>
+                    <th>차트번호</th>
+                    <th>진료 의사</th>
+                    <th>진료 완료 시간</th>
+                    <th>수납</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="appt : ${paymentList}" th:id="'pay-' + ${appt.appointmentId}">
+                    <td th:text="${appt.patientName}"></td>
+                    <td th:text="${appt.chartNumber}"></td>
+                    <td th:text="${appt.doctorName}"></td>
+                    <td th:text="${appt.appointmentTime}"></td>
+                    <td>
+                        <button class="btn-pay" th:data-id="${appt.appointmentId}" 
+                                onclick="completePayment(this.dataset.id)">
+                            수납 완료
+                        </button>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(paymentList)}">
+                    <td colspan="5" style="text-align: center;">수납 대기 중인 환자가 없습니다.</td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+        // --- (AJAX) 수납 완료 처리 ---
+        function completePayment(appointmentId) {
+            if (!confirm("수납을 완료 처리하시겠습니까?")) return;
+            
+            $.ajax({
+                type: "POST",
+                url: "/api/staff/appointments/" + appointmentId + "/pay", // '수납 완료' API
+                success: function() {
+                    alert("수납 처리가 완료되었습니다.");
+                    // 성공 시 목록에서 해당 행(tr) 제거
+                    $("#pay-" + appointmentId).remove();
+                },
+                error: function() { alert("수납 처리에 실패했습니다."); }
+            });
+        }
+    </script>
+</body>
+</html>

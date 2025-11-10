@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hk.emr.mapper.ScheduleMapper">
+	<select id="findBaseSchedule" parameterType="baseScheduleDto">
+		SELECT 
+            TIME_FORMAT(start_time, '%H:%i') AS startTime,
+            TIME_FORMAT(end_time, '%H:%i') AS endTime,
+            is_closed AS isClosed
+        FROM SCHEDULE
+        WHERE 
+            doctor_id = #{doctorId} 
+            AND day_of_week = #{dayOfWeek}
+	</select>
+</mapper>

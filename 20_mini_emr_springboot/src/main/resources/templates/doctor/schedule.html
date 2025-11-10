@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>내 스케줄</title>
+    <link type="text/css" th:href="@{/css/doctorSchedule.css}" rel="stylesheet">
+</head>
+<body>
+
+    <nav class="sidebar">
+        <h2>EMR (DOCTOR)</h2>
+        <ul>
+            <li><a href="/doctor/">대시보드</a></li>
+            <li><a href="/doctor/schedule"><b>내 스케줄</b></a></li>
+            <li><a href="/user/logout">로그아웃</a></li>
+        </ul>
+    </nav>
+
+    <main class="content">
+        <h1>내 스케줄</h1>
+        <p>나의 주간 스케줄 및 예약 현황을 확인합니다.</p>
+        <hr>
+
+        <div class="calendar-nav">
+            <a th:href="${prevWeekUrl}" class="btn-nav">◀ 이전 주</a>
+            <h2>
+                <span th:text="${weekDisplay}">2025년 11월 1주차</span>
+            </h2>
+            <a th:href="${nextWeekUrl}" class="btn-nav">다음 주 ▶</a>
+        </div>
+
+        <table class="week-calendar">
+            <thead>
+                <tr>
+                    <th>일 (Sun)</th>
+                    <th>월 (Mon)</th>
+                    <th>화 (Tue)</th>
+                    <th>수 (Wed)</th>
+                    <th>목 (Thu)</th>
+                    <th>금 (Fri)</th>
+                    <th>토 (Sat)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td th:each="day : ${weeklySchedule}">
+                        <div class="day-header" th:text="${day.date}"></div>
+                        
+                        <div class="base-hours" th:text="${day.baseHours}">
+                            (09:00 - 18:00)
+                        </div>
+                        
+                        <ul class="appointment-list">
+                            <li th:each="appt : ${day.appointments}"
+                                th:text="${appt.time} + ' - ' + ${appt.patientName}">
+                                10:30 - 홍길동
+                            </li>
+                            <li th:if="${#lists.isEmpty(day.appointments)}" style="background: none; font-size: 0.8em;">
+                                (예약 없음)
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+    
+    </body>
+</html>

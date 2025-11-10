@@ -1,0 +1,27 @@
+@charset "UTF-8";
+/* (간단한 예시 스타일) */
+body { font-family: sans-serif; display: flex; }
+.sidebar { width: 200px; background: #f4f4f4; padding: 20px; height: 100vh; }
+.sidebar ul { list-style: none; padding: 0; }
+.sidebar li { margin-bottom: 10px; }
+.content { flex-grow: 1; padding: 30px; }
+
+/* 캘린더 네비게이션 */
+.calendar-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.calendar-nav h2 { margin: 0; }
+.btn-nav { text-decoration: none; background: #eee; padding: 8px 12px; border-radius: 4px; }
+
+/* 주간 캘린더 테이블 */
+.week-calendar { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.week-calendar th { background: #f9f9f9; padding: 10px; border: 1px solid #ddd; }
+.week-calendar td { 
+    border: 1px solid #ddd; 
+    padding: 10px; 
+    vertical-align: top; 
+    height: 200px; 
+    overflow-y: auto;
+}
+.day-header { font-weight: bold; margin-bottom: 5px; }
+.base-hours { font-size: 0.8em; color: #777; border-bottom: 1px dashed #ccc; padding-bottom: 5px; }
+.appointment-list { list-style: none; padding: 0; margin-top: 10px; }
+.appointment-list li { font-size: 0.9em; background: #eef; padding: 5px; margin-bottom: 5px; border-radius: 3px; }

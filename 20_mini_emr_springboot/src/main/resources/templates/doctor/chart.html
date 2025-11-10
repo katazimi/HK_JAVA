@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>환자 차트</title>
+    <link type="text/css" th:href="@{/css/doctorChart.css}" rel="stylesheet">
+</head>
+<body>
+
+    <nav class="sidebar">
+        <h2>EMR (DOCTOR)</h2>
+        <ul>
+            <li><a href="/doctor/">대시보드</a></li>
+            <li><a href="/doctor/schedule">내 스케줄</a></li>
+            <li><a href="/user/logout">로그아웃</a></li>
+        </ul>
+    </nav>
+
+    <main class="content">
+        <h1>환자 상세 차트</h1>
+        <hr>
+
+        <div class="patient-info" th:if="${patient != null}" th:object="${patient}">
+            <h2 th:text="*{name}">홍길동</h2>
+            <ul>
+                <li th:text="'차트번호: ' + *{chartNumber}"></li>
+                <li th:text="'연락처: ' + *{phone}"></li>
+                <li th:text="'생년월일: ' + *{birthDate}"></li>
+            </ul>
+        </div>
+        
+        <div class="chart-new" style="margin-top: 20px;">
+            <h2>진료 메모 작성 (오늘)</h2>
+            <form id="chartForm">
+                <input type="hidden" id="appointmentId" name="appointmentId" 
+                       th:value="${currentAppointmentId}">
+                
+                <textarea id="memo" name="memo" placeholder="진료 내용을 입력하세요..."></textarea>
+                <button type="submit" class="btn" style="margin-top: 10px;">
+                    메모 저장
+                </button>
+            </form>
+        </div>
+
+        <div class="chart-history" style="margin-top: 30px;">
+            <h2>과거 진료 기록</h2>
+            <ul th:if="${!#lists.isEmpty(pastCharts)}">
+                <li th:each="chart : ${pastCharts}">
+                    <strong th:text="${chart.appointmentTime}"></strong>
+                    (<span th:text="${chart.doctorName}"></span>)
+                    <p th:text="${chart.memo}"></p>
+                </li>
+            </ul>
+            <div th:if="${#lists.isEmpty(pastCharts)}">
+                <p>과거 진료 기록이 없습니다.</p>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            
+            $("#chartForm").on("submit", function(e) {
+                e.preventDefault(); // 폼 새로고침 방지
+
+                var formData = {
+                    appointmentId: $("#appointmentId").val(),
+                    memo: $("#memo").val()
+                };
+
+                // (컨트롤러) /api/doctor/charts (POST) 호출
+                $.ajax({
+                    type: "POST",
+                    url: "/api/doctor/charts",
+                    contentType: "application/json",
+                    data: JSON.stringify(formData),
+                    success: function() {
+                        alert("진료 메모가 저장되었습니다.");
+                        // (선택) 저장 후 대시보드로 이동
+                        // location.href = "/doctor/dashboard"; 
+                    },
+                    error: function() {
+                        alert("메모 저장에 실패했습니다.");
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

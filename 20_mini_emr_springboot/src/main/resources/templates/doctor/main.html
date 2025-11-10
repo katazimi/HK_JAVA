@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>의사 대시보드</title>
+    <link type="text/css" th:href="@{/css/doctorHome.css}" rel="stylesheet">
+</head>
+<body>
+
+    <nav class="sidebar">
+        <h2>EMR (DOCTOR)</h2>
+        <ul>
+            <li><a href="/doctor/"><b>대시보드</b></a></li>
+            <li><a href="/doctor/schedule">내 스케줄</a></li>
+            <li><a href="/user/logout">로그아웃</a></li>
+        </ul>
+    </nav>
+
+    <main class="content">
+        <h1>
+            <span th:text="${doctorName}">의사</span>님, 환영합니다.
+        </h1>
+        <p>오늘의 진료 대기 현황입니다.</p>
+        <hr>
+
+        <div class="widget" style="background-color: #fffbef;">
+            <h2>현재 진료 중</h2>
+            <div th:if="${currentPatient != null}" th:object="${currentPatient}">
+                <h3 th:text="*{patientName} + ' 님 (' + *{chartNumber} + ')'"></h3>
+                <p th:text="'접수 시간: ' + *{appointmentTime}"></p>
+                <button class="btn-complete" th:data-id="*{appointmentId}" 
+                        onclick="completeTreatment(this.dataset.id)">
+                    진료 완료
+                </button>
+            </div>
+            
+            <div th:if="${currentPatient == null}">
+                <p>진료 중인 환자가 없습니다.</p>
+            </div>
+        </div>
+
+        <div class="dashboard-grid" style="margin-top: 20px;">
+            <div class="widget">
+                <h2>진료 대기 환자 (실시간)</h2>
+                <ul id="waiting-list-body" class="patient-list">
+                    <li th:each="patient : ${waitingList}" th:id="'wait-' + ${patient.appointmentId}">
+                        <span>
+                            <a th:href="@{/doctor/chart/{id}(id=${patient.patientId})}"
+                               th:text="${patient.patientName}"></a>
+                            <small th:text="'(' + ${patient.appointmentTime} + ' 접수)'"></small>
+                        </span>
+                        <button class="btn-start" th:data-id="${patient.appointmentId}"
+                                onclick="startTreatment(this.dataset.id)">
+                            진료 시작
+                        </button>
+                    </li>
+                    <li id="no-wait-patient" th:if="${#lists.isEmpty(waitingList)}">
+                        <p>대기 중인 환자가 없습니다.</p>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="widget">
+                <h2>오늘 예약 환자</h2>
+                <ul class="patient-list">
+                    <li th:each="patient : ${scheduledList}">
+                        <span>
+                            <a th:href="@{/doctor/chart/{id}(id=${patient.patientId})}"
+                               th:text="${patient.patientName}"></a>
+                            <small th:text="'(' + ${patient.appointmentTime} + ' 예약)'"></small>
+                        </span>
+                    </li>
+                    <li th:if="${#lists.isEmpty(scheduledList)}">
+                        <p>예정된 환자가 없습니다.</p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+
+    <script th:inline="javascript">
+        // 1. WebSocket 연결
+        $(document).ready(function() {
+            
+            var doctorId = 4;
+            
+            var socket = new SockJS('/ws-stomp'); // 컨트롤러에서 설정한 엔드포인트
+            var stompClient = Stomp.over(socket);
+
+            stompClient.connect({}, function(frame) {
+                console.log('WebSocket 연결됨: ' + frame);
+                
+                // (중요) 본인 ID로 Topic 구독
+                stompClient.subscribe('/topic/doctor/' + doctorId, function(message) {
+                    // 서버에서 메시지(신규 환자 정보)가 오면 실행
+                    var newPatient = JSON.parse(message.body);
+                    addNewPatientToList(newPatient);
+                });
+            });
+        });
+
+        // (WebSocket) 새 환자를 '진료 대기' 목록에 동적으로 추가
+        function addNewPatientToList(patient) {
+            // "대기 환자 없음" 메시지 제거
+            $("#no-wait-patient").hide();
+
+            // (HTML 템플릿)
+            var newPatientHtml = `
+                <li id="wait-${patient.appointmentId}">
+                    <span>
+                        <a href="/doctor/chart/${patient.patientId}">${patient.patientName}</a>
+                        <small>(${patient.appointmentTime} 접수)</small>
+                    </span>
+                    <button class="btn-start" data-id="${patient.appointmentId}"
+                            onclick="startTreatment(this.dataset.id)">
+                        진료 시작
+                    </button>
+                </li>
+            `;
+            // 목록(ul)에 추가
+            $("#waiting-list-body").append(newPatientHtml);
+        }
+
+        // 2. (AJAX) '진료 시작' 버튼 클릭
+        function startTreatment(appointmentId) {
+            if (!confirm("진료를 시작하시겠습니까?")) {
+                return;
+            }
+            $.ajax({
+                type: "POST",
+                url: "/doctor/appointments/" + appointmentId + "/start",
+                success: function() {
+                    alert("진료를 시작합니다.");
+                    location.reload(); // (페이지 새로고침)
+                },
+                error: function() {
+                    alert("오류가 발생했습니다.");
+                }
+            });
+        }
+
+        // 3. (AJAX) '진료 완료' 버튼 클릭
+        function completeTreatment(appointmentId) {
+            if (!confirm("진료를 완료하시겠습니까?")) {
+                return;
+            }
+            $.ajax({
+                type: "POST",
+                url: "/doctor/appointments/" + appointmentId + "/complete",
+                success: function() {
+                    alert("진료가 완료되었습니다. (수납 대기)");
+                    location.reload(); // (페이지 새로고침)
+                },
+                error: function() {
+                    alert("오류가 발생했습니다.");
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

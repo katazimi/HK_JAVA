@@ -3,14 +3,63 @@
 
 
 <mapper namespace="com.hk.emr.mapper.DoctorMapper">
+
+	<select id="getDoctorId" parameterType="Integer">
+		SELECT B.doctor_id
+		FROM USER_ACCOUNT A INNER JOIN DOCTOR_PROFILE B ON A.user_id = B.user_id
+		WHERE A.user_id = #{userId};
+	</select>
+	
 	<select id="getDoctorList" resultType="doctorDto">
 		SELECT DP.doctor_id AS doctorId, U.username AS name, D.name AS deptName
 		FROM USER_ACCOUNT AS U INNER JOIN DOCTOR_PROFILE AS DP ON U.user_id = DP.user_id 
 							   INNER JOIN DEPARTMENT AS D ON DP.dept_id = D.dept_id
 	</select>
 	
-	<insert id="addDoctor" parameterType="doctorDto" >
+	<insert id="addDoctor" parameterType="doctorDto" useGeneratedKeys="true" keyProperty="doctorId">
 		Insert INTO DOCTOR_PROFILE VALUES(NULL,#{userId},1,NULL)
 	</insert>
 	
+	<insert id="addSchedule" parameterType="Integer">
+	    INSERT INTO SCHEDULE 
+	        (schedule_id, doctor_id, day_of_week, start_time, end_time, is_closed)
+	    VALUES
+	        (NULL, #{doctorId}, 'MONDAY',    '09:00:00', '18:00:00', 0),
+	        (NULL, #{doctorId}, 'TUESDAY',   '09:00:00', '18:00:00', 0),
+	        (NULL, #{doctorId}, 'WEDNESDAY', '09:00:00', '18:00:00', 0),
+	        (NULL, #{doctorId}, 'THURSDAY',  '09:00:00', '18:00:00', 0),
+	        (NULL, #{doctorId}, 'FRIDAY',    '09:00:00', '18:00:00', 0),
+	        (NULL, #{doctorId}, 'SATURDAY',  '09:00:00', '18:00:00', 1),
+	        (NULL, #{doctorId}, 'SUNDAY',    '09:00:00', '18:00:00', 1)
+	</insert>
+	
+	<select id="findSchedulesByDoctorId" parameterType="int" 
+	        resultType="scheduleDto">
+	    SELECT 
+	        day_of_week AS dayOfWeek,
+	        
+	        TIME_FORMAT(start_time, '%H:%i') AS startTime,
+	        TIME_FORMAT(end_time, '%H:%i') AS endTime,
+	        
+	        is_closed AS isClosed
+	    FROM 
+	        SCHEDULE
+	    WHERE 
+	        doctor_id = #{doctorId}
+	    ORDER BY
+	        FIELD(day_of_week, 'SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY')
+	</select>
+	
+	<update id="updateSchedule" parameterType="list">
+	  <foreach collection="list" item="day" separator=";">
+	    UPDATE SCHEDULE
+	    SET 
+	        start_time = #{day.startTime},
+	        end_time = #{day.endTime},
+	        is_closed = #{day.isClosed}
+	    WHERE 
+	        doctor_id = #{day.doctorId} 
+	        AND day_of_week = #{day.dayOfWeek}
+	  </foreach>
+	</update>
 </mapper>

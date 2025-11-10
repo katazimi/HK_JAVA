@@ -1,0 +1,16 @@
+@charset "UTF-8";
+
+body { font-family: sans-serif; display: flex; }
+.sidebar { width: 200px; background: #f4f4f4; padding: 20px; height: 100vh; }
+.sidebar ul { list-style: none; padding: 0; }
+.sidebar li { margin-bottom: 10px; }
+.content { flex-grow: 1; padding: 30px; }
+.widget-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.widget { border: 1px solid #ddd; padding: 20px; border-radius: 5px; text-align: center; }
+.widget h3 { margin-top: 0; }
+.quick-actions button { font-size: 16px; padding: 15px; margin-right: 10px; }
+.dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+.widget h2 { margin-top: 0; }
+.patient-list li { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee; }
+.btn-start { background-color: #28a745; color: white; padding: 5px 10px; border: none; cursor: pointer; }
+.btn-complete { background-color: #007bff; color: white; padding: 5px 10px; border: none; cursor: pointer; }

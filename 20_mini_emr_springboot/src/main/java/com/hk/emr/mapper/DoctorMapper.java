@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.hk.emr.dtos.DoctorDto;
+import com.hk.emr.dtos.ScheduleDto;
 
 @Mapper
 public interface DoctorMapper {
@@ -12,5 +13,14 @@ public interface DoctorMapper {
 	public List<DoctorDto> getDoctorList();
 	
 	public int addDoctor(DoctorDto ddto);
+	
+	public int addSchedule(int doctorId);
 
+	public List<ScheduleDto> findSchedulesByDoctorId(int doctorId);
+	
+	public int updateSchedule(List<ScheduleDto> scheduleList);
+
+	public int getDoctorId(int userId);
+	
+	
 }

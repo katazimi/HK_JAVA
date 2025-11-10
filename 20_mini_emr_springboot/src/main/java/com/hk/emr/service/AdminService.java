@@ -1,6 +1,8 @@
 package com.hk.emr.service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,6 +14,8 @@ import com.hk.emr.command.AddUserCommand;
 import com.hk.emr.dtos.DepartmentDto;
 import com.hk.emr.dtos.DoctorDto;
 import com.hk.emr.dtos.MemberDto;
+import com.hk.emr.dtos.ScheduleDto;
+import com.hk.emr.dtos.ScheduleFormDto;
 import com.hk.emr.mapper.DepartmentMapper;
 import com.hk.emr.mapper.DoctorMapper;
 import com.hk.emr.mapper.MemberMapper;
@@ -70,25 +74,35 @@ public class AdminService {
             Integer newUserId = mdto.getUserId(); 
             
             if (newUserId == null) {
-                // keyProperty 설정이 잘못되었거나 DB 설정 문제일 수 있음
                 throw new RuntimeException("신규 사용자 ID(user_id)를 가져오는데 실패했습니다.");
             }
             
             DoctorDto ddto = new DoctorDto();
             
             // 7. DoctorDto에 user_id 설정 (DOCTOR_PROFILE의 FK)
-            // (DoctorDto에 setUserId()가 있다고 가정)
             ddto.setUserId(newUserId); 
-            
-            // (선택) AddUserCommand에 의사 관련 정보가 더 있다면 여기서 설정
-            // 예: ddto.setSpecialty(addUserCommand.getSpecialty());
             
             // 8. DOCTOR_PROFILE 테이블에 INSERT
             int doctorResult = doctorMapper.addDoctor(ddto);
 
             if (doctorResult == 0) {
-                // 의사 프로필 생성 실패 시, @Transactional이 userResult(회원가입)까지 롤백함
                 throw new RuntimeException("의사 프로필 생성에 실패했습니다.");
+            }
+         // 9. [로직 추가] 방금 DOCTOR_PROFILE에 생성된 doctor_id를 가져옴
+            Integer newDoctorId = ddto.getDoctorId(); // ddto에 doctorId가 반환되어야 함
+                
+            if (newDoctorId == null) {
+                // @Transactional에 의해 롤백됨
+                throw new RuntimeException("신규 의사 ID(doctor_id)를 가져오는데 실패했습니다.");
+            }
+
+            // 10. [로직 추가] SCHEDULE 테이블에 7일치 기본값 INSERT
+            // (이전에 작성한 memberMapper의 addSchedule 쿼리 호출)
+            int scheduleResult =doctorMapper.addSchedule(newDoctorId);
+                
+            if (scheduleResult < 7) { // 7개 행이 삽입되어야 함
+                // @Transactional에 의해 롤백됨
+                throw new RuntimeException("의사 기본 스케줄 생성에 실패했습니다.");
             }
         }
         
@@ -117,5 +131,40 @@ public class AdminService {
 	public List<DoctorDto> getDoctorList() {
 		return doctorMapper.getDoctorList();
 	}
+
+	public List<ScheduleDto> findSchedulesByDoctorId(int doctorId) {
+		
+		return doctorMapper.findSchedulesByDoctorId(doctorId);
+	}
+
+	@Transactional // 7개 쿼리가 모두 성공하거나 모두 실패해야 함
+    public void updateSchedules(ScheduleFormDto form) {
+        
+        Integer doctorId = form.getDoctorId();
+        
+        // 1. 폼(Map)을 매퍼용(List)으로 변환
+        List<ScheduleDto> listToUpdate = new ArrayList<>();
+        
+        for (Map.Entry<String, ScheduleDto> entry : form.getSchedules().entrySet()) {
+            
+            ScheduleDto dayData = entry.getValue();
+            
+            ScheduleDto dto = new ScheduleDto();
+            dto.setDoctorId(doctorId);
+            dto.setDayOfWeek(entry.getKey()); // "MONDAY", "TUESDAY" ...
+            dto.setStartTime(dayData.getStartTime());
+            dto.setEndTime(dayData.getEndTime());
+            
+            // 2. ★★★ 체크박스(Boolean)를 boolean으로 변환 ★★★
+            // 폼에서 체크가 안 되면 'null'이 오므로, 'false' (0)으로 바꿔줘야 함
+            int isChecked = dayData.getIsClosed()==null?0:dayData.getIsClosed();
+            dto.setIsClosed(isChecked);
+            
+            listToUpdate.add(dto);
+        }
+
+        // 3. 매퍼 호출 (7개 쿼리 실행)
+        doctorMapper.updateSchedule(listToUpdate);
+    }
 	
 }

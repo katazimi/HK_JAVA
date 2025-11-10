@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +23,8 @@ import com.hk.emr.command.AddUserCommand;
 import com.hk.emr.dtos.DepartmentDto;
 import com.hk.emr.dtos.DoctorDto;
 import com.hk.emr.dtos.MemberDto;
+import com.hk.emr.dtos.ScheduleDto;
+import com.hk.emr.dtos.ScheduleFormDto;
 import com.hk.emr.service.AdminService;
 
 import jakarta.servlet.http.HttpSession;
@@ -139,5 +142,24 @@ public class AdminController {
 		List<DoctorDto>doctors = adminService.getDoctorList();
 		model.addAttribute("doctors", doctors);
 		return "admin/schedule";
+	}
+	
+	@GetMapping("/schedules/{doctorId}")
+	@ResponseBody 
+	public List<ScheduleDto> getSchedulesForDoctor(@PathVariable int doctorId) {
+	    
+	    // 1. 서비스(및 매퍼)를 호출하여 DB에서 스케줄을 조회합니다.
+	    List<ScheduleDto> schedules = adminService.findSchedulesByDoctorId(doctorId);
+	    
+	    // 2. 조회된 List<ScheduleDto>를 반환하면, Spring이 JSON 배열로 변환해 응답합니다.
+	    return schedules; 
+	}
+	
+	@PostMapping("/schedules")
+	public String updateSchedule(ScheduleFormDto scheduleForm) {
+		
+		adminService.updateSchedules(scheduleForm);
+		
+		return "redirect:/admin/schedules?update=success";
 	}
 }

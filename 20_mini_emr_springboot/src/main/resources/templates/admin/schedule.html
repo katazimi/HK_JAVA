@@ -11,7 +11,7 @@
     <nav class="sidebar">
         <h2>병원 관리 (ADMIN)</h2>
         <ul>
-            <li><a href="/admin/dashboard">대시보드</a></li>
+            <li><a href="/admin/">대시보드</a></li>
             <li><a href="/admin/accounts">계정 관리</a></li>
             <li><a href="/admin/settings">병원 설정</a></li>
             <li><a href="/admin/schedules"><b>스케줄 관리</b></a></li>
@@ -36,7 +36,7 @@
             </select>
         </div>
 
-        <form id="scheduleForm" th:action="@{/api/admin/schedules}" method="post" style="margin-top: 20px;">
+        <form id="scheduleForm" th:action="@{/admin/schedules}" method="post" style="margin-top: 20px;">
             
             <input type="hidden" id="selectedDoctorId" name="doctorId">
             
@@ -49,50 +49,71 @@
                         <th>(선택) 휴무</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <th>월요일</th>
-                        <td><input type="time" name="schedules[MONDAY].startTime"></td>
-                        <td><input type="time" name="schedules[MONDAY].endTime"></td>
-                        <td><input type="checkbox" name="schedules[MONDAY].isClosed"> 휴무</td>
-                    </tr>
-                    <tr>
-                        <th>화요일</th>
-                        <td><input type="time" name="schedules[TUESDAY].startTime"></td>
-                        <td><input type="time" name="schedules[TUESDAY].endTime"></td>
-                        <td><input type="checkbox" name="schedules[TUESDAY].isClosed"> 휴무</td>
-                    </tr>
-                    <tr>
-                        <th>수요일</th>
-                        <td><input type="time" name="schedules[WEDNESDAY].startTime"></td>
-                        <td><input type="time" name="schedules[WEDNESDAY].endTime"></td>
-                        <td><input type="checkbox" name="schedules[WEDNESDAY].isClosed"> 휴무</td>
-                    </tr>
-                    <tr>
-                        <th>목요일</th>
-                        <td><input type="time" name="schedules[THURSDAY].startTime"></td>
-                        <td><input type="time" name="schedules[THURSDAY].endTime"></td>
-                        <td><input type="checkbox" name="schedules[THURSDAY].isClosed"> 휴무</td>
-                    </tr>
-                    <tr>
-                        <th>금요일</th>
-                        <td><input type="time" name="schedules[FRIDAY].startTime"></td>
-                        <td><input type="time" name="schedules[FRIDAY].endTime"></td>
-                        <td><input type="checkbox" name="schedules[FRIDAY].isClosed"> 휴무</td>
-                    </tr>
-                    <tr>
-                        <th>토요일</th>
-                        <td><input type="time" name="schedules[SATURDAY].startTime"></td>
-                        <td><input type="time" name="schedules[SATURDAY].endTime"></td>
-                        <td><input type="checkbox" name="schedules[SATURDAY].isClosed"> 휴무</td>
-                    </tr>
-                    <tr>
-                        <th>일요일</th>
-                        <td><input type="time" name="schedules[SUNDAY].startTime"></td>
-                        <td><input type="time" name="schedules[SUNDAY].endTime"></td>
-                        <td><input type="checkbox" name="schedules[SUNDAY].isClosed"> 휴무</td>
-                    </tr>
-                </tbody>
+               <tbody>
+				    <tr>
+				        <th>일요일</th>
+				        <td><input type="time" name="schedules[SUNDAY].startTime"></td>
+				        <td><input type="time" name="schedules[SUNDAY].endTime"></td>
+				        <td>
+				            <input type="hidden" name="_schedules[SUNDAY].isClosed" value="0" />
+				            <input type="checkbox" name="schedules[SUNDAY].isClosed" value="1"> 휴무
+				        </td>
+				    </tr>
+				    <tr>
+				        <th>월요일</th>
+				        <td><input type="time" name="schedules[MONDAY].startTime"></td>
+				        <td><input type="time" name="schedules[MONDAY].endTime"></td>
+				        <td>
+				            <input type="hidden" name="_schedules[MONDAY].isClosed" value="0" />
+				            <input type="checkbox" name="schedules[MONDAY].isClosed" value="1"> 휴무
+				        </td>
+				    </tr>
+				    <tr>
+				        <th>화요일</th>
+				        <td><input type="time" name="schedules[TUESDAY].startTime"></td>
+				        <td><input type="time" name="schedules[TUESDAY].endTime"></td>
+				        <td>
+				            <input type="hidden" name="_schedules[TUESDAY].isClosed" value="0" />
+				            <input type="checkbox" name="schedules[TUESDAY].isClosed" value="1"> 휴무
+				        </td>
+				    </tr>
+				    <tr>
+				        <th>수요일</th>
+				        <td><input type="time" name="schedules[WEDNESDAY].startTime"></td>
+				        <td><input type="time" name="schedules[WEDNESDAY].endTime"></td>
+				        <td>
+				            <input type="hidden" name="_schedules[WEDNESDAY].isClosed" value="0" />
+				            <input type="checkbox" name="schedules[WEDNESDAY].isClosed" value="1"> 휴무
+				        </td>
+				    </tr>
+				    <tr>
+				        <th>목요일</th>
+				        <td><input type="time" name="schedules[THURSDAY].startTime"></td>
+				        <td><input type="time" name="schedules[THURSDAY].endTime"></td>
+				        <td>
+				            <input type="hidden" name="_schedules[THURSDAY].isClosed" value="0" />
+				            <input type="checkbox" name="schedules[THURSDAY].isClosed" value="1"> 휴무
+				        </td>
+				    </tr>
+				    <tr>
+				        <th>금요일</th>
+				        <td><input type="time" name="schedules[FRIDAY].startTime"></td>
+				        <td><input type="time" name="schedules[FRIDAY].endTime"></td>
+				        <td>
+				            <input type="hidden" name="_schedules[FRIDAY].isClosed" value="0" />
+				            <input type="checkbox" name="schedules[FRIDAY].isClosed" value="1"> 휴무
+				        </td>
+				    </tr>
+				    <tr>
+				        <th>토요일</th>
+				        <td><input type="time" name="schedules[SATURDAY].startTime"></td>
+				        <td><input type="time" name="schedules[SATURDAY].endTime"></td>
+				        <td>
+				            <input type="hidden" name="_schedules[SATURDAY].isClosed" value="0" />
+				            <input type="checkbox" name="schedules[SATURDAY].isClosed" value="1"> 휴무
+				        </td>
+				    </tr>
+				</tbody>
             </table>
             
             <button type="submit" class="btn" style="margin-top: 20px;">스케줄 저장</button>
@@ -104,24 +125,52 @@
     <script>
         // 의사 선택 시 해당 의사의 스케줄을 AJAX로 불러오는 함수
         function loadSchedule(doctorId) {
+            
+            // 1. 의사를 "선택하세요"로 되돌리면 폼 숨기기
             if (!doctorId) {
                 $("#scheduleForm").hide();
                 return;
             }
             
-            // 1. 숨겨진 폼에 doctorId 설정
+            // 2. 숨겨진 폼에 doctorId 설정
             $("#selectedDoctorId").val(doctorId);
 
-            // 2. (AJAX) 서버에서 해당 의사의 기존 스케줄 정보를 가져옵니다.
-            // $.ajax({ ... });
-            // (가져온 데이터로 input time들을 채워줍니다)
-            
-            // 3. 폼을 보여줍니다.
-            $("#scheduleForm").show();
+         // 3. (AJAX) 서버에서 해당 의사의 기존 스케줄 정보를 가져옵니다.
+            $.ajax({
+                type: "GET",
+                url: "/admin/schedules/" + doctorId,
+                dataType: "json",
+                
+                success: function(schedules) {
+                    // 4. 폼 초기화
+                    $('#scheduleForm input[type="time"]').val('');
+                    $('#scheduleForm input[type="checkbox"]').prop('checked', false);
+
+                    // 5. 받아온 데이터(schedules)로 폼 채우기
+                    schedules.forEach(function(day) {
+                        var dayName = day.dayOfWeek; // "MONDAY"
+                        
+                        $('input[name="schedules[' + dayName + '].startTime"]').val(day.startTime);
+                        $('input[name="schedules[' + dayName + '].endTime"]').val(day.endTime);
+
+                        // ===== [ 이 부분 수정 ] =====
+                        // day.isClosed가 1 (true)이면 checked를 true로 설정
+                        var isClosedChecked = (day.isClosed == 1 || day.isClosed === true);
+                        $('input[name="schedules[' + dayName + '].isClosed"]').prop('checked', isClosedChecked);
+                        // ==========================
+                    });
+                    
+                    // 6. 폼 보여주기
+                    $("#scheduleForm").show();
+                },
+                error: function() {
+                    alert("스케줄 정보를 불러오는 데 실패했습니다.");
+                    $("#scheduleForm").hide();
+                }
+            });
         }
 
         // 페이지 로드 시 폼 숨기기
-        // [수정됨] $(document.ready( -> $(document).ready(
         $(document).ready(function() {
             $("#scheduleForm").hide();
         });

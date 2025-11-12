@@ -3,7 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <title>환자 차트</title>
-    <link type="text/css" th:href="@{/css/doctorChart.css}" rel="stylesheet">
+    <link type="text/css" th:href="@{/css/doctorCommon.css}" rel="stylesheet">
+    <style>
+        /* (간단한 스타일 예시) */
+        body { font-family: sans-serif; display: flex; }
+        .sidebar { width: 200px; background: #f4f4f4; padding: 20px; height: 100vh; }
+        .sidebar ul { list-style: none; padding: 0; }
+        .sidebar li { margin-bottom: 10px; }
+        .content { flex-grow: 1; padding: 30px; }
+        .patient-info { background: #f9f9f9; padding: 15px; border-radius: 5px; }
+        .chart-history ul { list-style-type: none; padding: 0; max-height: 300px; overflow-y: auto; }
+        .chart-history li { border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; }
+        textarea { width: 98%; height: 100px; }
+        .btn { background-color: #007bff; color: white; padding: 8px 12px; border: none; cursor: pointer; }
+        
+        /* [ 1. CSS 추가 ] - (대시보드의 '진료 완료' 버튼과 동일한 스타일) */
+        .btn-complete { background-color: #007bff; }
+        .btn-save { background-color: #28a745; } /* (메모 저장 버튼 색상 - 선택 사항) */
+        
+    </style>
 </head>
 <body>
 
@@ -23,9 +41,9 @@
         <div class="patient-info" th:if="${patient != null}" th:object="${patient}">
             <h2 th:text="*{name}">홍길동</h2>
             <ul>
-                <li th:text="'차트번호: ' + *{chartNumber}"></li>
+                <li th:text="'차트번호: ' + *{chartNum}"></li>
                 <li th:text="'연락처: ' + *{phone}"></li>
-                <li th:text="'생년월일: ' + *{birthDate}"></li>
+                <li th:text="'생년월일: ' + *{birth}"></li>
             </ul>
         </div>
         
@@ -36,18 +54,22 @@
                        th:value="${currentAppointmentId}">
                 
                 <textarea id="memo" name="memo" placeholder="진료 내용을 입력하세요..."></textarea>
-                <button type="submit" class="btn" style="margin-top: 10px;">
+                
+                <button type="submit" class="btn btn-save" style="margin-top: 10px;">
                     메모 저장
                 </button>
-            </form>
+                <button type="button" class="btn btn-complete" style="margin-top: 10px; margin-left: 10px;"
+                        onclick="completeTreatmentFromChart()">
+                    진료 완료 (수납 대기)
+                </button>
+                </form>
         </div>
 
         <div class="chart-history" style="margin-top: 30px;">
             <h2>과거 진료 기록</h2>
             <ul th:if="${!#lists.isEmpty(pastCharts)}">
                 <li th:each="chart : ${pastCharts}">
-                    <strong th:text="${chart.appointmentTime}"></strong>
-                    (<span th:text="${chart.doctorName}"></span>)
+                    <strong th:text="${chart.visitDate}"></strong> (<span th:text="${chart.doctorName}"></span>)
                     <p th:text="${chart.memo}"></p>
                 </li>
             </ul>
@@ -62,24 +84,22 @@
     <script>
         $(document).ready(function() {
             
+            // (기존) '메모 저장' AJAX
             $("#chartForm").on("submit", function(e) {
-                e.preventDefault(); // 폼 새로고침 방지
+                e.preventDefault(); 
 
                 var formData = {
                     appointmentId: $("#appointmentId").val(),
                     memo: $("#memo").val()
                 };
 
-                // (컨트롤러) /api/doctor/charts (POST) 호출
                 $.ajax({
                     type: "POST",
-                    url: "/api/doctor/charts",
+                    url: "/doctor/charts",
                     contentType: "application/json",
                     data: JSON.stringify(formData),
                     success: function() {
                         alert("진료 메모가 저장되었습니다.");
-                        // (선택) 저장 후 대시보드로 이동
-                        // location.href = "/doctor/dashboard"; 
                     },
                     error: function() {
                         alert("메모 저장에 실패했습니다.");
@@ -87,7 +107,35 @@
                 });
             });
         });
-    </script>
 
-</body>
+        // [추가] '진료 완료' 버튼 클릭 시
+        function completeTreatmentFromChart() {
+            if (!confirm("진료를 완료하시겠습니까? (수납 대기 상태로 변경됩니다)")) {
+                return;
+            }
+            
+            // 폼에 숨겨진 appointmentId 값을 가져옴
+            var appointmentId = $("#appointmentId").val();
+            
+            if (!appointmentId) {
+                alert("오류: 진료 ID를 찾을 수 없습니다.");
+                return;
+            }
+
+            // 대시보드와 동일한 AJAX 호출
+            $.ajax({
+                type: "POST",
+                url: "/doctor/appointments/" + appointmentId + "/complete",
+                success: function() {
+                    alert("진료가 완료되었습니다. (수납 대기)");
+                    // 진료가 끝났으므로 대시보드로 이동
+                    location.href = "/doctor/"; 
+                },
+                error: function() {
+                    alert("진료 완료 처리에 실패했습니다.");
+                }
+            });
+        }
+    </script>
+    </body>
 </html>

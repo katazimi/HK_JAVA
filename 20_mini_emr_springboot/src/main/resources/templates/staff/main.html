@@ -37,7 +37,7 @@
             <h2>오늘 예약 현황 (SCHEDULED)</h2>
             <ul id="today-appointments">
                 <li th:each="appt : ${todayList}" th:id="'appt-' + ${appt.appointmentId}">
-                    <span th:text="${appt.appointmentTime} + ' - ' + ${appt.patientName}"></span>
+                    <span th:text="${appt.dateTime} + ' - ' + ${appt.patientName}"></span>
                     <button class="btn" th:data-id="${appt.appointmentId}" onclick="checkInPatient(this.dataset.id)">
                         환자 도착 (접수)
                     </button>
@@ -75,7 +75,7 @@
                     <option value="">-- 의사 선택 --</option>
                     <option th:each="doc : ${doctorList}" 
                             th:value="${doc.doctorId}" 
-                            th:text="${doc.name}"></option>
+                            th:text="|${doc.name} (${doc.deptName})|"></option>
                 </select>
                 
                 <label>예약 시간:</label>
@@ -88,55 +88,175 @@
     </div>
 
 
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script th:inline="javascript">
-        // --- 모달 제어 ---
-        function openModal(id) { $('#' + id).css('display', 'flex'); }
-        function closeModal(id) { $('#' + id).css('display', 'none'); }
+   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
+    <script th:inline="javascript">
+        // --- 전역 헬퍼 함수 ---
+        
+        // 모달 열기
+        function openModal(id) { 
+            $('#' + id).css('display', 'flex'); 
+        }
+        
+        // 모달 닫기
+        function closeModal(id) { 
+            $('#' + id).css('display', 'none'); 
+        }
+
+        // '환자 도착' (예약 -> 접수) 처리
+        function checkInPatient(appointmentId) {
+            if (!confirm("환자가 도착했습니까? (접수 처리)")) return;
+            
+            $.ajax({
+                type: "POST",
+                url: "/staff/appointments/" + appointmentId + "/arrive", // '도착' API
+                success: function() {
+                    alert("환자가 접수되었습니다. (진료 대기)");
+                    $("#appt-" + appointmentId).remove(); // 목록에서 제거
+                },
+                error: function() { alert("접수 처리에 실패했습니다."); }
+            });
+        }
+
+
+        // --- jQuery $(document).ready() ---
+        // 페이지가 완전히 로드된 후 이벤트 핸들러를 바인딩합니다.
         $(document).ready(function() {
             
-            // --- 신규 환자 등록 (AJAX) ---
+            var debounceTimer; // 디바운싱(연속 입력 방지)용 타이머
+
+            // 1. 환자 검색
+            $("#patientSearchInput").on("keyup", function() {
+                clearTimeout(debounceTimer); // 기존 타이머 취소
+                
+                var query = $(this).val();
+                
+                // 2글자 미만이면 검색 안 함
+                if (query.length < 2) {
+                    $("#patient-search-results").empty(); // 검색 결과 비우기
+                    return;
+                }
+
+                // 300ms(0.3초) 지연 후 검색 실행
+                debounceTimer = setTimeout(function() {
+                    $.ajax({
+                        type: "GET",
+                        url: "/staff/search", // 환자 검색
+                        data: { query: query },
+                        success: function(patients) {
+                            var resultsDiv = $("#patient-search-results");
+                            resultsDiv.empty(); // 이전 결과 삭제
+
+                            if (patients.length === 0) {
+                                resultsDiv.html("<p>일치하는 환자가 없습니다.</p>");
+                                return;
+                            }
+                            
+                            var list = $('<ul class="patient-list"></ul>');
+                            patients.forEach(function(p) {
+                                // (중요) data 속성에 환자 ID와 이름을 저장
+                                var item = `
+                                    <li class="result-item" data-id="${p.patientId}" data-name="${p.name}">
+                                        <span>${p.name} (${p.chartNum})</span>
+                                        <button class="btn" type="button" 
+                                                data-id="${p.patientId}" data-name="${p.name}"
+                                                onclick="openAppointmentModal(this.dataset.id, this.dataset.name)">
+                                            접수/예약
+                                        </button>
+                                    </li>`;
+                                list.append(item);
+                            });
+                            resultsDiv.append(list);
+                        }
+                    });
+                }, 300);
+            });
+
+            // 2. 신규 환자 등록 (AJAX)
             $("#newPatientForm").on("submit", function(e) {
                 e.preventDefault();
                 var formData = {
                     name: $("#newName").val(),
                     phone: $("#newPhone").val(),
-                    birth: $("#newBirthDate").val()
+                    birthDate: $("#newBirthDate").val() // [수정] birth -> birthDate
                 };
                 $.ajax({
                     type: "POST",
                     url: "/staff/patients", // 신규 환자 등록 API
                     contentType: "application/json",
                     data: JSON.stringify(formData),
-                    success: function() {
-                        alert("신규 환자가 등록되었습니다.");
+                    success: function(response) {
+                        alert("신규 환자가 등록되었습니다. (차트번호: " + response.chartNumber + ")");
                         closeModal('modal-new-patient');
+                        $("#newPatientForm")[0].reset(); // 폼 초기화
                     },
                     error: function() { alert("환자 등록에 실패했습니다."); }
                 });
             });
 
-            // --- (참고) 환자 검색 / 접수 / 예약 로직은 여기에 추가... ---
-            // (예: patientSearchInput keyup 이벤트, 예약 모달 열기 등)
-            
-        });
+            // 3. 접수/예약 폼 제출 (AJAX)
+            $("#appointmentForm").on("submit", function(e) {
+                e.preventDefault();
+                
+                var apptTime = $("#apptTime").val();
+                var patientId = $("#apptPatientId").val();
+                var doctorId = $("#apptDoctorId").val();
 
-        // --- (AJAX) 환자 도착 처리 (Check-in) ---
-        function checkInPatient(appointmentId) {
-            if (!confirm("환자가 도착했습니까? (접수 처리)")) return;
-            
-            $.ajax({
-                type: "POST",
-                url: "/api/staff/appointments/" + appointmentId + "/arrive", // '도착' API
-                success: function() {
-                    alert("환자가 접수되었습니다. (진료 대기)");
-                    // 성공 시 목록에서 해당 항목 제거
-                    $("#appt-" + appointmentId).remove();
-                },
-                error: function() { alert("접수 처리에 실패했습니다."); }
+                if (!doctorId) {
+                    alert("의사를 선택해주세요.");
+                    return;
+                }
+
+                var url, data, successMsg;
+
+                // (중요) 예약 시간이 비어있으면 '현장 접수', 있으면 '사전 예약'
+                if (!apptTime) { 
+                    // A. 현장 접수 (Walk-in)
+                    url = "/staff/appointments/walk-in";
+                    data = { patientId: patientId, doctorId: doctorId };
+                    successMsg = "현장 접수가 완료되었습니다. (진료 대기)";
+                } else { 
+                    // B. 사전 예약 (Scheduled)
+                    url = "/staff/appointments/schedule";
+                    data = { patientId: patientId, doctorId: doctorId, dateTime: apptTime };
+                    successMsg = "사전 예약이 완료되었습니다.";
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    contentType: "application/json",
+                    data: JSON.stringify(data),
+                    success: function() {
+                        alert(successMsg);
+                        closeModal('modal-appointment');
+                        $("#appointmentForm")[0].reset(); // 폼 초기화
+                        $("#patientSearchInput").val(""); // 검색창 비우기
+                        $("#patient-search-results").empty(); // 검색 결과 비우기
+                        // (참고: 사전 예약 시 '오늘 예약 현황' 목록을 새로고침하는 로직이 추가될 수 있음)
+                    },
+                    error: function() {
+                        alert("접수/예약 처리에 실패했습니다.");
+                    }
+                });
             });
+            
+        }); // <-- $(document).ready() 끝
+
+        // --- (추가) 검색 결과 클릭 시 모달 열기 헬퍼 함수 ---
+        function openAppointmentModal(patientId, patientName) {
+            // 1. 모달 폼에 환자 정보 채우기
+            $("#apptPatientId").val(patientId);
+            $("#apptPatientName").text(patientName + " 님");
+
+            // 2. 폼의 나머지 값 초기화
+            $("#apptDoctorId").val("");
+            $("#apptTime").val("");
+            
+            // 3. 모달 열기
+            openModal('modal-appointment');
         }
+
     </script>
 </body>
 </html>

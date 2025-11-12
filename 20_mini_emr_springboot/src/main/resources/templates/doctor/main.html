@@ -26,13 +26,13 @@
         <div class="widget" style="background-color: #fffbef;">
             <h2>현재 진료 중</h2>
             <div th:if="${currentPatient != null}" th:object="${currentPatient}">
-                <h3 th:text="*{patientName} + ' 님 (' + *{chartNumber} + ')'"></h3>
-                <p th:text="'접수 시간: ' + *{appointmentTime}"></p>
-                <button class="btn-complete" th:data-id="*{appointmentId}" 
-                        onclick="completeTreatment(this.dataset.id)">
-                    진료 완료
-                </button>
-            </div>
+			    <h3>
+			        <a th:href="@{/doctor/chart/{id}(id=*{patientId})}" 
+			           th:text="*{patientName} + ' 님 (' + *{chartNumber} + ')'">
+			        </a>
+			    </h3>
+			    <p th:text="'접수 시간: ' + *{dateTime}"></p>
+		    </div>
             
             <div th:if="${currentPatient == null}">
                 <p>진료 중인 환자가 없습니다.</p>
@@ -43,23 +43,24 @@
             <div class="widget">
                 <h2>진료 대기 환자 (실시간)</h2>
                 <ul id="waiting-list-body" class="patient-list">
+                    
                     <li th:each="patient : ${waitingList}" th:id="'wait-' + ${patient.appointmentId}">
                         <span>
-                            <a th:href="@{/doctor/chart/{id}(id=${patient.patientId})}"
-                               th:text="${patient.patientName}"></a>
-                            <small th:text="'(' + ${patient.appointmentTime} + ' 접수)'"></small>
+                            <span th:text="${patient.patientName}"></span>
+                            <small th:text="'(' + ${patient.dateTime} + ' 접수)'"></small>
                         </span>
+                        
                         <button class="btn-start" th:data-id="${patient.appointmentId}"
                                 onclick="startTreatment(this.dataset.id)">
                             진료 시작
                         </button>
                     </li>
+                    
                     <li id="no-wait-patient" th:if="${#lists.isEmpty(waitingList)}">
                         <p>대기 중인 환자가 없습니다.</p>
                     </li>
                 </ul>
             </div>
-
             <div class="widget">
                 <h2>오늘 예약 환자</h2>
                 <ul class="patient-list">
@@ -67,7 +68,7 @@
                         <span>
                             <a th:href="@{/doctor/chart/{id}(id=${patient.patientId})}"
                                th:text="${patient.patientName}"></a>
-                            <small th:text="'(' + ${patient.appointmentTime} + ' 예약)'"></small>
+                            <small th:text="'(' + ${patient.dateTime} + ' 예약)'"></small>
                         </span>
                     </li>
                     <li th:if="${#lists.isEmpty(scheduledList)}">
@@ -113,7 +114,7 @@
                 <li id="wait-${patient.appointmentId}">
                     <span>
                         <a href="/doctor/chart/${patient.patientId}">${patient.patientName}</a>
-                        <small>(${patient.appointmentTime} 접수)</small>
+                        <small>(${patient.dateTime} 접수)</small>
                     </span>
                     <button class="btn-start" data-id="${patient.appointmentId}"
                             onclick="startTreatment(this.dataset.id)">

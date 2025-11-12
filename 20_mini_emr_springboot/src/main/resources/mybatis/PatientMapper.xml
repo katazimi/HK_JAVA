@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hk.emr.mapper.PatientMapper">
+	<select id="getPatientById" parameterType="int" resultType="com.hk.emr.dtos.PatientDto">
+	    SELECT 
+	        patient_id AS patientId,
+	        chart_number AS chartNum,
+	        name,
+	        phone,
+	        birth_date AS birth
+	    FROM PATIENT
+	    WHERE patient_id = #{patientId}
+	</select>
+	
+</mapper>

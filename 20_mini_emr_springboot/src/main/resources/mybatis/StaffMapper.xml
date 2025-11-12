@@ -18,4 +18,56 @@
 		SELECT chart_number AS chartNum,name,phone,birth_date AS birth
 		FROM PATIENT
 	</select>
+	
+	<select id="patientSearch" parameterType="String" resultType="patientDto">
+	    SELECT patient_id AS patientId, chart_number AS chartNum, name, phone, birth_date AS birth  
+	    FROM PATIENT
+	    WHERE 
+	        name LIKE CONCAT('%', #{query}, '%') 
+	        OR chart_number LIKE CONCAT('%', #{query}, '%')
+	</select>
+	
+	<select id="getDoctors" resultType="doctorDto">
+		SELECT P.doctor_id AS doctorId, D.name AS deptName, A.username AS name
+		FROM DOCTOR_PROFILE P INNER JOIN DEPARTMENT D ON P.dept_id = D.dept_id INNER JOIN USER_ACCOUNT A ON P.user_id = A.user_id
+	</select>
+	
+	<insert id="createWalkInAppointment" parameterType="appointmentDto">
+		INSERT INTO APPOINTMENT VALUES(NULL,#{patientId},#{doctorId},#{staffId},NOW(),#{status})
+	</insert>
+	
+	<insert id="createScheduledAppointment" parameterType="appointmentDto">
+		INSERT INTO APPOINTMENT VALUES(NULL,#{patientId},#{doctorId},#{staffId},#{dateTime},#{status})
+	</insert>
+	
+	<select id="getSchedules" resultType="appointmentDto">
+		SELECT appointment_id AS appointmentId, appointment_time AS dateTime, P.name AS patientName
+		FROM APPOINTMENT A INNER JOIN PATIENT P ON A.patient_id = P.patient_id
+		WHERE DATE(A.appointment_time) = CURDATE() AND A.status = 'SCHEDULED'
+		ORDER BY A.appointment_time ASC
+	</select>
+	
+	<update id="updateStatus" parameterType="Integer">
+		UPDATE APPOINTMENT
+		SET status = 'WAITING'
+		WHERE appointment_id = #{appointmentId};
+	</update>
+	
+	<select id="getPatientInfo" parameterType="Integer" resultType="appointmentDto">
+		SELECT P.name AS patientName, A.patient_id AS patientId, A.doctor_id AS doctorId
+		FROM APPOINTMENT A INNER JOIN PATIENT P ON A.patient_id = P.patient_id
+		WHERE appointment_id = #{appointmentId}
+	</select>
+	
+	<select id="getPaymentList" resultType="appointmentDto">
+		SELECT P.name AS patientName, P.chart_number AS chartNumber, U.name AS doctorName, A.appointment_time AS dateTime, A.appointment_id AS appointmentId
+		FROM PATIENT P JOIN APPOINTMENT A ON P.patient_id = A.patient_id JOIN DOCTOR_PROFILE D ON D.doctor_id = A.doctor_id JOIN USER_ACCOUNT U ON U.user_id=D.user_id
+		WHERE A.status = 'PAYMENT_WAITING'
+	</select>
+	
+	<update id="paymentComplete" parameterType="Integer">
+		UPDATE APPOINTMENT
+		SET status = 'PAID'
+		WHERE appointment_id = #{appointmentId};
+	</update>
 </mapper>

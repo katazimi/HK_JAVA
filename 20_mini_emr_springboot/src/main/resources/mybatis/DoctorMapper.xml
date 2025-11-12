@@ -62,4 +62,54 @@
 	        AND day_of_week = #{day.dayOfWeek}
 	  </foreach>
 	</update>
+	
+	<select id="findCurrentPatient" parameterType="Integer" resultType="appointmentDto">
+		SELECT 
+	        A.appointment_id AS appointmentId,
+	        A.patient_id AS patientId,
+	        P.name AS patientName,
+	        P.chart_number AS chartNumber,
+	        TIME_FORMAT(A.appointment_time, '%H:%i') AS dateTime
+	    FROM 
+	        APPOINTMENT A
+	        JOIN PATIENT P ON A.patient_id = P.patient_id
+	    WHERE 
+	        A.doctor_id = #{doctorId}
+	        AND A.status = 'IN_PROGRESS'
+	    ORDER BY
+	        A.appointment_time ASC
+	</select>
+	
+	<select id="findWaitingList" parameterType="Integer" resultType="appointmentDto">
+		SELECT 
+	        A.appointment_id AS appointmentId,
+	        A.patient_id AS patientId,
+	        P.name AS patientName,
+	        TIME_FORMAT(A.appointment_time, '%H:%i') AS dateTime
+	    FROM 
+	        APPOINTMENT A
+	        JOIN PATIENT P ON A.patient_id = P.patient_id
+	    WHERE 
+	        A.doctor_id = #{doctorId}
+	        AND A.status = 'WAITING'
+	    ORDER BY
+	        A.appointment_time ASC
+	</select>
+	
+	<select id="findScheduledList" parameterType="Integer" resultType="appointmentDto">
+		SELECT 
+	        A.appointment_id AS appointmentId,
+	        A.patient_id AS patientId,
+	        P.name AS patientName,
+	        TIME_FORMAT(A.appointment_time, '%H:%i') AS dateTime
+	    FROM 
+	        APPOINTMENT A
+	        JOIN PATIENT P ON A.patient_id = P.patient_id
+	    WHERE 
+	        A.doctor_id = #{doctorId}
+	        AND A.status = 'SCHEDULED'
+	    ORDER BY
+	        A.appointment_time ASC
+	</select>
+	
 </mapper>

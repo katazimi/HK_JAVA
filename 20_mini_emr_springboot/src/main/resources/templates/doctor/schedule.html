@@ -52,8 +52,7 @@
                         
                         <ul class="appointment-list">
                             <li th:each="appt : ${day.appointments}"
-                                th:text="${appt.time} + ' - ' + ${appt.patientName}">
-                                10:30 - 홍길동
+                                th:text="${appt.dateTime} + ' - ' + ${appt.patientName}">
                             </li>
                             <li th:if="${#lists.isEmpty(day.appointments)}" style="background: none; font-size: 0.8em;">
                                 (예약 없음)

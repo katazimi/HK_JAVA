@@ -21,22 +21,22 @@
         <h1>관리자 대시보드</h1>
         <p>
             <strong th:text="${adminName}">관리자</strong>님, 환영합니다.
-            </p>
+        </p>
         <hr>
 
         <h2>오늘의 현황</h2>
         <div class="widget-grid">
             <div class="widget">
                 <h3>총 접수</h3>
-                <p style="font-size: 24px;">58</p> 
+                <p style="font-size: 24px;" th:text="${stats.totalAppointments}">0</p> 
             </div>
             <div class="widget">
                 <h3>진료 대기</h3>
-                <p style="font-size: 24px;">3</p>
+                <p style="font-size: 24px;" th:text="${stats.waitingCount}">0</p>
             </div>
             <div class="widget">
                 <h3>수납 대기</h3>
-                <p style="font-size: 24px;">2</p>
+                <p style="font-size: 24px;" th:text="${stats.paymentWaitingCount}">0</p>
             </div>
         </div>
 
@@ -44,11 +44,11 @@
         <div class="widget-grid">
             <div class="widget">
                 <h3>총 의사 계정</h3>
-                <p style="font-size: 24px;">5</p>
+                <p style="font-size: 24px;" th:text="${stats.totalDoctors}">0</p>
             </div>
             <div class="widget">
                 <h3>총 직원 계정</h3>
-                <p style="font-size: 24px;">8</p>
+                <p style="font-size: 24px;" th:text="${stats.totalStaff}">0</p>
             </div>
         </div>
 

@@ -38,7 +38,7 @@
                     <td th:text="${appt.patientName}"></td>
                     <td th:text="${appt.chartNumber}"></td>
                     <td th:text="${appt.doctorName}"></td>
-                    <td th:text="${appt.appointmentTime}"></td>
+                    <td th:text="${appt.dateTime}"></td>
                     <td>
                         <button class="btn-pay" th:data-id="${appt.appointmentId}" 
                                 onclick="completePayment(this.dataset.id)">
@@ -61,7 +61,7 @@
             
             $.ajax({
                 type: "POST",
-                url: "/api/staff/appointments/" + appointmentId + "/pay", // '수납 완료' API
+                url: "/staff/appointments/" + appointmentId + "/pay", // '수납 완료' API
                 success: function() {
                     alert("수납 처리가 완료되었습니다.");
                     // 성공 시 목록에서 해당 행(tr) 제거

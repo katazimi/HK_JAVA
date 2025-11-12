@@ -15,4 +15,8 @@ public interface AppointmentMapper {
 	        @Param("doctorId") int doctorId, 
 	        @Param("date") LocalDate date
 	);
+
+	int updateAppointmentStatus(int appointmentId, String status);
+
+	Integer findActiveAppointmentId(int patientId, int doctorId);
 }

@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,17 +18,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.security.core.Authentication;
 
 import com.hk.emr.command.AddDepartmentCommand;
 import com.hk.emr.command.AddUserCommand;
+import com.hk.emr.dtos.AdminDashBoardDto;
 import com.hk.emr.dtos.DepartmentDto;
 import com.hk.emr.dtos.DoctorDto;
 import com.hk.emr.dtos.MemberDto;
 import com.hk.emr.dtos.ScheduleDto;
 import com.hk.emr.dtos.ScheduleFormDto;
 import com.hk.emr.service.AdminService;
-
-import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping(value="/admin")
@@ -37,17 +38,16 @@ public class AdminController {
 	private AdminService adminService;
 	
 	@GetMapping(value="/") 
-	public String home(Model model, HttpSession session) {
-		MemberDto loginUser = (MemberDto) session.getAttribute("mdto");
+    public String home(Model model, Authentication authentication) { 
 		
-		if (loginUser != null) {
-	        model.addAttribute("adminName", loginUser.getName()); // DTO의 name 필드
-	    } else {
-	        model.addAttribute("adminName", "관리자"); // (혹시 모를 예외처리)
-	    }
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        model.addAttribute("adminName", userDetails.getUsername()); 
 		
-		return "admin/main";
-	}
+        AdminDashBoardDto stats = adminService.getDashboardStats();
+        model.addAttribute("stats", stats);
+		
+        return "admin/main";
+    }
 	
 	@GetMapping("/accounts")
 	public String showAccountsPage(Model model) {

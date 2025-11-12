@@ -3,9 +3,10 @@
 <!DOCTYPE mapper PUBLIC "//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.hk.emr.mapper.AppointmentMapper">
+	
 	<select id="findAppointmentsByDate" resultType="appointmentDto">
         SELECT 
-            TIME_FORMAT(a.appointment_time, '%H:%i') AS time,
+            TIME_FORMAT(a.appointment_time, '%H:%i') AS dateTime,
             p.name AS patientName
         FROM 
             APPOINTMENT a
@@ -16,4 +17,22 @@
             AND a.status != 'CANCELED' ORDER BY 
             a.appointment_time ASC
     </select>
+    
+    <update id="updateAppointmentStatus">
+	    UPDATE APPOINTMENT
+	    SET status = #{status}
+	    WHERE appointment_id = #{appointmentId}
+	</update>
+	
+	<select id="findActiveAppointmentId" resultType="Integer">
+	    SELECT appointment_id
+	    FROM APPOINTMENT
+	    WHERE 
+	        patient_id = #{patientId}
+	        AND doctor_id = #{doctorId}
+	        AND DATE(appointment_time) = CURDATE()
+	        AND status IN ('WAITING', 'IN_PROGRESS')
+	    ORDER BY appointment_time DESC
+	    LIMIT 1
+	</select>
 </mapper>

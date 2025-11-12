@@ -35,7 +35,7 @@
                     <th>관리</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="patientTableBody">
                 <tr th:each="patient : ${patientList}">
                     <td th:text="${patient.chartNum}"></td>
                     <td th:text="${patient.name}"></td>
@@ -53,8 +53,58 @@
     </main>
     
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
     <script>
-        // (검색 로직 등...)
+        $(document).ready(function() {
+            var debounceTimer;
+
+            $("#patientSearchInput").on("keyup", function() {
+                clearTimeout(debounceTimer);
+                var query = $(this).val();
+
+                // 300ms 지연 후 검색 API 호출
+                debounceTimer = setTimeout(function() {
+                    $.ajax({
+                        type: "GET",
+                        // (참고) 대시보드에서 사용한 검색 API와 동일한 URL 사용
+                        url: "/staff/search", 
+                        data: { query: query }, // ?query=...
+                        success: function(patients) {
+                            var tableBody = $("#patientTableBody");
+                            tableBody.empty(); // 1. 기존 테이블 내용 삭제
+
+                            if (patients.length === 0) {
+                                // 2. 검색 결과가 없을 경우
+                                tableBody.append(
+                                    '<tr><td colspan="5" style="text-align: center;">검색된 환자가 없습니다.</td></tr>'
+                                );
+                            } else {
+                                // 3. 검색 결과로 테이블 행(tr) 재생성
+                                patients.forEach(function(p) {
+                                    var row = `
+                                        <tr>
+                                            <td>${p.chartNum}</td>
+                                            <td>${p.name}</td>
+                                            <td>${p.phone}</td>
+                                            <td>${p.birth}</td>
+                                            <td><button class="btn">상세/수정</button></td>
+                                        </tr>
+                                    `;
+                                    tableBody.append(row);
+                                });
+                            }
+                        },
+                        error: function() {
+                            var tableBody = $("#patientTableBody");
+                            tableBody.empty();
+                            tableBody.append(
+                                '<tr><td colspan="5" style="text-align: center;">검색 중 오류가 발생했습니다.</td></tr>'
+                            );
+                        }
+                    });
+                }, 300); 
+            });
+        });
     </script>
 </body>
 </html>

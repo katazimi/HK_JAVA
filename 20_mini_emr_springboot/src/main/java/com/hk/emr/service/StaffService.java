@@ -3,9 +3,12 @@ package com.hk.emr.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.hk.emr.dtos.AppointmentDto;
+import com.hk.emr.dtos.DoctorDto;
 import com.hk.emr.dtos.PatientDto;
 import com.hk.emr.mapper.StaffMapper;
 
@@ -13,6 +16,9 @@ import com.hk.emr.mapper.StaffMapper;
 public class StaffService {
 	@Autowired
 	private StaffMapper staffMapper;
+	
+	@Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
 
 	@Transactional
 	public boolean addPatient(PatientDto dto) {
@@ -45,6 +51,59 @@ public class StaffService {
 	public List<PatientDto> getPatients() {
 		return staffMapper.getPatients();
 	}
-	
-	
+
+	public List<PatientDto> patientSearch(String query) {
+		return staffMapper.patientSearch(query);
+	}
+
+	public List<DoctorDto> getDoctors() {
+		return staffMapper.getDoctors();
+	}
+
+	public void createWalkInAppointment(AppointmentDto dto, Integer staffId) {
+		dto.setStaffId(staffId);
+		dto.setStatus("WAITING");
+		staffMapper.createWalkInAppointment(dto);
+	}
+
+	public void createScheduledAppointment(AppointmentDto dto, Integer staffId) {
+		dto.setStaffId(staffId);
+		dto.setStatus("SCHEDULED");
+		staffMapper.createScheduledAppointment(dto);
+	}
+
+	public List<AppointmentDto> getSchedules() {
+		return staffMapper.getSchedules();
+	}
+
+	@Transactional
+	public void checkInPatient(int appointmentId) {
+		// 1. (기본 로직) DB 상태를 'WAITING'으로 변경
+	    int updateCount = staffMapper.updateStatus(appointmentId);
+	    
+	    if (updateCount == 0) {
+	        throw new RuntimeException("환자 접수 처리에 실패했습니다.");
+	    }
+
+	    // 2. (다른 로직) 방금 접수된 환자 정보와 담당 의사 ID를 조회
+	    // (예: patientName, patientId, doctorId 등)
+	    AppointmentDto patientInfo = staffMapper.getPatientInfo(appointmentId);
+
+	    // 3. (핵심) WebSocket을 통해 해당 의사의 Topic으로 메시지 전송
+	    // (컨트롤러에서 SimpMessagingTemplate을 주입받아야 함)
+	    simpMessagingTemplate.convertAndSend(
+	        "/topic/doctor/" + patientInfo.getDoctorId(), // 의사 전용 채널
+	        patientInfo // (JSON으로 변환될 환자 정보 객체)
+	    );
+		
+	}
+
+	public List<AppointmentDto> getPaymentList() {
+		return staffMapper.getPaymentList();
+	}
+
+	public void paymentComplete(int appointmentId) {
+		staffMapper.paymentComplete(appointmentId);
+		
+	}
 }

@@ -9,12 +9,17 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.hk.emr.dtos.AppointmentDto;
 import com.hk.emr.dtos.BaseScheduleDto;
+import com.hk.emr.dtos.ChartDto;
 import com.hk.emr.dtos.DayScheduleDto;
+import com.hk.emr.dtos.PatientDto;
 import com.hk.emr.mapper.AppointmentMapper;
+import com.hk.emr.mapper.ChartMapper;
 import com.hk.emr.mapper.DoctorMapper;
+import com.hk.emr.mapper.PatientMapper;
 import com.hk.emr.mapper.ScheduleMapper;
 
 @Service
@@ -27,6 +32,12 @@ public class DoctorService {
     
     @Autowired
     private DoctorMapper doctorMapper;
+    
+    @Autowired
+    private PatientMapper patientMapper; // ◀ (환자 정보 조회용)
+    
+    @Autowired
+    private ChartMapper chartMapper;     // ◀ (차트 관련)
     
     public int getDoctorId(int userId) {
     	return doctorMapper.getDoctorId(userId);
@@ -74,4 +85,52 @@ public class DoctorService {
         
         return weeklySchedule;
     }
+
+	public AppointmentDto findCurrentPatient(Integer doctorId) {
+		return doctorMapper.findCurrentPatient(doctorId);
+	}
+
+	public List<AppointmentDto> findWaitingList(Integer doctorId) {
+		return doctorMapper.findWaitingList(doctorId);
+	}
+
+	public List<AppointmentDto> findScheduledList(Integer doctorId) {
+		return doctorMapper.findScheduledList(doctorId);
+	}
+
+	@Transactional
+    public void startTreatment(int appointmentId) {
+        int updateCount = appointmentMapper.updateAppointmentStatus(appointmentId,"IN_PROGRESS");
+        
+        if (updateCount == 0) {
+            throw new RuntimeException("상태 변경에 실패했습니다. (ID: " + appointmentId + ")");
+        }
+    }
+	
+	@Transactional
+	public void completeTreatment(int appointmentId) {
+		int updateCount = appointmentMapper.updateAppointmentStatus(appointmentId,"PAYMENT_WAITING");
+        
+        if (updateCount == 0) {
+            throw new RuntimeException("상태 변경에 실패했습니다. (ID: " + appointmentId + ")");
+        }
+	}
+	
+	public PatientDto getPatientInfo(int patientId) {
+        return patientMapper.getPatientById(patientId);
+    }
+	
+	public List<ChartDto> findPastChartsByPatient(int patientId) {
+        return chartMapper.findPastCharts(patientId);
+    }
+	
+	public Integer findActiveAppointmentId(int patientId, int doctorId) {
+        return appointmentMapper.findActiveAppointmentId(patientId, doctorId);
+    }
+
+	public void saveChartMemo(ChartDto chartDto) {
+        chartMapper.insertChartMemo(chartDto);
+    }
+
+	
 }

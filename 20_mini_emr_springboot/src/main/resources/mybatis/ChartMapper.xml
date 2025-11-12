@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hk.emr.mapper.ChartMapper">
+
+    <select id="findPastCharts" parameterType="Integer" resultType="chartDto">
+        SELECT 
+            DATE_FORMAT(A.appointment_time, '%Y-%m-%d') AS visitDate,
+            U.name AS doctorName,
+            C.memo
+        FROM 
+            CHART C
+            JOIN APPOINTMENT A ON C.appointment_id = A.appointment_id
+            JOIN DOCTOR_PROFILE D ON A.doctor_id = D.doctor_id
+            JOIN USER_ACCOUNT U ON D.user_id = U.user_id
+        WHERE 
+            A.patient_id = #{patientId}
+        ORDER BY 
+            A.appointment_time DESC
+    </select>
+    
+    <insert id="insertChartMemo" parameterType="chartDto">
+        INSERT INTO CHART VALUES(NULL,#{appointmentId}, #{memo})
+    </insert>
+
+</mapper>

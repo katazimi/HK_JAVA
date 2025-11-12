@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hk.emr.mapper.AdminMapper">
+	<select id="getDashboardStats" resultType="adminDashBoardDto">
+        SELECT 
+            (SELECT COUNT(*) FROM APPOINTMENT 
+             WHERE DATE(appointment_time) = CURDATE() 
+             AND status != 'CANCELED') 
+            AS totalAppointments,
+             
+            (SELECT COUNT(*) FROM APPOINTMENT 
+             WHERE status = 'WAITING' AND DATE(appointment_time) = CURDATE()) 
+            AS waitingCount,
+             
+            (SELECT COUNT(*) FROM APPOINTMENT 
+             WHERE status = 'PAYMENT_WAITING' AND DATE(appointment_time) = CURDATE()) 
+            AS paymentWaitingCount,
+             
+            (SELECT COUNT(*) FROM USER_ACCOUNT 
+             WHERE role = 'DOCTOR') 
+            AS totalDoctors,
+             
+            (SELECT COUNT(*) FROM USER_ACCOUNT 
+             WHERE role = 'STAFF') 
+            AS totalStaff
+    </select>
+	
+</mapper>

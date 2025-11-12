@@ -16,15 +16,15 @@
 <div layout:fragment="content">
 <div id="container">
 <h1>LOGIN</h1>
-<form action="/user/login" method="post" th:object="${loginCommand}">
+<form th:action="@{/login}" method="post" th:object="${loginCommand}">
 	<table class="table">
 		<tr>
 			<th>아이디:</th>
 			<td>
 				<input type="text" class="form-control"
-				      name="id" th:field="*{id}" />
-				<span th:if="${#fields.hasErrors('id')}"
-				      th:errors="*{id}" class="errorField"></span>          
+				      name="username" th:field="*{username}" />
+				<span th:if="${#fields.hasErrors('username')}"
+				      th:errors="*{username}" class="errorField"></span>          
 			</td>
 		</tr>
 		<tr>

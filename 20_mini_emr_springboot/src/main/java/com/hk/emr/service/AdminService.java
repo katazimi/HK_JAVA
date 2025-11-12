@@ -11,11 +11,13 @@ import org.springframework.transaction.annotation.Transactional; // 임포트 �
 
 import com.hk.emr.command.AddDepartmentCommand;
 import com.hk.emr.command.AddUserCommand;
+import com.hk.emr.dtos.AdminDashBoardDto;
 import com.hk.emr.dtos.DepartmentDto;
 import com.hk.emr.dtos.DoctorDto;
 import com.hk.emr.dtos.MemberDto;
 import com.hk.emr.dtos.ScheduleDto;
 import com.hk.emr.dtos.ScheduleFormDto;
+import com.hk.emr.mapper.AdminMapper;
 import com.hk.emr.mapper.DepartmentMapper;
 import com.hk.emr.mapper.DoctorMapper;
 import com.hk.emr.mapper.MemberMapper;
@@ -23,6 +25,9 @@ import com.hk.emr.status.RoleStatus;
 
 @Service
 public class AdminService {
+	
+	@Autowired
+    private AdminMapper adminMapper;
 
 	@Autowired
 	private MemberMapper memberMapper;
@@ -36,10 +41,10 @@ public class AdminService {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
-    /**
-     * 사용자 추가 (회원가입)
-     * 의사(DOCTOR)일 경우, DOCTOR_PROFILE에도 추가 정보를 생성합니다.
-     */
+	public AdminDashBoardDto getDashboardStats() {
+        return adminMapper.getDashboardStats();
+    }
+	
 	@Transactional // 1. 트랜잭션 처리
 	public boolean addUser(AddUserCommand addUserCommand) {
 		

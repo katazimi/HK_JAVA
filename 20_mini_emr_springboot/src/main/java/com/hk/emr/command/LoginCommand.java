@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 
 public class LoginCommand {
 	@NotBlank(message = "아이디를 입력해주세요")
-	private String id;
+	private String username;
 	
 	@NotBlank(message = "패스워드를 입력해주세요")
 	@Length(min = 8 , max = 16, message = "8자리이상, 16자이하로 입력하세요")
@@ -14,15 +14,15 @@ public class LoginCommand {
 	
 	@Override
 	public String toString() {
-		return "LoginCommand [id=" + id + ", password=" + password + "]";
+		return "LoginCommand [username=" + username + ", password=" + password + "]";
 	}
 
-	public String getId() {
-		return id;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public String getPassword() {
@@ -33,10 +33,10 @@ public class LoginCommand {
 		this.password = password;
 	}
 
-	public LoginCommand(@NotBlank(message = "아이디를 입력해주세요") String id,
+	public LoginCommand(@NotBlank(message = "아이디를 입력해주세요") String username,
 			@NotBlank(message = "패스워드를 입력해주세요") @Length(min = 8, max = 16, message = "8자리이상, 16자이하로 입력하세요") String password) {
 		super();
-		this.id = id;
+		this.username = username;
 		this.password = password;
 	}
 

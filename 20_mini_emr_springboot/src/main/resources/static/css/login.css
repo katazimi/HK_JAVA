@@ -1,0 +1,50 @@
+@charset "UTF-8";
+
+/* 페이지 전체를 회색 배경으로 설정 */
+    html, body {
+        height: 100%;
+        background-color: #f8f9fa;
+    }
+    /* container-fluid를 사용해 navbar를 꽉 채움 */
+    .container-fluid {
+        padding: 0;
+    }
+    /* 로그인 폼을 수직 중앙 정렬 (navbar 제외) */
+    .login-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /* navbar 높이를 제외한 나머지 공간을 차지 */
+        min-height: calc(100vh - 56px); /* 56px는 navbar의 기본 높이 */
+    }
+    /* 테이블을 감싸는 박스 스타일 */
+    .login-box {
+        width: 100%;
+        max-width: 500px; /* 폼 너비 */
+        background-color: #ffffff;
+        padding: 2.5rem;
+        border-radius: 0.75rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    .login-box h1 {
+        text-align: center;
+        font-weight: bold;
+        margin-bottom: 1.5rem;
+    }
+    /* 테이블 th 스타일 (라벨처럼 보이게) */
+    .table th {
+        width: 100px; /* '아이디:' 너비 고정 */
+        font-weight: 600;
+        vertical-align: middle;
+        border: none;
+        padding-right: 1rem;
+    }
+    .table td {
+        border: none;
+        vertical-align: middle;
+    }
+    /* 오류 메시지 스타일 */
+    .errorField {
+        color: #dc3545;
+        font-size: 0.875em;
+    }

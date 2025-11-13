@@ -1,50 +1,61 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	  layout:decorate="~{layouts/layoutHome}">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
-<script type="text/javascript">
-
-</script>
-<style type="text/css">
-
-</style>
+<title>로그인</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+<link type="text/css" th:href="@{/css/login.css}" rel="stylesheet">
 </head>
 <body>
-<div layout:fragment="content">
-<div id="container">
-<h1>LOGIN</h1>
-<form th:action="@{/login}" method="post" th:object="${loginCommand}">
-	<table class="table">
-		<tr>
-			<th>아이디:</th>
-			<td>
-				<input type="text" class="form-control"
-				      name="username" th:field="*{username}" />
-				<span th:if="${#fields.hasErrors('username')}"
-				      th:errors="*{username}" class="errorField"></span>          
-			</td>
-		</tr>
-		<tr>
-			<th>패스워드:</th>
-			<td>
-				<input type="password" class="form-control"
-				      name="password" th:field="*{password}" />
-				<span th:if="${#fields.hasErrors('password')}"
-				      th:errors="*{password}" class="errorField"></span>      
-			</td>
-		</tr>
-		<tr>
-			<td colspan="2">
-				  <input type="submit" value="로그인" class="btn"/>
-				  <span th:text="${msg}"></span> 
-			</td>
-		</tr>
-	</table>
-</form>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid px-3"> <a class="navbar-brand" href="/">🏥 병원 EMR 시스템</a>
+        <div class="d-flex">
+            <th:block th:if="${session.mdto==null}">
+                </th:block>
+        </div>
+    </div>
+</nav>
+
+<div class="login-container">
+    <div class="login-box">
+        <h1>LOGIN</h1>
+        
+        <form th:action="@{/login}" method="post" th:object="${loginCommand}">
+            
+            <div th:if="${param.error}" class="alert alert-danger" role="alert">
+                아이디 또는 비밀번호를 확인하세요.
+            </div>
+            <span th:if="${msg != null}" th:text="${msg}" class="text-danger d-block mb-3"></span>
+            
+            <table class="table">
+                <tr>
+                    <th><label for="username" class="form-label">아이디:</label></th>
+                    <td>
+                        <input type="text" class="form-control"
+                               th:field="*{username}" />
+                        <span th:if="${#fields.hasErrors('username')}"
+                              th:errors="*{username}" class="errorField"></span>          
+                    </td>
+                </tr>
+                <tr>
+                    <th><label for="password" class="form-label">패스워드:</label></th>
+                    <td>
+                        <input type="password" class="form-control"
+                               th:field="*{password}" />
+                        <span th:if="${#fields.hasErrors('password')}"
+                              th:errors="*{password}" class="errorField"></span>      
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="pt-4">
+                          <input type="submit" value="로그인" class="btn btn-primary w-100 btn-lg"/>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
 </div>
-</div>
+
 </body>
 </html>

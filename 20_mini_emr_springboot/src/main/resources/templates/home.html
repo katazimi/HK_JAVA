@@ -1,34 +1,51 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	  layout:decorate="~{layouts/layoutHome}">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
-<script type="text/javascript">
-
-</script>
-<style type="text/css">
-
-</style>
+<title>병원 EMR 시스템</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 </head>
 <body>
-<div layout:fragment="content">
-<div id="container">
-<h1>HOME</h1>
-<th:block th:if="${session.mdto==null}">
-	<p>
-		<a href="/member/login">SignIn</a>
-	</p>
-</th:block>
-<th:block th:unless="${session.mdto==null}">
-	<p>
-		<span th:text="${session.mdto.role}"></span>
-		<span th:text="${session.mdto.id}"></span>
-		<a href="/user/logout">로그아웃</a>
-	</p>
-</th:block>
-</div>
+<div>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">🏥 병원 EMR 시스템</a>
+            <div class="d-flex">
+                <th:block th:if="${session.mdto==null}">
+                    <a th:href="@{/member/login}" class="btn btn-primary">로그인</a>
+                </th:block>
+                
+                <th:block th:unless="${session.mdto==null}">
+                    <span class="navbar-text me-3">
+                        <span th:text="${session.mdto.name}"></span>
+                        (<span th:text="${session.mdto.role}"></span>) 님
+                    </span>
+                    <form th:action="@{/user/logout}" method="post">
+                        <button type="submit" class="btn btn-outline-light">로그아웃</button>
+                    </form>
+                </th:block>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container mt-5">
+        <div class="p-5 mb-4 bg-light rounded-3">
+            <div class="container-fluid py-5">
+                <h1 class="display-5 fw-bold">HOME</h1>
+                <p class="col-md-8 fs-4">병원 내부 관리 시스템에 오신 것을 환영합니다.</p>
+                
+                <th:block th:if="${session.mdto==null}">
+                    <a th:href="@{/member/login}" class="btn btn-primary btn-lg">로그인 페이지로 이동</a>
+                </th:block>
+                <th:block th:unless="${session.mdto==null}">
+                    <a th:if="${session.mdto.role == 'ADMIN'}" th:href="@{/admin/}" class="btn btn-danger btn-lg">관리자 대시보드</a>
+                    <a th:if="${session.mdto.role == 'DOCTOR'}" th:href="@{/doctor/}" class="btn btn-info btn-lg">의사 대시보드</a>
+                    <a th:if="${session.mdto.role == 'STAFF'}" th:href="@{/staff/}" class="btn btn-success btn-lg">접수 대시보드</a>
+                </th:block>
+            </div>
+        </div>
+    </div>
+
 </div>
 </body>
 </html>

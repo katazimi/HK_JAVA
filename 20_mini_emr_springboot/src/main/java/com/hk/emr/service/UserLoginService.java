@@ -32,7 +32,6 @@ public class UserLoginService implements UserDetailsService {
         }
 
         // 3. Spring Security가 알아볼 수 있는 UserDetails 객체로 변환
-        // (DB의 Role 이름이 "DOCTOR", "ADMIN"이라고 가정)
         return org.springframework.security.core.userdetails.User
                 .withUsername(memberDto.getUserName())
                 .password(memberDto.getPassword())

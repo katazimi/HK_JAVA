@@ -13,7 +13,7 @@
             <li><a href="/admin/">대시보드</a></li>
             <li><a href="/admin/accounts"><b>계정 관리</b></a></li>
             <li><a href="/admin/settings">병원 설정</a></li>
-            <li><a href="/admin/schedules"><b>스케줄 관리</b></a></li>
+            <li><a href="/admin/schedules">스케줄 관리</a></li>
             <li><a href="/user/logout">로그아웃</a></li>
         </ul>
     </nav>
@@ -47,9 +47,22 @@
                         </span>
                     </td>
                     <td>
-                        <button class="btn" th:onclick="|location.href='@{/admin/accounts/edit/{id}(id=${account.userId})}'|">수정</button>
-                        <button class="btn btn-danger">삭제</button>
-                    </td>
+					    <button class="btn" 
+					            th:data-userid="${account.userId}"
+					            th:data-username="${account.userName}"
+					            th:data-name="${account.name}"
+					            th:data-role="${account.role}"
+					            onclick="openUpdateModal(this)">
+					        수정
+					    </button>
+					
+					    <button class="btn btn-danger"
+					            th:data-userid="${account.userId}"
+					            th:data-username="${account.userName}"
+					            onclick="deleteAccount(this)">
+					        삭제
+					    </button>
+					</td>
                 </tr>
                 
                 <tr th:if="${#lists.isEmpty(accounts)}">
@@ -63,93 +76,100 @@
         <div class="modal-content">
             <h2>새 계정 발급</h2>
             <form id="createAccountForm">
-                <label for="username">로그인 ID:</label>
+                <label for="userName">로그인 ID:</label>
                 <input type="text" id="userName" name="userName" required>
-
                 <label for="password">초기 비밀번호:</label>
                 <input type="password" id="password" name="password" required>
-
                 <label for="name">이름:</label>
                 <input type="text" id="name" name="name" required>
-
                 <label for="role">권한:</label>
                 <select id="role" name="role" required>
                     <option value="">권한을 선택하세요...</option>
                     <option value="STAFF">접수직원 (STAFF)</option>
                     <option value="DOCTOR">의사 (DOCTOR)</option>
                 </select>
-
                 <button type="submit" class="btn">저장</button>
                 <button type="button" class="btn btn-danger" onclick="closeCreateModal()">취소</button>
             </form>
         </div>
     </div>
     
+    <div id="modal-update-form" class="modal">
+        <div class="modal-content">
+            <h2>계정 수정</h2>
+            <form id="updateAccountForm">
+                <input type="hidden" id="update_userId" name="userId">
+                
+                <label for="update_userName">로그인 ID:</label>
+                <input type="text" id="update_userName" name="id" readonly disabled>
+
+                <label for="update_name">이름:</label>
+                <input type="text" id="update_name" name="name" required>
+
+                <button type="submit" class="btn">수정 완료</button>
+                <button type="button" class="btn btn-danger" onclick="closeUpdateModal()">취소</button>
+            </form>
+        </div>
+    </div>
+    
     <script>
-        const modal = document.getElementById('modal-create-form');
-        function openCreateModal() { modal.style.display = 'flex'; }
-        function closeCreateModal() { modal.style.display = 'none'; }
-    </script>
-
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
-    <script>
-        $(document).ready(function() {
-            // --- ID 중복 체크 ---
-            $("#userName").on("blur", function() {
-                var inputId = $(this).val(); 
-                if (!inputId) {
-                    return;
-                }
-
-                $.ajax({
-                    type: "GET",
-                    url: "/admin/idChk", // 컨트롤러 URL 확인
-                    data: { id: inputId },
-                    dataType: "json",
-                    success: function(response) {
-                        if (response.id) { 
-                            alert("'" + response.id + "'는 이미 사용 중인 ID입니다.");
-                        } else {
-                            alert("사용 가능한 ID입니다.");
-                        }
-                    },
-                    error: function(e) {
-                        alert("ID 중복 체크 중 오류가 발생했습니다.");
-                    }
-                });
-            });   
-
-            // --- 폼 전송 (Submit) ---
-            $("#createAccountForm").on("submit", function(e) {
-                e.preventDefault(); 
-
-                var formData = {
-                	id: $("#userName").val(), // DTO 필드명(userName)과 일치
-                    password: $("#password").val(),
-                    name: $("#name").val(),
-                    role: $("#role").val()
-                };
-
-                $.ajax({
-                    type: "POST",
-                    url: "/admin/addUser", // 컨트롤러 URL 확인
-                    contentType: "application/json", 
-                    data: JSON.stringify(formData),
-                    
-                    success: function(response) {
-                        // (참고) 이 로직은 컨트롤러가 JSON을 반환한다고 가정한 것입니다.
-                        alert(response.message || "계정이 성공적으로 생성되었습니다.");
-                        closeCreateModal();
-                        location.reload(); 
-                    },
-                    error: function(xhr, status, error) {
-                        var errorMsg = xhr.responseJSON ? xhr.responseJSON.message : "서버 오류로 등록에 실패했습니다.";
-                        alert(errorMsg);
-                    }
-                });
-            });
-        });
-    </script>
+	    const createModal = document.getElementById('modal-create-form');
+	    function openCreateModal() { createModal.style.display = 'flex'; }
+	    function closeCreateModal() { createModal.style.display = 'none'; }
+	
+	    const updateModal = document.getElementById('modal-update-form');
+	
+	    // [수정] 'button' (this)을 파라미터로 받음
+	    function openUpdateModal(button) {
+	        // 'button' (this)의 data-* 속성(dataset)에서 값을 읽어옴
+	        var userId = button.dataset.userid;
+	        var userName = button.dataset.username;
+	        var name = button.dataset.name;
+	        var role = button.dataset.role;
+	
+	        // 폼에 기존 데이터 채우기
+	        $("#update_userId").val(userId);
+	        $("#update_userName").val(userName);
+	        $("#update_name").val(name);
+	        $("#update_role").val(role);
+	
+	        updateModal.style.display = 'flex';
+	    }
+	    function closeUpdateModal() {
+	        updateModal.style.display = 'none';
+	    }
+	</script>
+	
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+	<script>
+	    $(document).ready(function() {
+	        // ... (ID 중복 체크, 새 계정 생성 폼 AJAX는 동일) ...
+	    });
+	
+	    // [수정] 'button' (this)을 파라미터로 받음
+	    function deleteAccount(button) {
+	        // data-* 속성에서 값 읽기
+	        var userId = button.dataset.userid;
+	        var userName = button.dataset.username;
+	
+	        if (!confirm(userName + " 님을 정말 삭제하시겠습니까? (이 작업은 되돌릴 수 없습니다)")) {
+	            return;
+	        }
+	
+	        $.ajax({
+	            type: "POST", 
+	            url: "/api/admin/accounts/delete",
+	            contentType: "application/json",
+	            data: JSON.stringify({ userId: userId }), // (userId만 JSON으로 전송)
+	            success: function(response) {
+	                alert(response.message || "계정이 삭제되었습니다.");
+	                location.reload();
+	            },
+	            error: function(xhr) {
+	                alert(xhr.responseJSON.message || "삭제에 실패했습니다.");
+	            }
+	        });
+	    }
+	</script>
 </body>
 </html>

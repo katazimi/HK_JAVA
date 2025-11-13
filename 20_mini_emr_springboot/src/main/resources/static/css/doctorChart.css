@@ -1,12 +1,15 @@
 @charset "UTF-8";
-/* (간단한 예시 스타일) */
 body { font-family: sans-serif; display: flex; }
-.sidebar { width: 200px; background: #f4f4f4; padding: 20px; height: 100vh; }
-.sidebar ul { list-style: none; padding: 0; }
-.sidebar li { margin-bottom: 10px; }
-.content { flex-grow: 1; padding: 30px; }
-.patient-info { background: #f9f9f9; padding: 15px; border-radius: 5px; }
-.chart-history ul { list-style-type: none; padding: 0; }
-.chart-history li { border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; }
-textarea { width: 98%; height: 100px; }
-.btn { background-color: #007bff; color: white; padding: 8px 12px; border: none; cursor: pointer; }
+        .sidebar { width: 200px; background: #f4f4f4; padding: 20px; height: 100vh; }
+        .sidebar ul { list-style: none; padding: 0; }
+        .sidebar li { margin-bottom: 10px; }
+        .content { flex-grow: 1; padding: 30px; }
+        .patient-info { background: #f9f9f9; padding: 15px; border-radius: 5px; }
+        .chart-history ul { list-style-type: none; padding: 0; max-height: 300px; overflow-y: auto; }
+        .chart-history li { border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; }
+        textarea { width: 98%; height: 100px; }
+        .btn { background-color: #007bff; color: white; padding: 8px 12px; border: none; cursor: pointer; }
+        
+        /* [ 1. CSS 추가 ] - (대시보드의 '진료 완료' 버튼과 동일한 스타일) */
+        .btn-complete { background-color: #007bff; }
+        .btn-save { background-color: #28a745; } /* (메모 저장 버튼 색상 - 선택 사항) */

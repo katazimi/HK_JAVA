@@ -15,7 +15,7 @@
 	</update>
 	
 	<select id="getPatients" resultType="patientDto">
-		SELECT chart_number AS chartNum,name,phone,birth_date AS birth
+		SELECT patient_id AS patientId, chart_number AS chartNum,name,phone,birth_date AS birth
 		FROM PATIENT
 	</select>
 	
@@ -70,4 +70,14 @@
 		SET status = 'PAID'
 		WHERE appointment_id = #{appointmentId};
 	</update>
+	
+	<update id="updatePatient" parameterType="patientDto">
+        UPDATE PATIENT
+        SET 
+            name = #{name},
+            phone = #{phone},
+            birth_date = #{birth} 
+        WHERE 
+            patient_id = #{patientId}
+    </update>
 </mapper>

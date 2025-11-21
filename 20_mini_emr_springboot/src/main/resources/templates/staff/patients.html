@@ -5,7 +5,7 @@
     <title>환자 관리</title>
     <link type="text/css" th:href="@{/css/staffCommon.css}" rel="stylesheet">
     <link type="text/css" th:href="@{/css/staffPatient.css}" rel="stylesheet">
-</head>
+    </head>
 <body>
 
     <nav class="sidebar">
@@ -42,7 +42,15 @@
                     <td th:text="${patient.phone}"></td>
                     <td th:text="${patient.birth}"></td>
                     <td>
-                        <button class="btn">상세/수정</button>
+                        <button class="btn"
+                                th:data-patient-id="${patient.patientId}"
+                                th:data-chart-num="${patient.chartNum}"
+                                th:data-name="${patient.name}"
+                                th:data-phone="${patient.phone}"
+                                th:data-birth="${patient.birth}"
+                                onclick="openUpdateModal(this)">
+                            상세/수정
+                        </button>
                     </td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(patientList)}">
@@ -52,42 +60,101 @@
         </table>
     </main>
     
+    <div id="modal-update-patient" class="modal">
+        <div class="modal-content">
+            <h2>환자 정보 수정</h2>
+            <form id="updatePatientForm">
+                <input type="hidden" id="update_patientId" name="patientId">
+                
+                <label>차트번호:</label>
+                <input type="text" id="update_chartNum" class="form-control" readonly disabled>
+
+                <label>환자명:</label>
+                <input type="text" id="update_name" name="name" class="form-control" required>
+
+                <label>연락처:</label>
+                <input type="text" id="update_phone" name="phone" class="form-control">
+
+                <label>생년월일(YYYYMMDD):</label>
+                <input type="text" id="update_birth" name="birthDate" class="form-control">
+
+                <button type="submit" class="btn">저장</button>
+                <button type="button" class="btn btn-danger" onclick="closeUpdateModal()">취소</button>
+            </form>
+        </div>
+    </div>
+    
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <script>
+        const updateModal = document.getElementById('modal-update-patient');
+        
+        function openUpdateModal(button) {
+            // 클릭한 버튼(this)의 data-* 속성에서 값을 읽어옴
+            var patientId = button.dataset.patientId;
+            var chartNum = button.dataset.chartNum;
+            var name = button.dataset.name;
+            var phone = button.dataset.phone;
+            var birth = button.dataset.birth;
+            
+            // 모달 폼에 값 채우기
+            $("#update_patientId").val(patientId);
+            $("#update_chartNum").val(chartNum);
+            $("#update_name").val(name);
+            $("#update_phone").val(phone);
+            $("#update_birth").val(birth);
+            
+            // 모달 열기
+            updateModal.style.display = 'flex';
+        }
+        
+        function closeUpdateModal() {
+            updateModal.style.display = 'none';
+        }
+    </script>
     
     <script>
         $(document).ready(function() {
             var debounceTimer;
 
+            // --- 1. 실시간 검색 (keyup) ---
             $("#patientSearchInput").on("keyup", function() {
                 clearTimeout(debounceTimer);
                 var query = $(this).val();
 
-                // 300ms 지연 후 검색 API 호출
                 debounceTimer = setTimeout(function() {
                     $.ajax({
                         type: "GET",
-                        // (참고) 대시보드에서 사용한 검색 API와 동일한 URL 사용
                         url: "/staff/search", 
-                        data: { query: query }, // ?query=...
+                        data: { query: query }, 
                         success: function(patients) {
                             var tableBody = $("#patientTableBody");
-                            tableBody.empty(); // 1. 기존 테이블 내용 삭제
+                            tableBody.empty(); 
 
                             if (patients.length === 0) {
-                                // 2. 검색 결과가 없을 경우
                                 tableBody.append(
                                     '<tr><td colspan="5" style="text-align: center;">검색된 환자가 없습니다.</td></tr>'
                                 );
                             } else {
-                                // 3. 검색 결과로 테이블 행(tr) 재생성
                                 patients.forEach(function(p) {
+                                    // [수정] 검색 결과 행(row)에도 data-* 속성과 onclick 추가
                                     var row = `
                                         <tr>
                                             <td>${p.chartNum}</td>
                                             <td>${p.name}</td>
                                             <td>${p.phone}</td>
                                             <td>${p.birth}</td>
-                                            <td><button class="btn">상세/수정</button></td>
+                                            <td>
+                                                <button class="btn"
+                                                        data-patient-id="${p.patientId}"
+                                                        data-chart-num="${p.chartNum}"
+                                                        data-name="${p.name}"
+                                                        data-phone="${p.phone}"
+                                                        data-birth="${p.birth}"
+                                                        onclick="openUpdateModal(this)">
+                                                    상세/수정
+                                                </button>
+                                            </td>
                                         </tr>
                                     `;
                                     tableBody.append(row);
@@ -95,6 +162,7 @@
                             }
                         },
                         error: function() {
+                            // (오류 처리 동일)
                             var tableBody = $("#patientTableBody");
                             tableBody.empty();
                             tableBody.append(
@@ -104,6 +172,34 @@
                     });
                 }, 300); 
             });
+            
+            // --- 2. [추가] '환자 수정' 폼 제출 (submit) ---
+            $("#updatePatientForm").on("submit", function(e) {
+                e.preventDefault();
+                
+                var formData = {
+                    patientId: $("#update_patientId").val(), // (PK)
+                    name: $("#update_name").val(),
+                    phone: $("#update_phone").val(),
+                    birth: $("#update_birth").val() 
+                };
+                
+                $.ajax({
+                    type: "POST", 
+                    url: "/staff/update", 
+                    contentType: "application/json",
+                    data: JSON.stringify(formData),
+                    success: function(response) {
+                        alert("환자 정보가 수정되었습니다.");
+                        closeUpdateModal();
+                        location.reload(); // (목록 새로고침)
+                    },
+                    error: function(xhr) {
+                        alert(xhr.responseJSON.message || "수정에 실패했습니다.");
+                    }
+                });
+            });
+            
         });
     </script>
 </body>

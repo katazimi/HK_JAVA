@@ -162,4 +162,29 @@ public class AdminController {
 		
 		return "redirect:/admin/schedules?update=success";
 	}
+	
+	@PostMapping("/accounts/update")
+    public ResponseEntity<?> updateAccount(@RequestBody MemberDto dto) {
+        try {
+            adminService.updateAccount(dto);
+            return ResponseEntity.ok().body(Map.of("message", "계정이 수정되었습니다."));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                 .body(Map.of("message", "수정 실패: " + e.getMessage()));
+        }
+    }
+	
+	@PostMapping("/accounts/delete")
+    public ResponseEntity<?> deleteAccount(@RequestBody MemberDto dto) {
+        try {
+            adminService.deleteAccount(dto.getUserId());
+            return ResponseEntity.ok().body(Map.of("message", "계정이 삭제되었습니다."));
+        } catch (Exception e) {
+            // (참고: 의존성(FK) 오류가 발생할 수 있습니다)
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                 .body(Map.of("message", "삭제 실패: " + e.getMessage()));
+        }
+    }
 }

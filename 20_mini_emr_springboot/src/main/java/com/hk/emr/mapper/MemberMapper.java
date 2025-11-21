@@ -10,6 +10,8 @@ import com.hk.emr.dtos.MemberDto;
 public interface MemberMapper {
 	public int addUser(MemberDto dto);
 	
+	public MemberDto getUser(Integer userId);
+	
 	public MemberDto loginUser(String id);
 	
 	public String idChk(String id);
@@ -17,4 +19,8 @@ public interface MemberMapper {
 	public List<MemberDto> findAllAccounts();
 	
 	public int getUserId(String username);
+
+	public int updateAccount(MemberDto dto);
+
+	public int deleteAccount(int userId);
 }

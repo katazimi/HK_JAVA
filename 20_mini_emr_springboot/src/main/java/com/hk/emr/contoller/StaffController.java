@@ -196,4 +196,24 @@ public class StaffController {
                                  .body(Map.of("message", "서버 오류: " + e.getMessage()));
         }
     }
+	
+	@PostMapping("/update") // ◀ /api/staff/patients/update
+    public ResponseEntity<?> updatePatient(@Valid @RequestBody PatientDto dto) {
+        // @RequestBody: JS가 보낸 JSON을 PatientDto로 자동 변환
+        
+        try {
+            // 1. 서비스 로직 호출
+            staffService.updatePatient(dto);
+            
+            // 2. 성공 시 (JS의 success: 실행)
+            return ResponseEntity.ok().body(Map.of("message", "환자 정보가 수정되었습니다."));
+        
+        } catch (Exception e) {
+            e.printStackTrace(); // 서버 로그에 오류 출력
+            
+            // 3. 실패 시 (JS의 error: 실행)
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                 .body(Map.of("message", "서버 오류로 수정에 실패했습니다."));
+        }
+    }
 }

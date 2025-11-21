@@ -106,4 +106,17 @@ public class StaffService {
 		staffMapper.paymentComplete(appointmentId);
 		
 	}
+	
+	@Transactional // (데이터 변경이므로 트랜잭션 처리)
+    public boolean updatePatient(PatientDto dto) {
+        
+        int result = staffMapper.updatePatient(dto);
+        
+        if (result == 0) {
+            // 업데이트된 행이 없으면 예외 발생 (트랜잭션 롤백)
+            throw new RuntimeException("환자 정보 수정에 실패했습니다. (ID: " + dto.getPatientId() + ")");
+        }
+        
+        return true;
+    }
 }

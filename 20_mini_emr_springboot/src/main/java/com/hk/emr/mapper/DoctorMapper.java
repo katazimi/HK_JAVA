@@ -28,6 +28,10 @@ public interface DoctorMapper {
 	public List<AppointmentDto> findWaitingList(Integer doctorId);
 
 	public List<AppointmentDto> findScheduledList(Integer doctorId);
+
+	public void deleteSchedulesByDoctorId(Integer doctorId);
+
+	public void deleteDoctorProfile(Integer doctorId);
 	
 	
 }

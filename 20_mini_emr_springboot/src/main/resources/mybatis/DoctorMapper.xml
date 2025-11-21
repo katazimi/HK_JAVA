@@ -112,4 +112,11 @@
 	        A.appointment_time ASC
 	</select>
 	
+	<delete id="deleteSchedulesByDoctorId" parameterType="Integer">
+	    DELETE FROM SCHEDULE WHERE doctor_id = #{doctorId}
+	</delete>
+	
+	<delete id="deleteDoctorProfile" parameterType="Integer">
+	    DELETE FROM DOCTOR_PROFILE WHERE doctor_id = #{doctorId}
+	</delete>
 </mapper>

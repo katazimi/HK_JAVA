@@ -33,4 +33,6 @@ public interface StaffMapper {
 	public List<AppointmentDto> getPaymentList();
 
 	public void paymentComplete(int appointmentId);
+	
+	int updatePatient(PatientDto dto);
 }

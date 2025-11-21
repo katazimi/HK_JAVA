@@ -172,4 +172,39 @@ public class AdminService {
         doctorMapper.updateSchedule(listToUpdate);
     }
 	
+	@Transactional
+	public boolean updateAccount(MemberDto dto) {
+		int result = memberMapper.updateAccount(dto); 
+        if (result == 0) {
+            throw new RuntimeException("수정된 계정이 없습니다. (ID: " + dto.getUserId() + ")");
+        }
+        return true;
+	}
+
+	@Transactional
+	public boolean deleteAccount(int userId) {
+		MemberDto account = memberMapper.getUser(userId); // (이 쿼리가 필요)
+        
+		if (account == null) {
+            throw new RuntimeException("삭제할 계정을 찾을 수 없습니다.");
+        }
+
+        if ("DOCTOR".equals(account.getRole())) {
+            // 2. DOCTOR라면, 의존하는 데이터(SCHEDULE, DOCTOR_PROFILE)를 먼저 삭제
+            Integer doctorId = doctorMapper.getDoctorId(userId); // (이 쿼리가 필요)
+            if (doctorId != null) {
+                // (경고: APPOINTMENT/CHART에 FK가 걸려있다면 이 쿼리도 실패합니다)
+                doctorMapper.deleteSchedulesByDoctorId(doctorId); // (이 쿼리가 필요)
+                doctorMapper.deleteDoctorProfile(doctorId);       // (이 쿼리가 필요)
+            }
+        }
+        
+        // 3. USER_ACCOUNT 삭제
+        int result = memberMapper.deleteAccount(userId); // (이 쿼리가 필요)
+        if (result == 0) {
+            throw new RuntimeException("계정 삭제에 실패했습니다.");
+        }
+        return true;
+	}
+	
 }

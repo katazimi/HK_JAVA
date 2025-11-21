@@ -19,11 +19,12 @@
 	</select>
 	
 	<select id="findAllAccounts" resultType="memberDto">
-		SELECT username,name,role FROM USER_ACCOUNT
+		SELECT user_id AS userId,username AS userName,name,role 
+		FROM USER_ACCOUNT
 	</select>
 	
 	<select id="loginUser" parameterType="String" resultType="memberDto">
-		SELECT user_id AS userid, username, name, password, role
+		SELECT user_id AS userId, username AS userName, name, password, role
 		FROM USER_ACCOUNT
 		WHERE username = #{id}
 	</select>
@@ -34,4 +35,21 @@
 		WHERE username = #{username}
 	</select>
 	
+	<select id="getUser" parameterType="Integer" resultType="memberDto">
+		SELECT user_id AS userId, username AS userName, name, password, role
+		FROM USER_ACCOUNT
+		WHERE user_id = #{userId}
+	</select>
+	
+	<update id="updateAccount" parameterType="memberDto">
+	    UPDATE USER_ACCOUNT
+	    SET 
+	        name = #{name}
+	    WHERE 
+	        user_id = #{userId}
+	</update>
+	
+	<delete id="deleteAccount" parameterType="Integer">
+	    DELETE FROM USER_ACCOUNT WHERE user_id = #{userId}
+	</delete>
 </mapper>

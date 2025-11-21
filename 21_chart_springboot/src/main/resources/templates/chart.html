@@ -31,41 +31,70 @@
         #searchResult li { padding: 10px 15px; cursor: pointer; border-bottom: 1px solid #f0f0f0; }
         #searchResult li:hover { background-color: #f5f5f5; }
 
-        /* ⭐️ [핵심 수정] 정보 표시줄 (차트와 분리된 영역) */
+        /* 정보 표시줄 (Info Bar) */
         #chartLegend {
             width: 100%;
-            /* 높이를 고정하거나 최소 높이를 주어 덜거덕거림 방지 */
             min-height: 50px; 
-            margin-bottom: 10px; /* 차트와의 간격 */
+            margin-bottom: 10px; 
             padding: 10px 15px;
-            background-color: #fafafa; /* 연한 회색 배경 */
+            background-color: #fafafa; 
             border: 1px solid #eee;
             border-radius: 5px;
             box-sizing: border-box;
-            
-            /* 텍스트 정렬 */
             display: flex;
             flex-wrap: wrap;
             align-items: center;
-            gap: 15px; /* 항목 간 간격 */
-            
+            gap: 15px;
             font-size: 14px;
             font-weight: 500;
             color: #333;
         }
         
-        /* 종목명 스타일 */
         .stock-title { font-size: 28px; font-weight: bold; margin-right: 20px; color: #000; }
-        
-        /* 수치 스타일 */
         .legend-item { display: flex; align-items: center; }
         .legend-label { margin-right: 4px; color: #666; }
         .legend-value { font-weight: bold; }
-        
         .up { color: #FF0000; }
         .down { color: #0000FF; }
 
         #tv_chart { width: 100%; height: 600px; }
+
+        /* ⭐️ 패턴 분석 결과 영역 스타일 (신규 추가) */
+        #analysisSection {
+            margin-top: 30px;
+            border-top: 2px solid #f0f0f0;
+            padding-top: 20px;
+            display: none; /* 로딩 전엔 숨김 */
+        }
+        .analysis-header { font-size: 18px; font-weight: 700; color: #333; margin-bottom: 15px; display: flex; align-items: center; }
+        .analysis-header::before { content: ''; display: inline-block; width: 4px; height: 18px; background: #2962FF; margin-right: 10px; border-radius: 2px; }
+        
+        .pattern-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        
+        .pattern-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .pattern-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-color: #2962FF; }
+        
+        .pattern-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .pattern-name { font-size: 16px; font-weight: bold; color: #333; }
+        
+        .trend-badge { font-size: 12px; padding: 4px 8px; border-radius: 4px; font-weight: 600; }
+        .trend-up { background-color: #ffebee; color: #c62828; }
+        .trend-down { background-color: #e3f2fd; color: #1565c0; }
+        .trend-neutral { background-color: #f5f5f5; color: #616161; }
+
+        .pattern-desc { font-size: 13px; color: #666; line-height: 1.5; margin-bottom: 10px; height: 40px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+        .pattern-meta { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f0f0f0; padding-top: 10px; font-size: 12px; color: #999; }
+        .reliability-stars { color: #ffc107; letter-spacing: 1px; }
     </style>
 </head>
 <body>
@@ -78,17 +107,59 @@
 
         <div id="chartLegend">
             <span class="stock-title">삼성전자 (005930)</span>
-            </div>
+        </div>
 
         <div id="tv_chart"></div>
+
+        <div id="analysisSection">
+            <div class="analysis-header">📊 캔들 패턴 분석 결과 (최근 3일)</div>
+            <div id="patternList" class="pattern-list"></div>
+        </div>
     </div>
 
     <script>
+        // ⭐️ 패턴 정보 매핑 데이터
+        const PATTERN_DEFINITIONS = {
+            // 상승형
+            "BULLISH_ENGULFING": { name: "상승 장악형", desc: "전일 음봉을 오늘 양봉이 완전히 감싸는 강력한 상승 신호입니다.", trend: "상승", stars: 5 },
+            "MORNING_STAR": { name: "샛별형", desc: "하락→도지→상승으로 이어지는 3일 완성형 패턴. 확실한 반전 신호.", trend: "상승", stars: 5 },
+            "THREE_WHITE_SOLDIERS": { name: "적삼병", desc: "양봉 3개가 연속해서 고점을 높이며 상승세가 지속됨을 알립니다.", trend: "상승", stars: 5 },
+            "PIERCING_LINE": { name: "관통형", desc: "전일 장대음봉의 중심선 50% 이상으로 양봉이 치고 올라온 형태입니다.", trend: "상승", stars: 4 },
+            "THREE_INSIDE_UP": { name: "상승 잉태 확인형", desc: "하라미 발생 후 양봉이 뜨며 상승 반전을 확정지었습니다.", trend: "상승", stars: 4 },
+            "THREE_OUTSIDE_UP": { name: "상승 장악 확인형", desc: "장악형 발생 후 양봉이 뜨며 상승 반전을 확정지었습니다.", trend: "상승", stars: 4 },
+            "BULLISH_KICKER": { name: "상승 박차형", desc: "음봉 후 갭상승 장대양봉이 발생한 급격한 상승 반전 신호입니다.", trend: "상승", stars: 4 },
+            "HAMMER": { name: "망치형", desc: "하락 추세 바닥에서 긴 아래꼬리가 발생. 저가 매수세 유입.", trend: "상승", stars: 3 },
+            "INVERTED_HAMMER": { name: "역망치형", desc: "바닥권에서 매수세가 유입되려는 신호입니다.", trend: "상승", stars: 2 },
+            "BULLISH_HARAMI": { name: "상승 잉태형", desc: "긴 음봉 안에 작은 양봉이 갇힌 형태. 하락세가 멈추고 있습니다.", trend: "상승", stars: 2 },
+            "WHITE_MARUBOZU": { name: "장대 양봉", desc: "위아래 꼬리 없는 강력한 상승세입니다.", trend: "상승", stars: 3 },
+
+            // 하락형
+            "BEARISH_ENGULFING": { name: "하락 장악형", desc: "전일 양봉을 오늘 음봉이 완전히 감싸는 강력한 하락 신호입니다.", trend: "하락", stars: 5 },
+            "EVENING_STAR": { name: "석별형", desc: "상승→도지→하락으로 이어지는 3일 완성형 패턴. 확실한 하락 반전.", trend: "하락", stars: 5 },
+            "THREE_BLACK_CROWS": { name: "흑삼병", desc: "음봉 3개가 연속해서 저점을 낮추며 하락세가 지속됨을 알립니다.", trend: "하락", stars: 5 },
+            "DARK_CLOUD_COVER": { name: "흑운형", desc: "전일 장대양봉의 중심선 50% 이하로 음봉이 내려꽂힌 형태입니다.", trend: "하락", stars: 4 },
+            "THREE_INSIDE_DOWN": { name: "하락 잉태 확인형", desc: "하라미 발생 후 음봉이 뜨며 하락 반전을 확정지었습니다.", trend: "하락", stars: 4 },
+            "THREE_OUTSIDE_DOWN": { name: "하락 장악 확인형", desc: "장악형 발생 후 음봉이 뜨며 하락 반전을 확정지었습니다.", trend: "하락", stars: 4 },
+            "BEARISH_KICKER": { name: "하락 박차형", desc: "양봉 후 갭하락 장대음봉이 발생한 급격한 하락 반전 신호입니다.", trend: "하락", stars: 4 },
+            "SHOOTING_STAR": { name: "유성형", desc: "고점에서 긴 위꼬리 발생. 매도세에 밀린 흔적입니다.", trend: "하락", stars: 3 },
+            "HANGING_MAN": { name: "교수형", desc: "고점에서 긴 아래꼬리 발생. 매도세 출현 신호입니다.", trend: "하락", stars: 2 },
+            "BEARISH_HARAMI": { name: "하락 잉태형", desc: "긴 양봉 안에 작은 음봉이 갇힌 형태. 상승세가 멈추고 있습니다.", trend: "하락", stars: 2 },
+            "BLACK_MARUBOZU": { name: "장대 음봉", desc: "위아래 꼬리 없는 강력한 하락세입니다.", trend: "하락", stars: 3 },
+
+            // 중립
+            "DOJI": { name: "도지형", desc: "시가와 종가가 일치. 추세 전환의 전조일 수 있습니다.", trend: "중립", stars: 1 },
+            "SPINNING_TOP": { name: "팽이형", desc: "몸통이 짧고 꼬리가 깁니다. 방향성 탐색 중.", trend: "중립", stars: 1 },
+            "NONE": { name: "특이 패턴 없음", desc: "현재 분석된 뚜렷한 캔들 패턴이 없습니다.", trend: "중립", stars: 0 }
+        };
+        
+
         document.addEventListener('DOMContentLoaded', function () {
             const chartContainer = document.getElementById('tv_chart');
             const legendContainer = document.getElementById('chartLegend');
+            const analysisSection = document.getElementById('analysisSection');
+            const patternList = document.getElementById('patternList');
             
-            // 1. 차트 생성 (레이아웃 동일)
+            // 1. 차트 생성
             const chart = LightweightCharts.createChart(chartContainer, {
                 width: chartContainer.clientWidth,
                 height: 600,
@@ -96,8 +167,8 @@
                 grid: { vertLines: { color: '#f0f3fa' }, horzLines: { color: '#f0f3fa' } },
                 crosshair: { 
                     mode: LightweightCharts.CrosshairMode.Normal,
-                    vertLine: { labelVisible: false }, 
-                    horzLine: { labelVisible: false }
+                    vertLine: { labelVisible: true }, 
+                    horzLine: { labelVisible: true }
                 },
                 rightPriceScale: {
                     visible: true,
@@ -131,43 +202,101 @@
             let allData = [];
             let isLoading = false;
 
-            // --- ⭐️ 3. 정보 표시줄(Legend) 업데이트 함수 (HTML 구조 변경) ---
+            // --- ⭐️ 패턴 분석 로드 함수 ---
+            function loadAnalysis(code) {
+                patternList.innerHTML = ''; // 초기화
+                analysisSection.style.display = 'none';
+
+                fetch(`/api/stock/${code}/analysis`)
+                    .then(res => res.json())
+                    .then(list => { 
+                        analysisSection.style.display = 'block';
+                        
+                        if (!list || list.length === 0 || (list.length === 1 && list[0].type === 'NONE')) {
+                            patternList.innerHTML = `<div style="color:#999; padding:10px;">발견된 특이 패턴이 없습니다.</div>`;
+                            return;
+                        }
+
+                        list.forEach(item => {
+                            const def = PATTERN_DEFINITIONS[item.type] || PATTERN_DEFINITIONS["NONE"];
+                            let badgeClass = 'trend-neutral';
+                            let trendIcon = '-';
+                            if (def.trend === '상승') { badgeClass = 'trend-up'; trendIcon = '▲ 상승'; }
+                            else if (def.trend === '하락') { badgeClass = 'trend-down'; trendIcon = '▼ 하락'; }
+
+                            const stars = '★'.repeat(def.stars) + '☆'.repeat(5 - def.stars);
+
+                            const cardHtml = `
+                                <div class="pattern-card">
+                                    <div class="pattern-top">
+                                        <span class="pattern-name">${def.name}</span>
+                                        <span class="trend-badge ${badgeClass}">${trendIcon}</span>
+                                    </div>
+                                    <div class="pattern-desc">${def.desc}</div>
+                                    <div class="pattern-meta">
+                                        <span>발생일: ${item.date}</span>
+                                        <span class="reliability-stars" title="신뢰도 ${def.stars}/5">${stars}</span>
+                                    </div>
+                                </div>
+                            `;
+                            patternList.insertAdjacentHTML('beforeend', cardHtml);
+                        });
+                    })
+                    .catch(err => console.error("분석 오류:", err));
+            }
+
+         // --- ⭐️ [수정됨] 정보 표시줄 업데이트 함수 (안전한 파싱 적용) ---
             function updateLegend(param) {
                 const validCrosshair = (param.time && param.point.x >= 0 && param.point.x <= chartContainer.clientWidth && param.point.y >= 0 && param.point.y <= chartContainer.clientHeight);
                 
-                const data = validCrosshair ? param.seriesData.get(candleSeries) : (allData.length > 0 ? allData[allData.length - 1] : null);
-                const ma5Val = validCrosshair ? param.seriesData.get(ma5Series) : (allData.length > 0 ? allData[allData.length - 1]?.ma5 : null);
-                const ma20Val = validCrosshair ? param.seriesData.get(ma20Series) : (allData.length > 0 ? allData[allData.length - 1]?.ma20 : null);
-                const ma60Val = validCrosshair ? param.seriesData.get(ma60Series) : (allData.length > 0 ? allData[allData.length - 1]?.ma60 : null);
+                // 1. 데이터 가져오기 (차트 위면 seriesData, 아니면 allData의 마지막 값)
+                const rawData = validCrosshair ? param.seriesData.get(candleSeries) : (allData.length > 0 ? allData[allData.length - 1] : null);
+                const ma5Obj = validCrosshair ? param.seriesData.get(ma5Series) : (allData.length > 0 ? allData[allData.length - 1]?.ma5 : null);
+                const ma20Obj = validCrosshair ? param.seriesData.get(ma20Series) : (allData.length > 0 ? allData[allData.length - 1]?.ma20 : null);
+                const ma60Obj = validCrosshair ? param.seriesData.get(ma60Series) : (allData.length > 0 ? allData[allData.length - 1]?.ma60 : null);
 
-                // 기본 제목 (데이터 없을 때)
                 let html = `<span class="stock-title">${currentName} (${currentCode})</span>`;
 
-                if (data) {
-                    const open = data.open.toLocaleString();
-                    const high = data.high.toLocaleString();
-                    const low = data.low.toLocaleString();
-                    const close = data.close.toLocaleString();
-                    const colorClass = (data.close >= data.open) ? 'up' : 'down';
+                if (rawData) {
+                    // ⭐️ [핵심 수정] 데이터 소스에 따라 필드명이 다르므로 안전하게 추출
+                    // 차트 데이터면 .open, 원본 데이터면 .y[0] 사용
+                    const open = (rawData.open !== undefined) ? rawData.open : rawData.y[0];
+                    const high = (rawData.high !== undefined) ? rawData.high : rawData.y[1];
+                    const low = (rawData.low !== undefined) ? rawData.low : rawData.y[2];
+                    const close = (rawData.close !== undefined) ? rawData.close : rawData.y[3];
 
-                    html += `
-                        <div class="legend-item"><span class="legend-label">시:</span><span class="legend-value ${colorClass}">${open}</span></div>
-                        <div class="legend-item"><span class="legend-label">고:</span><span class="legend-value ${colorClass}">${high}</span></div>
-                        <div class="legend-item"><span class="legend-label">저:</span><span class="legend-value ${colorClass}">${low}</span></div>
-                        <div class="legend-item"><span class="legend-label">종:</span><span class="legend-value ${colorClass}">${close}</span></div>
-                    `;
-
-                    if (ma5Val) html += `<div class="legend-item" style="color: #2962FF;"><span class="legend-label">MA5:</span><span class="legend-value">${Math.round(ma5Val.value).toLocaleString()}</span></div>`;
-                    if (ma20Val) html += `<div class="legend-item" style="color: #B71C1C;"><span class="legend-label">MA20:</span><span class="legend-value">${Math.round(ma20Val.value).toLocaleString()}</span></div>`;
-                    if (ma60Val) html += `<div class="legend-item" style="color: #00C853;"><span class="legend-label">MA60:</span><span class="legend-value">${Math.round(ma60Val.value).toLocaleString()}</span></div>`;
+                    // 값이 유효한지 한번 더 체크 (안전장치)
+                    if (open !== undefined && close !== undefined) {
+                        const colorClass = (close >= open) ? 'up' : 'down';
+                        html += `
+                            <div class="legend-item"><span class="legend-label">시:</span><span class="legend-value ${colorClass}">${Number(open).toLocaleString()}</span></div>
+                            <div class="legend-item"><span class="legend-label">고:</span><span class="legend-value ${colorClass}">${Number(high).toLocaleString()}</span></div>
+                            <div class="legend-item"><span class="legend-label">저:</span><span class="legend-value ${colorClass}">${Number(low).toLocaleString()}</span></div>
+                            <div class="legend-item"><span class="legend-label">종:</span><span class="legend-value ${colorClass}">${Number(close).toLocaleString()}</span></div>
+                        `;
+                    }
                 }
+
+                // ⭐️ MA 값 추출 헬퍼 (객체면 .value, 숫자면 그대로 사용)
+                const getVal = (obj) => {
+                    if (obj === undefined || obj === null) return null;
+                    return (typeof obj === 'object' && 'value' in obj) ? obj.value : obj;
+                };
+
+                const v5 = getVal(ma5Obj);
+                const v20 = getVal(ma20Obj);
+                const v60 = getVal(ma60Obj);
+
+                if (v5 !== null) html += `<div class="legend-item" style="color: #2962FF;"><span class="legend-label">MA5:</span><span class="legend-value">${Math.round(v5).toLocaleString()}</span></div>`;
+                if (v20 !== null) html += `<div class="legend-item" style="color: #B71C1C;"><span class="legend-label">MA20:</span><span class="legend-value">${Math.round(v20).toLocaleString()}</span></div>`;
+                if (v60 !== null) html += `<div class="legend-item" style="color: #00C853;"><span class="legend-label">MA60:</span><span class="legend-value">${Math.round(v60).toLocaleString()}</span></div>`;
 
                 legendContainer.innerHTML = html;
             }
 
             chart.subscribeCrosshairMove(updateLegend);
 
-            // --- 데이터 로직 (기존 동일) ---
+            // --- 데이터 로딩 ---
             function loadData(lastDate = null) {
                 if (isLoading) return;
                 isLoading = true;
@@ -176,15 +305,20 @@
 
                 fetch(url).then(res => res.json()).then(data => {
                     if (!Array.isArray(data) || data.length === 0) {
-                        if (!lastDate && confirm(`데이터 수집 하시겠습니까?`)) collectData(currentCode);
+                        if (!lastDate && confirm(`[${currentName}] 데이터가 없습니다. 수집하시겠습니까?`)) collectData(currentCode);
                         isLoading = false; return;
                     }
-                    if (lastDate === null) allData = data;
-                    else allData = [...data, ...allData];
+                    if (lastDate === null) {
+                        allData = data;
+                        loadAnalysis(currentCode); // ⭐️ 초기 로딩 시 분석 실행
+                    } else {
+                        allData = [...data, ...allData];
+                    }
                     
                     updateChartSeries(allData);
-                    // 초기 로딩 시에도 텍스트 업데이트
+                    // ⭐️ 중요: 제목 및 데이터 강제 갱신 (버그 수정)
                     updateLegend({ time: null, point: { x: -1, y: -1 } }); 
+                    
                     isLoading = false;
                 }).catch(err => { console.error(err); isLoading = false; });
             }
@@ -240,7 +374,12 @@
             function selectStock(code, name) {
                 currentCode = code; currentName = name;
                 searchInput.value = ''; searchResult.style.display = 'none';
+                
+                // ⭐️ 중요: 제목 즉시 갱신 (에러 방지)
+                updateLegend({ time: null, point: { x: -1, y: -1 } });
+                
                 allData = []; candleSeries.setData([]); ma5Series.setData([]); ma20Series.setData([]); volumeSeries.setData([]);
+                
                 loadData(null);
             }
 

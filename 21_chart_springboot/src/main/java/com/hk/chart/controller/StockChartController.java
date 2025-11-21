@@ -16,6 +16,7 @@ import com.hk.chart.entity.StockInfo;
 import com.hk.chart.repository.StockCandleRepository;
 import com.hk.chart.repository.StockInfoRepository;
 import com.hk.chart.service.KisMarketService;
+import com.hk.chart.service.PatternAnalysisService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,6 +27,7 @@ public class StockChartController {
     private final KisMarketService marketService;
     private final StockCandleRepository candleRepository;
     private final StockInfoRepository stockInfoRepository;
+    private final PatternAnalysisService patternService;
 
     // 1. [관리자용] 데이터 수집 트리거 (브라우저에서 한번 호출해주면 됨)
     // 예: http://localhost:8080/api/collect/005930
@@ -91,5 +93,15 @@ public class StockChartController {
     @GetMapping("/chart") // ⭐️ 주소 매핑 확인
     public String chartView() {
         return "chart"; // templates/chart.html 을 찾음
+    }
+    
+    @GetMapping("/api/stock/{code}/analysis")
+    @ResponseBody
+    public List<PatternAnalysisService.AnalysisResult> getStockAnalysis(@PathVariable String code) {
+        // 추세 확인을 위해 넉넉하게 최근 20일치 데이터를 가져옵니다.
+        List<StockCandle> candles = candleRepository.findRecentCandles(code, 20);
+        Collections.reverse(candles);
+        
+        return patternService.analyzeAll(candles);
     }
 }

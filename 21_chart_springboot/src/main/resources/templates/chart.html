@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>주식 차트</title>
+    <script src="https://unpkg.com/lightweight-charts@4.1.1/dist/lightweight-charts.standalone.production.js"></script>
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        
+        /* 검색창 */
+        .search-wrapper { position: relative; width: 100%; max-width: 400px; margin: 0 auto 20px auto; z-index: 20; }
+        #searchInput { width: 100%; padding: 12px; font-size: 16px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+        #searchResult { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #ddd; border-radius: 0 0 5px 5px; max-height: 250px; overflow-y: auto; list-style: none; padding: 0; margin: 0; z-index: 1000; display: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        #searchResult li { padding: 10px 15px; cursor: pointer; border-bottom: 1px solid #f0f0f0; }
+        #searchResult li:hover { background-color: #f5f5f5; }
+
+        /* ⭐️ [핵심 수정] 정보 표시줄 (차트와 분리된 영역) */
+        #chartLegend {
+            width: 100%;
+            /* 높이를 고정하거나 최소 높이를 주어 덜거덕거림 방지 */
+            min-height: 50px; 
+            margin-bottom: 10px; /* 차트와의 간격 */
+            padding: 10px 15px;
+            background-color: #fafafa; /* 연한 회색 배경 */
+            border: 1px solid #eee;
+            border-radius: 5px;
+            box-sizing: border-box;
+            
+            /* 텍스트 정렬 */
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 15px; /* 항목 간 간격 */
+            
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        /* 종목명 스타일 */
+        .stock-title { font-size: 28px; font-weight: bold; margin-right: 20px; color: #000; }
+        
+        /* 수치 스타일 */
+        .legend-item { display: flex; align-items: center; }
+        .legend-label { margin-right: 4px; color: #666; }
+        .legend-value { font-weight: bold; }
+        
+        .up { color: #FF0000; }
+        .down { color: #0000FF; }
+
+        #tv_chart { width: 100%; height: 600px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="search-wrapper">
+            <input type="text" id="searchInput" placeholder="종목명 검색 (예: 삼성전자)" autocomplete="off">
+            <ul id="searchResult"></ul>
+        </div>
+
+        <div id="chartLegend">
+            <span class="stock-title">삼성전자 (005930)</span>
+            </div>
+
+        <div id="tv_chart"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const chartContainer = document.getElementById('tv_chart');
+            const legendContainer = document.getElementById('chartLegend');
+            
+            // 1. 차트 생성 (레이아웃 동일)
+            const chart = LightweightCharts.createChart(chartContainer, {
+                width: chartContainer.clientWidth,
+                height: 600,
+                layout: { backgroundColor: '#ffffff', textColor: '#333' },
+                grid: { vertLines: { color: '#f0f3fa' }, horzLines: { color: '#f0f3fa' } },
+                crosshair: { 
+                    mode: LightweightCharts.CrosshairMode.Normal,
+                    vertLine: { labelVisible: false }, 
+                    horzLine: { labelVisible: false }
+                },
+                rightPriceScale: {
+                    visible: true,
+                    borderColor: '#D1D4DC',
+                    scaleMargins: { top: 0.05, bottom: 0.30 },
+                },
+                timeScale: { rightOffset: 12, barSpacing: 10, timeVisible: true, secondsVisible: false },
+            });
+
+            // 2. 시리즈 생성
+            const candleSeries = chart.addCandlestickSeries({
+                upColor: '#FF0000', borderUpColor: '#FF0000', wickUpColor: '#FF0000',
+                downColor: '#0000FF', borderDownColor: '#0000FF', wickDownColor: '#0000FF',
+                lastValueVisible: false, priceLineVisible: false // 상자 제거
+            });
+
+            const ma5Series = chart.addLineSeries({ color: '#2962FF', lineWidth: 1, lastValueVisible: false, priceLineVisible: false, crosshairMarkerVisible: false });
+            const ma20Series = chart.addLineSeries({ color: '#B71C1C', lineWidth: 2, lastValueVisible: false, priceLineVisible: false, crosshairMarkerVisible: false });
+            const ma60Series = chart.addLineSeries({ color: '#00C853', lineWidth: 2, lastValueVisible: false, priceLineVisible: false, crosshairMarkerVisible: false });
+
+            const volumeSeries = chart.addHistogramSeries({
+                priceFormat: { type: 'volume' }, priceScaleId: 'vol_scale',
+                lastValueVisible: false, priceLineVisible: false
+            });
+
+            chart.priceScale('vol_scale').applyOptions({ scaleMargins: { top: 0.75, bottom: 0 } });
+
+            // --- 전역 변수 ---
+            let currentName = "삼성전자";
+            let currentCode = "005930";
+            let allData = [];
+            let isLoading = false;
+
+            // --- ⭐️ 3. 정보 표시줄(Legend) 업데이트 함수 (HTML 구조 변경) ---
+            function updateLegend(param) {
+                const validCrosshair = (param.time && param.point.x >= 0 && param.point.x <= chartContainer.clientWidth && param.point.y >= 0 && param.point.y <= chartContainer.clientHeight);
+                
+                const data = validCrosshair ? param.seriesData.get(candleSeries) : (allData.length > 0 ? allData[allData.length - 1] : null);
+                const ma5Val = validCrosshair ? param.seriesData.get(ma5Series) : (allData.length > 0 ? allData[allData.length - 1]?.ma5 : null);
+                const ma20Val = validCrosshair ? param.seriesData.get(ma20Series) : (allData.length > 0 ? allData[allData.length - 1]?.ma20 : null);
+                const ma60Val = validCrosshair ? param.seriesData.get(ma60Series) : (allData.length > 0 ? allData[allData.length - 1]?.ma60 : null);
+
+                // 기본 제목 (데이터 없을 때)
+                let html = `<span class="stock-title">${currentName} (${currentCode})</span>`;
+
+                if (data) {
+                    const open = data.open.toLocaleString();
+                    const high = data.high.toLocaleString();
+                    const low = data.low.toLocaleString();
+                    const close = data.close.toLocaleString();
+                    const colorClass = (data.close >= data.open) ? 'up' : 'down';
+
+                    html += `
+                        <div class="legend-item"><span class="legend-label">시:</span><span class="legend-value ${colorClass}">${open}</span></div>
+                        <div class="legend-item"><span class="legend-label">고:</span><span class="legend-value ${colorClass}">${high}</span></div>
+                        <div class="legend-item"><span class="legend-label">저:</span><span class="legend-value ${colorClass}">${low}</span></div>
+                        <div class="legend-item"><span class="legend-label">종:</span><span class="legend-value ${colorClass}">${close}</span></div>
+                    `;
+
+                    if (ma5Val) html += `<div class="legend-item" style="color: #2962FF;"><span class="legend-label">MA5:</span><span class="legend-value">${Math.round(ma5Val.value).toLocaleString()}</span></div>`;
+                    if (ma20Val) html += `<div class="legend-item" style="color: #B71C1C;"><span class="legend-label">MA20:</span><span class="legend-value">${Math.round(ma20Val.value).toLocaleString()}</span></div>`;
+                    if (ma60Val) html += `<div class="legend-item" style="color: #00C853;"><span class="legend-label">MA60:</span><span class="legend-value">${Math.round(ma60Val.value).toLocaleString()}</span></div>`;
+                }
+
+                legendContainer.innerHTML = html;
+            }
+
+            chart.subscribeCrosshairMove(updateLegend);
+
+            // --- 데이터 로직 (기존 동일) ---
+            function loadData(lastDate = null) {
+                if (isLoading) return;
+                isLoading = true;
+                let url = `/api/stock/${currentCode}/candle-data`;
+                if (lastDate) url += `?lastDate=${lastDate}`;
+
+                fetch(url).then(res => res.json()).then(data => {
+                    if (!Array.isArray(data) || data.length === 0) {
+                        if (!lastDate && confirm(`데이터 수집 하시겠습니까?`)) collectData(currentCode);
+                        isLoading = false; return;
+                    }
+                    if (lastDate === null) allData = data;
+                    else allData = [...data, ...allData];
+                    
+                    updateChartSeries(allData);
+                    // 초기 로딩 시에도 텍스트 업데이트
+                    updateLegend({ time: null, point: { x: -1, y: -1 } }); 
+                    isLoading = false;
+                }).catch(err => { console.error(err); isLoading = false; });
+            }
+
+            function updateChartSeries(dataList) {
+                const candles = dataList.map(d => ({ time: d.x, open: d.y[0], high: d.y[1], low: d.y[2], close: d.y[3] }));
+                const ma5 = dataList.map(d => ({ time: d.x, value: d.ma5 })).filter(d => d.value);
+                const ma20 = dataList.map(d => ({ time: d.x, value: d.ma20 })).filter(d => d.value);
+                const ma60 = dataList.map(d => ({ time: d.x, value: d.ma60 })).filter(d => d.value);
+                const volumes = dataList.map(d => ({ time: d.x, value: d.volume, color: (d.y[3] >= d.y[0]) ? 'rgba(255, 0, 0, 0.5)' : 'rgba(0, 0, 255, 0.5)' }));
+
+                candleSeries.setData(candles);
+                ma5Series.setData(ma5);
+                ma20Series.setData(ma20);
+                ma60Series.setData(ma60);
+                volumeSeries.setData(volumes);
+            }
+
+            function collectData(code) {
+                alert("수집 시작...");
+                fetch(`/api/collect/${code}`).then(() => {
+                    let checkInterval = setInterval(() => {
+                        fetch(`/api/stock/${code}/candle-data`).then(res => res.json()).then(data => {
+                            if(data.length > 100) { clearInterval(checkInterval); loadData(null); }
+                        });
+                    }, 3000);
+                });
+            }
+
+            chart.timeScale().subscribeVisibleLogicalRangeChange(logicalRange => {
+                if (logicalRange !== null && logicalRange.from < 10 && !isLoading && allData.length > 0) loadData(allData[0].x);
+            });
+
+            const searchInput = document.getElementById('searchInput');
+            const searchResult = document.getElementById('searchResult');
+            searchInput.addEventListener('keyup', function() {
+                const keyword = this.value.trim();
+                if (keyword.length < 1) { searchResult.style.display = 'none'; return; }
+                fetch(`/api/stock/search?keyword=${keyword}`).then(res => res.json()).then(list => {
+                    searchResult.innerHTML = '';
+                    if (list.length > 0) {
+                        searchResult.style.display = 'block';
+                        list.forEach(stock => {
+                            const li = document.createElement('li');
+                            li.textContent = `${stock.name} (${stock.code})`;
+                            li.onclick = () => selectStock(stock.code, stock.name);
+                            searchResult.appendChild(li);
+                        });
+                    } else { searchResult.style.display = 'none'; }
+                });
+            });
+
+            function selectStock(code, name) {
+                currentCode = code; currentName = name;
+                searchInput.value = ''; searchResult.style.display = 'none';
+                allData = []; candleSeries.setData([]); ma5Series.setData([]); ma20Series.setData([]); volumeSeries.setData([]);
+                loadData(null);
+            }
+
+            window.addEventListener('resize', () => { chart.resize(chartContainer.clientWidth, 600); });
+            loadData(null);
+        });
+    </script>
+</body>
+</html>

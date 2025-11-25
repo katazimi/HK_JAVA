@@ -29,12 +29,11 @@ public class StockChartController {
     private final StockInfoRepository stockInfoRepository;
     private final PatternAnalysisService patternService;
 
-    // 1. [관리자용] 데이터 수집 트리거 (브라우저에서 한번 호출해주면 됨)
-    // 예: http://localhost:8080/api/collect/005930
+    // 1. [관리자용] 데이터 수집 트리거
     @GetMapping("/api/collect/{code}")
     @ResponseBody
     public String collectData(@PathVariable String code) {
-        new Thread(() -> { // 오래 걸리므로 별도 스레드에서 실행
+        new Thread(() -> { 
             marketService.collectAllHistory(code);
         }).start();
         return "데이터 수집을 백그라운드에서 시작했습니다. 콘솔 로그를 확인하세요.";
@@ -46,23 +45,37 @@ public class StockChartController {
         return stockInfoRepository.findByNameContainingOrCodeContaining(keyword, keyword);
     }
 
-    // 2. 차트 데이터 (이제 DB에서 가져옴!)
-    @GetMapping("/api/stock/{code}/candle-data") // URL 변경됨!
+    // 2. 차트 데이터 API (일/주/월 지원)
+    @GetMapping("/api/stock/{code}/candle-data")
     @ResponseBody
     public List<CandleDataDto> getStockCandleData(
-            @PathVariable String code,  // URL에서 종목코드 받음
-            @RequestParam(required = false) String lastDate) {
+            @PathVariable String code,
+            @RequestParam(required = false) String lastDate,
+            @RequestParam(required = false, defaultValue = "D") String type) { // ⭐️ type 추가 (기본값 D)
         
         List<StockCandle> entities;
         int limit = 500;
 
         try {
-            if (lastDate == null || lastDate.isEmpty()) {
-                entities = candleRepository.findRecentCandles(code, limit); // code 변수 사용
+            if ("D".equals(type)) {
+                // --- [일봉] 기존 로직 (무한 스크롤 지원) ---
+                if (lastDate == null || lastDate.isEmpty()) {
+                    entities = candleRepository.findRecentCandles(code, limit);
+                } else {
+                    String dbDate = lastDate.replace("-", "").trim();
+                    entities = candleRepository.findCandlesBeforeDate(code, dbDate, limit);
+                }
+                
+                // DB에서 최신순(DESC)으로 가져오므로 과거순(ASC)으로 뒤집기
+                if (entities != null) {
+                    Collections.reverse(entities);
+                }
             } else {
-                String dbDate = lastDate.replace("-", "").trim();
-                entities = candleRepository.findCandlesBeforeDate(code, dbDate, limit); // code 변수 사용
+                // --- [주봉/월봉] 서비스 집계 로직 사용 ---
+                // (주봉/월봉은 무한 스크롤 없이 최근 데이터 기준으로 집계해서 반환)
+                entities = marketService.getCandleDataByPeriod(code, type, limit);
             }
+            
         } catch (Exception e) {
             e.printStackTrace();
             return List.of();
@@ -70,11 +83,11 @@ public class StockChartController {
 
         if (entities == null) return List.of();
 
-        Collections.reverse(entities);
-
+        // DTO 변환
         return entities.stream()
                 .map(e -> {
                     String rawDate = e.getDate();
+                    // 날짜 포맷 (YYYYMMDD -> YYYY-MM-DD)
                     String formattedDate = rawDate.substring(0, 4) + "-" + 
                                          rawDate.substring(4, 6) + "-" + 
                                          rawDate.substring(6, 8);
@@ -90,18 +103,22 @@ public class StockChartController {
                 .collect(Collectors.toList());
     }
     
-    @GetMapping("/chart") // ⭐️ 주소 매핑 확인
+    @GetMapping("/chart")
     public String chartView() {
-        return "chart"; // templates/chart.html 을 찾음
+        return "chart";
     }
     
+    // 3. 패턴 분석 API (일/주/월 지원)
     @GetMapping("/api/stock/{code}/analysis")
     @ResponseBody
-    public List<PatternAnalysisService.AnalysisResult> getStockAnalysis(@PathVariable String code) {
-        // 추세 확인을 위해 넉넉하게 최근 20일치 데이터를 가져옵니다.
-        List<StockCandle> candles = candleRepository.findRecentCandles(code, 20);
-        Collections.reverse(candles);
+    public List<PatternAnalysisService.AnalysisResult> getStockAnalysis(
+            @PathVariable String code,
+            @RequestParam(required = false, defaultValue = "D") String type) { // ⭐️ type 추가
         
+        // 분석을 위해 해당 주기(일/주/월)의 최근 20개 데이터를 가져옴
+        List<StockCandle> candles = marketService.getCandleDataByPeriod(code, type, 20);
+        
+        // Service가 이미 날짜 오름차순(ASC)으로 주므로 바로 분석
         return patternService.analyzeAll(candles);
     }
 }

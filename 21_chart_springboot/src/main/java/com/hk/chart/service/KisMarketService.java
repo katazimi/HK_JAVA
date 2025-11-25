@@ -2,7 +2,11 @@ package com.hk.chart.service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.WeekFields;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
@@ -110,6 +114,109 @@ public class KisMarketService {
             return List.of();
         }
         return List.of();
+    }
+    
+    /**
+     * 주기(일/주/월)에 따라 캔들 데이터를 조회하거나 가공해서 반환합니다.
+     */
+    public List<StockCandle> getCandleDataByPeriod(String stockCode, String period, int limit) {
+        // 1. 일봉은 DB에서 바로 가져옴 (최근 데이터 넉넉하게)
+        // 주봉/월봉 계산을 위해 일봉 데이터를 충분히 많이 가져옵니다 (limit * 5 ~ 30)
+        int fetchLimit = period.equals("D") ? limit : limit * 30;
+        
+        List<StockCandle> dailies = candleRepository.findRecentCandles(stockCode, fetchLimit);
+        // 날짜 오름차순(과거->현재) 정렬
+        Collections.reverse(dailies);
+
+        if (period.equals("D")) {
+            // 일봉은 이미 MA가 계산되어 있으므로 그대로 반환 (최근 N개만 자름)
+            int size = dailies.size();
+            return size > limit ? dailies.subList(size - limit, size) : dailies;
+        }
+
+        // 2. 주봉/월봉으로 데이터 합치기 (Resampling)
+        List<StockCandle> aggregated = aggregateCandles(dailies, period);
+
+        // 3. 이동평균선(MA) 실시간 재계산 (주/월봉용)
+        calculateDynamicMA(aggregated);
+
+        // 4. 요청한 개수만큼 자르기
+        int size = aggregated.size();
+        return size > limit ? aggregated.subList(size - limit, size) : aggregated;
+    }
+
+    // 캔들 병합 로직 (핵심)
+    private List<StockCandle> aggregateCandles(List<StockCandle> dailies, String period) {
+        List<StockCandle> result = new ArrayList<>();
+        if (dailies.isEmpty()) return result;
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        StockCandle currentCandle = null;
+        String currentPeriodKey = ""; // 주차(Week) 또는 월(Month) 식별자
+
+        for (StockCandle day : dailies) {
+            LocalDate date = LocalDate.parse(day.getDate(), formatter);
+            
+            // 그룹 키 생성 (주봉: YYYY-wWW, 월봉: YYYY-MM)
+            String key;
+            if (period.equals("W")) {
+                int weekOfYear = date.get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear());
+                key = date.getYear() + "-w" + weekOfYear;
+            } else { // "M"
+                key = date.getYear() + "-" + date.getMonthValue();
+            }
+
+            if (!key.equals(currentPeriodKey)) {
+                // 새로운 주기 시작 -> 이전 캔들 저장
+                if (currentCandle != null) result.add(currentCandle);
+                
+                // 새 캔들 초기화
+                currentCandle = StockCandle.builder()
+                        .stockCode(day.getStockCode())
+                        .date(day.getDate()) // 시작일 (나중에 종료일로 갱신)
+                        .open(day.getOpen())
+                        .high(day.getHigh())
+                        .low(day.getLow())
+                        .close(day.getClose())
+                        .volume(day.getVolume())
+                        .build();
+                currentPeriodKey = key;
+            } else {
+                // 기존 주기에 데이터 병합 (고가, 저가, 종가, 거래량 갱신)
+                if (currentCandle != null) {
+                    currentCandle = StockCandle.builder()
+                            .stockCode(currentCandle.getStockCode())
+                            .date(day.getDate()) // 날짜는 해당 주기의 마지막 날짜로 계속 업데이트
+                            .open(currentCandle.getOpen()) // 시가는 유지
+                            .high(Math.max(currentCandle.getHigh(), day.getHigh()))
+                            .low(Math.min(currentCandle.getLow(), day.getLow()))
+                            .close(day.getClose()) // 종가는 최신값
+                            .volume(currentCandle.getVolume() + day.getVolume()) // 거래량 누적
+                            .build();
+                }
+            }
+        }
+        // 마지막 캔들 추가
+        if (currentCandle != null) result.add(currentCandle);
+        
+        return result;
+    }
+
+    // 동적 MA 계산 (주봉/월봉용)
+    private void calculateDynamicMA(List<StockCandle> candles) {
+        for (int i = 0; i < candles.size(); i++) {
+            Integer ma5 = calcAvg(candles, i, 5);
+            Integer ma20 = calcAvg(candles, i, 20);
+            Integer ma60 = calcAvg(candles, i, 60);
+            candles.get(i).setMa(ma5, ma20, ma60);
+        }
+    }
+
+    private Integer calcAvg(List<StockCandle> list, int idx, int period) {
+        if (idx < period - 1) return null;
+        long sum = 0;
+        for (int j = 0; j < period; j++) sum += list.get(idx - j).getClose();
+        return (int) (sum / period);
     }
     
     @Transactional

@@ -15,5 +15,5 @@ public class CandleDataDto {
     private Integer ma20;
     private Integer ma60;
     
-    private Long volume;     // ⭐️ 거래량
+    private Long volume;     //거래량
 }
